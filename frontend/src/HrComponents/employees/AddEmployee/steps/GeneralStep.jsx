@@ -6,9 +6,9 @@ const GeneralStep = ({ data, onChange }) => {
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // 1. نحدث الـ preview للمعاينة فقط
+      
       handleChange('photoPreview', URL.createObjectURL(file));
-      // 2. نحدث الـ image بالملف الفعلي لإرساله للـ API
+      
       handleChange('image', file); 
     }
   };
@@ -18,7 +18,7 @@ const GeneralStep = ({ data, onChange }) => {
 
     {/* Photo */}
       <div className="flex items-center gap-4">
-        {/* نستخدم photoPreview هنا للمعاينة */}
+      
         {data.photoPreview ? (
           <img
             src={data.photoPreview}
@@ -38,7 +38,7 @@ const GeneralStep = ({ data, onChange }) => {
               type="file"
               hidden
               accept="image/*"
-              onChange={handleFileChange} // نستخدم الدالة الجديدة
+              onChange={handleFileChange}
             />
           </label>
           <span className="mx-2 text-gray-500">|</span>
@@ -79,7 +79,7 @@ const GeneralStep = ({ data, onChange }) => {
     />
   </div>
 </div>
-{/* RFID Tag - حقل إجباري للـ Backend */}
+{/* RFID Tag  */}
       <div>
         <label className="text-xs text-gray-400">RFID Tag</label>
         <input
@@ -89,6 +89,7 @@ const GeneralStep = ({ data, onChange }) => {
           onChange={(e) => handleChange('rfidTag', e.target.value)}
           className="w-full mt-1 px-4 py-3 rounded-xl bg-white/5 border border-white/10 focus:border-blue-500 outline-none text-white"
         />
+        <span className="text-xs text-pink-500">rfid tag must be 8 charachters</span>
       </div>
   
 {/* Role */}

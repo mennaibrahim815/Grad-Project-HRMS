@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAttendance,fetchAttendanceSearch } from "../../../store/HrSlices/attendance/attendanceSlice";
+import { deleteEmployee,fetchAllEmployees ,searchEmployeesByName} from "../../../store/HrSlices/employeeSlice";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import axios from "../../../services/axios";
 
 import DataTable from "../../../Components/table/DataTable";
 import TableControls from "../../../Components/table/TableControls";
@@ -11,14 +12,12 @@ import RowActionMenu from "../../../Components/UI/RowActionMenu";
 import BaseCard from "../../../Components/UI/Card";
 import { Eye, Trash2 } from "lucide-react";
 
-const getAvatarUrl = (name, background = "0D8ABC", color = "fff") =>
-  `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${background}&color=${color}&size=80&bold=true&rounded=true`;
-
 const AttendanceBadge = ({ status }) => {
   const styles = {
-    "On Time": "bg-emerald-500/15 text-emerald-400 border-emerald-400/40",
-    Late: "bg-sky-500/15 text-sky-400 border-sky-400/40",
-    Absent: "bg-slate-500/20 text-slate-400 border-slate-400/40",
+    "Full-time": "bg-emerald-500/15 text-emerald-400 border-emerald-400/40",
+    "Part-time": "bg-sky-500/15 text-sky-400 border-sky-400/40",
+    "Contract": "bg-slate-500/20 text-slate-400 border-slate-400/40",
+    "Internship":"bg-slate-800 text-cyan-400 border-cyan-400/20"
   };
 
   return (
@@ -28,165 +27,199 @@ const AttendanceBadge = ({ status }) => {
     </span>
   );
 };
+const getAvatarUrl = (name, background = "0D8ABC", color = "fff") =>
+  `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${background}&color=${color}&size=80&bold=true&rounded=true`;
 
 const EmployeesTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { attendanceList, pagination, selectedDate, loading } = useSelector(
-    (state) => state.attendance
+  
+  const { employeesList, pagination, loading } = useSelector(
+    (state) => state.employees
   );
-
-  const [openMenuId, setOpenMenuId] = useState(null);
-  const [activeFilter, setActiveFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState("All");
+  const [openMenuId, setOpenMenuId] = useState(null);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
-  const [tableDate, setTableDate] = useState("");
+  const [confirmModal, setConfirmModal] = useState({ open: false, userId: null });
 
-  // ✅ useEffect واحد بس — بدون pagination.currentPage في الـ deps
-  useEffect(() => {
-  if (searchQuery.trim()) {
-    // ✅ لو فيه search → استخدمي endpoint التاني
-    dispatch(fetchAttendanceSearch({
-      employeeName: searchQuery,
-      date: tableDate,
-      page: 1,
-      limit: recordsPerPage,
-    }));
+  // Delete Function
+const handleDelete = () => {
+  const userId = confirmModal.userId;
+  dispatch(deleteEmployee(userId)).then((result) => {
+    if (result.meta.requestStatus === "fulfilled") {
+      setConfirmModal({ open: false, userId: null });
+      dispatch(fetchAllEmployees({ page: pagination.currentPage, limit: recordsPerPage }));
+    }
+  });
+};
+
+useEffect(() => {
+  if (searchQuery.trim() !== "") {
+    dispatch(searchEmployeesByName(searchQuery));
   } else {
-    // ✅ لو مفيش search → العادي
-    dispatch(fetchAttendance({
-      date: tableDate,
-      page: 1,
+    dispatch(fetchAllEmployees({ 
+      page: 1, 
       limit: recordsPerPage,
-      status: activeFilter,
+      jobType: activeFilter !== "All" ? activeFilter : undefined // ← أضف الفلتر
     }));
   }
-}, [dispatch, tableDate, recordsPerPage, activeFilter, searchQuery]);
-
-  const columns = [
-    {
-      header: "Employee",
-      accessor: "firstName",
-      render: (row) => {
-        const fullName = `${row.employee?.firstName || ""} ${row.employee?.lastName || ""}`;
-        return (
-          <div className="flex items-center gap-3">
-            <img
-              src={row.employee?.avatar || getAvatarUrl(fullName)}
-              alt={fullName}
-              className="w-10 h-10 rounded-full"
-            />
-            <div>
-              <p className="text-sm font-medium text-slate-100">{fullName}</p>
-              <p className="text-xs text-slate-500">{row.employeeId}</p>
-            </div>
-          </div>
-        );
-      },
-    },
-    { header: "Email", accessor: "email",render: (row) => row.employee?.email },
-    { header: "Date", accessor: "date" },
-    { header: "Department", accessor: "department",render: (row) => row.employee?.department },
-    { header: "Type", accessor: "jobType", render: (row) => row.employee?.jobType }, // ✅ كانت employmentType (غلط)
-    {
-      header: "Attendance",
-      accessor: "status",
-      render: (row) => <AttendanceBadge status={row.status} />,
-    },
-    {
-      header: "Action",
-      accessor: "action",
-      render: (row) => (
-        <div className="relative">
-          <button
-            onClick={() =>
-              setOpenMenuId(openMenuId === row._id ? null : row._id)
-            }
-            className="p-2 text-slate-400 hover:text-slate-200"
-          >
-            <EditIcon />
-          </button>
-          <RowActionMenu
-            isOpen={openMenuId === row._id}
-            onClose={() => setOpenMenuId(null)}
-            actions={[
-              {
-                label: "See Details",
-                icon: Eye,
-                onClick: () => navigate(`/employee/${row.employeeId}`),
-              },
-              {
-                label: "Delete",
-                variant: "danger",
-                icon: Trash2,
-                onClick: () => console.log("Delete", row._id),
-              },
-            ]}
-          />
-        </div>
-      ),
-    },
-  ];
-
-  // ✅ handlePageChange بدون double dispatch
-  const handlePageChange = (newPage) => {
-    dispatch(
-      fetchAttendance({
-        date: tableDate,
-        page: newPage,
-        limit: recordsPerPage,
-        status: activeFilter,
-      })
+}, [dispatch, recordsPerPage, searchQuery, activeFilter]);
+ if (loading && !employeesList) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <i className="fas fa-spinner fa-spin text-4xl text-blue-500"></i>
+      </div>
     );
-  };
+  }
+  const columns = [
+  {
+    header: "Employee",
+    accessor: "general.firstName",
+    render: (row) => {
+      const fullName = `${row.general?.firstName || ""} ${row.general?.lastName || ""}`;
+      return (
+        <div className="flex items-center gap-3">
+          <img
+            src={row.general?.avatar?.startsWith('http') ? row.general.avatar : getAvatarUrl(fullName)}
+            alt={fullName}
+            className="w-10 h-10 rounded-full object-cover"
+          />
+          <div>
+            <p className="text-sm font-medium text-slate-100">{fullName}</p>
+            <p className="text-xs text-slate-500">{row._id.slice(-6)}</p>
+          </div>
+        </div>
+      );
+    },
+  },
+  { 
+    header: "Email", 
+    accessor: "general.email",
+    render: (row) => row.general?.email 
+  },
+  { 
+    header: "Department", 
+    accessor: "employee.department",
+    render: (row) => row.employee?.department 
+  },
+  { 
+    header: "Job Title", 
+    accessor: "employee.jobTitle",
+    render: (row) => row.employee?.jobTitle 
+  },
+  { 
+    header: "Job Type", 
+    accessor: "employee.jobType",
+    render: (row) => <AttendanceBadge status={row.employee?.jobType} />,
+  },
+  {
+    header: "Action",
+    accessor: "action",
+    render: (row) => (
+      <div className="relative">
+        <button
+          onClick={() => setOpenMenuId(openMenuId === row._id ? null : row._id)}
+          className="p-2 text-slate-400 hover:text-slate-200"
+        >
+          <EditIcon />
+        </button>
+        <RowActionMenu
+          isOpen={openMenuId === row._id}
+          onClose={() => setOpenMenuId(null)}
+          actions={[
+            {
+              label: "See Details",
+              icon: Eye,
+              onClick: () => navigate(`/employee/${row._id}`),
+            },
+            {
+              label: "Delete",
+              variant: "danger",
+              icon: Trash2,
+              onClick: () => setConfirmModal({ open: true, userId: row._id }),
+            },
+          ]}
+        />
+      </div>
+    ),
+  },
+];
 
-  const handleRecordsPerPageChange = (newLimit) => {
-    setRecordsPerPage(newLimit); // ✅ الـ useEffect هيحس بالتغيير ويعمل fetch تلقائي
+const handlePageChange = (newPage) => {
+    dispatch(fetchAllEmployees({ page: newPage, limit: recordsPerPage }));
   };
+ 
+const filteredEmployees = activeFilter === "All"
+  ? employeesList
+  : employeesList.filter(
+      (emp) => emp.employee?.jobType === activeFilter
+    );
 
   return (
     <BaseCard padding="p-0">
-      {/* ✅ Date Picker خاص بالجدول بس */}
-      <div className="px-6 pt-4">
-        <input
-          type="date"
-          value={tableDate}
-          onChange={(e) => setTableDate(e.target.value)}
-          className="px-3 py-2 bg-slate-700/50 border border-slate-600/50 rounded-xl text-slate-200 focus:outline-none focus:border-cyan-500/50"
-        />
-        {/* زرار Clear لو حبت ترجعي لكل الداتا */}
-        {tableDate && (
-          <button
-            onClick={() => setTableDate("")}
-            className="ml-2 text-sm text-slate-400 hover:text-slate-200"
-          >
-            Clear
-          </button>
-        )}
-      </div>
-      <TableControls
-        searchTerm={searchQuery}
-        setSearchTerm={setSearchQuery}
-        filterValue={activeFilter}
-        setFilterValue={setActiveFilter} // ✅ الـ useEffect هيحس بالتغيير
-        filterOptions={["All", "On Time", "Late", "Absent"]}
-        setCurrentPage={() => {}} // مش محتاجينها هنا
-      />
+       {/* Confirm Delete Modal */}
+    {confirmModal.open && (
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+        <div className="bg-gradient-to-br from-[#1e2a3a] to-[#162231]  border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+          
+          {/* Icon */}
+          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-500/15 mx-auto mb-4">
+            <Trash2 size={22} className="text-pink-400 hover:bg-pink-400/10" />
+          </div>
 
+          {/* Text */}
+          <h3 className="text-white text-center font-semibold text-lg mb-1">
+            Delete Employee
+          </h3>
+          <p className="text-slate-400 text-center text-sm mb-6">
+            Are you sure you want to delete this employee? This action cannot be undone.
+          </p>
+
+          {/* Buttons */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => setConfirmModal({ open: false, userId: null })}
+              className="flex-1 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-medium transition-all"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleDelete}
+              className="flex-1 py-2.5 rounded-xl bg-pink-400/12 text-pink-400 hover:bg-pink-400/10  text-sm font-medium transition-all"
+            >
+              Delete
+            </button>
+          </div>
+
+        </div>
+      </div>
+    )}
       <div className={loading ? "opacity-50 pointer-events-none" : ""}>
-        {/* ✅ DataTable تستخدم _id كـ key */}
-        <DataTable columns={columns} data={attendanceList} />
+        <TableControls
+  searchTerm={searchQuery}
+  setSearchTerm={setSearchQuery}
+  filterValue={activeFilter}
+  setFilterValue={(filter) => {
+    setActiveFilter(filter);
+    // لو فيه بحث مش هنعمل fetch هنا، الـ useEffect هيتكفل
+  }}
+  filterOptions={["All", "Full-time", "Part-time", "Contract","Internship"]}
+  setCurrentPage={() => {}} // ← خليها فاضية، الـ useEffect هيشتغل
+/>
+        {/* عرض مصفوفة الموظفين */}
+        <DataTable columns={columns} data={filteredEmployees|| []} />
       </div>
 
-<Pagination
-  pagination={pagination}
-  handlePageChange={handlePageChange}
-  handleRecordsPerPageChange={handleRecordsPerPageChange}
-  currentDataLength={attendanceList.length}
-/>
+      <Pagination
+        pagination={pagination}
+        handlePageChange={handlePageChange}
+        handleRecordsPerPageChange={(newLimit) => setRecordsPerPage(newLimit)}
+        currentDataLength={filteredEmployees.length}
+      />
     </BaseCard>
   );
 };
-
 export default EmployeesTable;
+

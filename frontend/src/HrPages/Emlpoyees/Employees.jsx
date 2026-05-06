@@ -10,7 +10,7 @@ import AttendanceReport from "../../HrComponents/DashboardComponents/AttendanceR
 
 const Employees = () => {
   const dispatch = useDispatch();
-  const { chartData, totals, selectedDate, pagination } = useSelector(
+  const { chartData, totals, selectedDate, pagination,loading } = useSelector(
     (state) => state.attendance,
   );
 
@@ -19,35 +19,23 @@ const Employees = () => {
     chartData,
   };
 
-  // useEffect(() => {
-  //   if (selectedDate) {
-  //     const dateObj = new Date(selectedDate);
-  //     const month = dateObj.getMonth() + 1;
-  //     const year = dateObj.getFullYear();
-
-  //     // 1. طلب بيانات الجدول (مع القيم الافتراضية)
-  //     dispatch(fetchAttendance({ 
-  //       date: selectedDate, 
-  //       page: 1, 
-  //       limit: 5, 
-  //       status: "All" 
-  //     }));
-
-  //     // 2. طلب بيانات الشارت
-  //     dispatch(fetchMonthlyAttendance({ month, year }));
-  //   }
-  // }, [selectedDate, dispatch]);
   useEffect(() => {
   if (selectedDate) {
     const dateObj = new Date(selectedDate);
     const month = dateObj.getMonth() + 1;
     const year = dateObj.getFullYear();
 
-    // ✅ شيلي fetchAttendance من هنا — EmployeesTable هتعملها بنفسها
+    
     dispatch(fetchMonthlyAttendance({ month, year }));
   }
 }, [selectedDate, dispatch]);
-
+if (loading ) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <i className="fas fa-spinner fa-spin text-4xl text-blue-500"></i>
+      </div>
+    );
+  }
   return (
     <div className="max-w-[1650px] mx-auto p-4 bg-transparent">
       <div className="space-y-3">
@@ -62,7 +50,7 @@ const Employees = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-3">
           <div className="lg:col-span-2">
-            {/* 🛡️ شلنا الـ Props لأن الجدول هيسحب بياناته بنفسه من الـ Redux */}
+            
             <EmployeesTable /> 
           </div>
 

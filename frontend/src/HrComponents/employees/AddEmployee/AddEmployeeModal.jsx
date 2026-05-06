@@ -99,7 +99,7 @@ const handleSubmit = async () => {
   try {
     const fd = new FormData();
 
-    // 1️⃣ General fields
+    //General fields
     fd.append("general[firstName]", formData.general.firstName);
     fd.append("general[lastName]", formData.general.lastName);
     fd.append("general[email]", formData.general.email);
@@ -109,7 +109,7 @@ const handleSubmit = async () => {
     fd.append("general[rfidTag]", formData.general.rfidTag);
     fd.append("general[role]", formData.general.role);
 
-    // الصورة لو موجودة
+    
     if (formData.general.image instanceof File) {
     console.log("Image type:", typeof formData.general.image);
     console.log("Is File?:", formData.general.image instanceof File);
@@ -117,7 +117,7 @@ const handleSubmit = async () => {
     fd.append("general[avatar]", formData.general.image);
     }
 
-    // 2️⃣ Experience fields
+    // Experience fields
     fd.append("experience[company]", formData.experience.company);
     fd.append("experience[position]", formData.experience.position);
     fd.append("experience[jobType]", formData.experience.jobType);
@@ -125,7 +125,7 @@ const handleSubmit = async () => {
     fd.append("experience[startDate]", formData.experience.startDate);
     fd.append("experience[endDate]", formData.experience.endDate);
 
-    // 3️⃣ Employee fields
+    // Employee fields
     fd.append("employee[jobTitle]", formData.employee.jobTitle);
     fd.append("employee[department]", formData.employee.department);
     fd.append("employee[workLocation]", formData.employee.workLocation);
