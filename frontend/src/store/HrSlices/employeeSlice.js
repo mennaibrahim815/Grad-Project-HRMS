@@ -66,7 +66,7 @@ export const fetchEmployeeSummary = createAsyncThunk(
   "employees/fetchSummary",
   async (id, { rejectWithValue }) => {
     try {
-      // ✅ المسار الصحيح: /api/employees/:id
+    
       const response = await axios.get(`/employees/${id}/summary`);
       return response.data;
     } catch (err) {
@@ -108,6 +108,7 @@ const employeeSlice = createSlice({
       currentPage: 1,
       totalPages: 1,
       totalRecords: 0,
+      limit: 5,
     },
     searchResults: [],
     employeeDetail: null,
@@ -148,6 +149,7 @@ const employeeSlice = createSlice({
       currentPage: pagination.currentPage ?? pagination.page ?? 1,
       totalPages: pagination.totalPages ?? pagination.pages ?? 1,
       totalRecords: pagination.totalRecords ?? pagination.total ?? 0,
+      limit: pagination.limit ?? 5,
     };
   }
 })
@@ -182,7 +184,7 @@ const employeeSlice = createSlice({
         state.error = action.payload;
         state.searchResults = [];
       })
-      // داخل extraReducers أضيفي الحالات التالية:
+     
 
 .addCase(searchEmployeesByName.pending, (state) => {
   state.loading = true;
@@ -226,17 +228,17 @@ const employeeSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      // لما التحديث ينجح
+    
       .addCase(updateEmployee.fulfilled, (state, action) => {
   state.loading = false;
-  const updatedUser = action.payload.data.user; // ← data.user مش payload مباشرة
+  const updatedUser = action.payload.data.user; 
   
-  // تحديث الـ employeeDetail لو هو نفس الشخص
+
   if (state.employeeDetail?._id === updatedUser._id) {
     state.employeeDetail = updatedUser;
   }
 
-  // تحديث الـ employeesList لو موجود فيها
+  
   const index = state.employeesList.findIndex(emp => emp._id === updatedUser._id);
   if (index !== -1) {
     state.employeesList[index] = updatedUser;

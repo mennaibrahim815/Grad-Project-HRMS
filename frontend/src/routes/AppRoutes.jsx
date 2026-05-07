@@ -13,7 +13,8 @@ import Dashboard from "../HrPages/Dashboard/Dashboard";
 import Employees from "../HrPages/Emlpoyees/Employees";
 import EmployeeDetail from "../HrPages/EmployeeDetail/EmployeeDetail";
 import Project from "../HrPages/Project/Project";
-import Payroll from "../HrPages/Payroll/Payroll";
+import Payroll from "../HrPages/Payroll/PayrollDashboard/Payroll";
+import PayrollManagment from "../HrPages/Payroll/PayrollManagement/payrollManagement"
 import Hiring from "../HrPages/Hiring/Hiring";
 import Attendance from "../HrPages/Attendance/Attendance";
 import Performance from "../HrPages/Performance/Performance";
@@ -43,7 +44,8 @@ export const router = createBrowserRouter(
         { path: "/dashboard", element: <Dashboard /> },
         { path: "/employees", element: <Employees /> },
         { path: "/project", element: <Project /> },
-        { path: "/payroll", element: <Payroll /> },
+        { path: "/payroll/dashboard", element: <Payroll /> },
+        { path: "/payroll/management", element: <PayrollManagment/> },
         { path: "/hiring", element: <Hiring /> },
         { path: "/attendance", element: <Attendance /> },
         { path: "/leave-requests", element: <LeaveRequests /> },

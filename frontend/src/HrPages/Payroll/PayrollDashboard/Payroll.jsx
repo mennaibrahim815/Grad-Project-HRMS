@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPayrollSummary } from "../../store/HrSlices/payroll/payrollSlice";
+import { fetchPayrollSummary } from "../../../store/HrSlices/payroll/payrollSlice";
 // import { fetchPayrollSummary, fetchMonthlyStats, fetchPayrollEmployees } from "../../redux/HrSlices/payrollSlice";
 //components
-import PayrollHeader from "../../components/PayrollComponents/PayrollHeader/PayrollHeader";
-import StatsCards from "../../components/PayrollComponents/StatsCards/StatsCards";
-import PayrollTable from "../../components/PayrollComponents/PayrollTable/PayrollTable";
-import EmployeeStatus from "../../HrComponents/DashboardComponents/EmployeeStatus";
+import PayrollHeader from "../../../HRComponents/PayrollComponents/PayrollDashboard/PayrollHeader/PayrollHeader";
+import StatsCards from "../../../HRComponents/PayrollComponents/PayrollDashboard/StatsCards/StatsCards";
+import PayrollTable from "../../../HRComponents/PayrollComponents/PayrollDashboard/PayrollTable/PayrollTable";
+import EmployeeStatus from "../../../HrComponents/DashboardComponents/EmployeeStatus";
 
 export default function Payroll() {
   const dispatch = useDispatch();
