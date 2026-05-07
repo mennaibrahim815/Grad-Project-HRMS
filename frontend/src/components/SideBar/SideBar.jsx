@@ -83,7 +83,7 @@ const Sidebar = () => {
       {/* Menu */}
       <div className="flex-1 px-3 space-y-2 overflow-y-auto">
         <p className="text-[10px] text-gray-600 font-black uppercase mb-4 ml-3 tracking-widest">
-          {isCollapsed ? "•••" : "Main Menu"}
+          {/* {isCollapsed ? "•••" : "Main Menu"} */}
         </p>
 
         {menuItems.map((item) => (
