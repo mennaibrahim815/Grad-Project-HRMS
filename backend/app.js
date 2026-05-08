@@ -81,7 +81,7 @@ const io = new Server(server, {
 
 app.set("io", io);
 
-io.use(socketAuthMiddleware);
+// io.use(socketAuthMiddleware);npm install socket.io-client
 
 io.on("connection", (socket) => {
     console.log("client connected via socket io: " + socket.id);
