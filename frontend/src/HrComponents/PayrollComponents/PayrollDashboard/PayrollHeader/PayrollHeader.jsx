@@ -1,16 +1,15 @@
 import ReusableCalendar from "../../../../components/UI/ReusableCalendar";
-import { setPayrollRange } from "../../../../store/HrSlices/payroll/payrollSlice";
+import { setPayrollMonth } from "../../../../store/HrSlices/payroll/payrollSlice";
 import { useSelector, useDispatch } from "react-redux";
+import { useEffect } from "react";
 
 function PayrollHeader() {
   const dispatch = useDispatch();
-  const dateRange = useSelector((state) => state.payroll.selectedRange);
-  const handleDateSave = (newRange) => {
-    if (newRange.start && newRange.end) {
-      // تأكدي إنه اختار التاريخين
-      dispatch(setPayrollRange(newRange));
-    }
-  };
+  const { analytics, selectedMonth, loading } = useSelector((state) => state.payroll);
+  const handleMonthSave = (newMonth) => {
+  dispatch(setPayrollMonth(newMonth));
+};
+
   return (
     <div className="flex justify-between items-center mb-4 bg-transparent p-4 rounded-2xl">
       {/* Title */}
@@ -18,9 +17,9 @@ function PayrollHeader() {
       <div className="flex items-center gap-3 relative">
         {/* Calender button */}
         <ReusableCalendar
-          mode="range"
-          value={dateRange}
-          onSave={handleDateSave}
+          mode="month"
+          value={selectedMonth}
+          onSave={handleMonthSave}
         />
       </div>
     </div>

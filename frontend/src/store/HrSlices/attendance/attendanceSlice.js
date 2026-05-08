@@ -113,10 +113,10 @@ const attendanceSlice = createSlice({
       })
       .addCase(fetchAttendance.fulfilled, (state, action) => {
        state.loading = false;
-       // الباك إيند بيبعت الداتا جوه action.payload.data
+       
        const { attendance, pagination } = action.payload.data;
-       state.attendanceList = attendance || []; // مصفوفة الموظفين
-       state.pagination = pagination || initialState.pagination; // بيانات الترقيم
+       state.attendanceList = attendance || []; 
+       state.pagination = pagination || initialState.pagination; 
       })
       .addCase(fetchAttendance.rejected, (state, action) => {
         state.loading = false;

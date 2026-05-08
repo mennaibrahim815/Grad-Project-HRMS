@@ -7,6 +7,7 @@ import DashboardHeader from "../../HrComponents/DashboardComponents/DashboardHea
 import StatsCards from "../../HrComponents/DashboardComponents/StatsCards";
 import AttendanceReport from "../../HrComponents/DashboardComponents/AttendanceReport";
 import EmployeeStatus from "../../HrComponents/DashboardComponents/EmployeeStatus";
+// import StatusPieChart from "../../HrComponents/StatusPieChart/StatusPieChart";
 import JobApplicants from "../../HrComponents/DashboardComponents/JobApplicants";
 import TaskSummary from "../../HrComponents/DashboardComponents/TaskSummary";
 
@@ -33,6 +34,30 @@ const Dashboard = () => {
       </div>
     );
   }
+// const employeeRaw = analytics?.employeeStatus;
+// const employeeChartData = [
+//     {
+//       name: "Full Time",
+//       value: employeeRaw.fullTimePercentage || 0,
+//       color: "#3b82f6",
+//     },
+//     {
+//       name: "Part Time",
+//       value: employeeRaw.partTimePercentage || 0,
+//       color: "#4b5563",
+//     },
+//     {
+//       name: "Internship",
+//       value: employeeRaw.internshipPercentage || 0,
+//       color: "#10b981",
+//     },
+//     {
+//       name: "Contract",
+//       value: employeeRaw.contractPercentage || 0,
+//       color: "#ef4444",
+//     },
+//   ];
+
 
   return (
     <div
@@ -58,6 +83,11 @@ const Dashboard = () => {
               title="Employee status"
               pieStripes="Part-time" 
             />
+            {/* <StatusPieChart 
+  title="Employee Status" 
+  data={employeeChartData} 
+  totalCount={employeeRaw?.totalEmployee} 
+/> */}
             <JobApplicants applicants={analytics?.recentApplicants} />
           </div>
         </div>

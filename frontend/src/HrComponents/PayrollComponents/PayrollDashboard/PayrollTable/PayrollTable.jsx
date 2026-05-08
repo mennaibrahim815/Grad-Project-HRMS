@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useState,useEffect} from 'react';
+import { fetchAllPayrolls, searchPayrolls, setPayrollMonth } from "../../../../store/HrSlices/payroll/payrollSlice";
+import { useDispatch, useSelector } from 'react-redux'
 //Components
 import DataTable from "../../../../components/table/DataTable";
 import Pagination from "../../../../components/table/Pagination";
 import TableControls from "../../../../components/table/TableControls";
-import useTableController from "../../../../hooks/useTableController";
 import RowActionMenu from "../../../../components/UI/RowActionMenu";
 import BaseCard from "../../../../components/UI/Card";
 import { Eye, Trash2 } from "lucide-react";
@@ -23,7 +24,7 @@ const AttendanceBadge = ({ status }) => {
     case 'Pending':
     return 'bg-sky-500/15 text-sky-400 border-sky-400/40'
 
-   case 'Unpaid':
+   case 'Draft,':
    return 'bg-slate-500/20 text-slate-400 border-slate-400/40'
 
 
@@ -43,149 +44,167 @@ const AttendanceBadge = ({ status }) => {
     </span>
   )
 }
-//Mock Data
-const data=[
-    {
-      "id": "ID00021290",
-      "name": "Ryan Henry",
-      "start_date": "2025-02-01",
-      "end_date": "2025-03-02",
-      "status": "Paid",
-      "Total_days":"30",
-      "Total_hours":"132h 39m",
-      "department":"SMM"
-    },
-    {
-      "id": "ID00021291",
-      "name": "Isabella Chloe",
-      "start_date": "2025-02-01",
-      "end_date": "2025-03-02",
-      "status": "Pending",
-      "Total_days":"30",
-      "Total_hours":"127h 39m",
-      "department":"Developer"
-    },
-    {
-      "id": "ID00021294",
-      "name": "Bessie Cooper",
-      "start_date": "2025-02-01",
-      "end_date": "2025-03-02",
-      "status": "Unpaid",
-      "Total_days":"28",
-      "Total_hours":"132h 39m",
-      "department":"Marketing"
-    },
-    {
-      "id": "ID000266010",
-      "name": "Robert Fox",
-      "start_date": "2025-02-01",
-      "end_date": "2025-03-02",
-      "status": "Paid",
-      "Total_days":"29",
-      "Total_hours":"132h 39m",
-      "department":"Design"
-    },
-  ]
+
 function PayrollTable() {
   const [openMenuId, setOpenMenuId] = useState(null);
   const columns = [
   {
     header: "Employee",
-    accessor: "name",
-    render: (row) => (
-      <div className="flex items-center gap-3">
-        <img
-          src={row.image || getAvatarUrl(row.name)}
-          alt={row.name}
-          className="w-10 h-10 rounded-full"
-        />
-        <div>
-          <p className="text-sm font-medium text-slate-100">
-            {row.name}
-          </p>
-          <p className="text-xs text-slate-500">
-            {row.id}
-          </p>
+    accessor: "employee.firstName",
+    render: (row) => {
+      const fullName = `${row.employee?.firstName || ""} ${row.employee?.lastName || ""}`;
+      return (
+        <div className="flex items-center gap-3">
+          <img
+            src={row.employee?.avatar || getAvatarUrl(fullName)}
+            alt={fullName}
+            className="w-10 h-10 rounded-full object-cover"
+          />
+          <div>
+            <p className="text-sm font-medium text-slate-100">{fullName}</p>
+            <p className="text-xs text-slate-500">{row._id?.slice(-6)}</p>
+          </div>
         </div>
-      </div>
-    ),
+      );
+    },
   },
-  { header: "Department", accessor: "department" },
-  { header: "Start date", accessor: "start_date" },
-  { header: "End date", accessor: "end_date" },
-  { header: "Total days", accessor: "Total_days" },
-  { header: "Total hours", accessor: "Total_hours" },
-
+  { 
+    header: "Department", 
+    accessor: "employee.department",
+    render: (row) => row.employee?.department
+  },
+  { 
+    header: "Period", 
+    accessor: "month",
+    render: (row) => {
+      // دمج month و year مع بعض
+      const date = new Date(row.year, row.month - 1);
+      return date.toLocaleString("en-US", { month: "long", year: "numeric" });
+      
+    }
+  },
+  { 
+    header: "Base Salary", 
+    accessor: "baseSalary",
+    render: (row) => `$${row.baseSalary?.toLocaleString()}`
+  },
+  { 
+    header: "Deductions", 
+    accessor: "deductions",
+    render: (row) => `$${row.deductions?.toLocaleString()}`
+  },
+  { 
+    header: "Net Salary", 
+    accessor: "netSalary",
+    render: (row) => `$${row.netSalary?.toLocaleString()}`
+  },
+  { 
+    header: "Days Present", 
+    accessor: "daysPresent",
+    render: (row) => (
+      <span className="text-emerald-400">{row.daysPresent} days</span>
+    )
+  },
   {
     header: "Status",
     accessor: "status",
     render: (row) => <AttendanceBadge status={row.status} />,
   },
-
   {
     header: "Action",
     accessor: "action",
     render: (row) => (
       <div className="relative">
         <button
-          onClick={() =>
-            setOpenMenuId(openMenuId === row.id ? null : row.id)
-          }
+          onClick={() => setOpenMenuId(openMenuId === row._id ? null : row._id)}
           className="p-2 text-slate-400 hover:text-slate-200"
         >
           <EditIcon />
         </button>
-
         <RowActionMenu
-          isOpen={openMenuId === row.id}
+          isOpen={openMenuId === row._id}
           onClose={() => setOpenMenuId(null)}
           actions={[
             {
               label: "See Details",
               icon: Eye,
-              onClick: () => handleDetails(row.id),
+              onClick: () => console.log("Details", row._id),
             },
-            {
-              label: "Delete",
-              variant: "danger",
-              icon: Trash2,
-              onClick: () => console.log("Delete", row.id),
-            },
+            // {
+            //   label: "Delete",
+            //   variant: "danger",
+            //   icon: Trash2,
+            //   onClick: () => console.log("Delete", row._id),
+            // },
           ]}
         />
       </div>
     ),
   },
 ];
-const {
-  currentData,
-  searchQuery,
-  setSearchQuery,
-  activeFilter,
-  setActiveFilter,
-  recordsPerPage,
-  setRecordsPerPage,
-  currentPage,
-  setCurrentPage,
-  totalRecords,
-  totalPages
-  
-} = useTableController({
-  data: data,
-  searchKeys: ["name","department"],
-  filterKey: "status",
-  
-})
-const handlePageChange = (page) => {
-  if (page >= 1 && page <= totalPages) {
-    setCurrentPage(page)
-  }
-}
+  const dispatch = useDispatch();
+  const { payrollList, pagination, tableLoading, selectedMonth } = useSelector((state) => state.payroll);
 
-const handleRecordsPerPageChange = (value) => {
-  setRecordsPerPage(value)
-  setCurrentPage(1)
-}
+  const [searchQuery, setSearchQuery] = useState("");
+  const [activeFilter, setActiveFilter] = useState("All");
+  const [recordsPerPage, setRecordsPerPage] = useState(10);
+
+  const getMonthYear = () => {
+    const [year, month] = selectedMonth.split("-");
+    return { month: parseInt(month), year: parseInt(year) };
+  };
+
+  useEffect(() => {
+    const { month, year } = getMonthYear();
+
+    if (searchQuery.trim()) {
+      dispatch(searchPayrolls({
+        employeeName: searchQuery,
+        month,
+        year,
+        status: activeFilter !== "All" ? activeFilter : undefined,
+        page: 1,
+        limit: recordsPerPage,
+      }));
+    } else {
+      dispatch(fetchAllPayrolls({
+        month,
+        year,
+        status: activeFilter !== "All" ? activeFilter : undefined,
+        page: 1,
+        limit: recordsPerPage,
+      }));
+    }
+  }, [dispatch, selectedMonth, searchQuery, activeFilter, recordsPerPage]);
+
+  const handlePageChange = (newPage) => {
+    const { month, year } = getMonthYear();
+    if (searchQuery.trim()) {
+      dispatch(searchPayrolls({
+        employeeName: searchQuery,
+        month,
+        year,
+        status: activeFilter !== "All" ? activeFilter : undefined,
+        page: newPage,
+        limit: recordsPerPage,
+      }));
+    } else {
+      dispatch(fetchAllPayrolls({
+        month,
+        year,
+        status: activeFilter !== "All" ? activeFilter : undefined,
+        page: newPage,
+        limit: recordsPerPage,
+      }));
+    }
+  };
+  if (tableLoading && !payrollList) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <i className="fas fa-spinner fa-spin text-4xl text-blue-500"></i>
+      </div>
+    );
+  }
   return (
       <BaseCard padding="p-0" >
        <TableControls
@@ -193,20 +212,18 @@ const handleRecordsPerPageChange = (value) => {
       setSearchTerm={setSearchQuery}
       filterValue={activeFilter}
       setFilterValue={setActiveFilter}
-      filterOptions={["All", "Paid", "Pending","Unpaid",]}
-      setCurrentPage={setCurrentPage}
+      filterOptions={["All", "Paid", "Pending", "Draft"]}
+      setCurrentPage={() => {}}
 
       />
     
-      <DataTable columns={columns} data={currentData} />
-      <Pagination 
-        currentPage={currentPage}
-        totalPages={totalPages}
+      <DataTable columns={columns}  data={payrollList || []} />
+      <Pagination
+        pagination={pagination}
         handlePageChange={handlePageChange}
+        handleRecordsPerPageChange={(newLimit) => setRecordsPerPage(newLimit)}
+        currentDataLength={payrollList.length}
         recordsPerPage={recordsPerPage}
-        handleRecordsPerPageChange={handleRecordsPerPageChange}
-        totalRecords={totalRecords}
-        currentDataLength={currentData.length}
       />
     </BaseCard>
   );

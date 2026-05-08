@@ -1,31 +1,32 @@
-  const StatsCards = ({ stats }) => {
+
+const StatsCards = ({ stats }) => {
 
     
      const cards = [
        {
-         title: "Payroll cost",
-         value: stats?.payroll_cost?.value,
-         change: stats?.payroll_cost?.percentage,
-         up:stats?.payroll_cost?.status ,
+         title: "Total Net Salaries",
+         value: stats?.totalNetSalaries?.value,
+         change: stats?.totalNetSalaries?.changePercentage,
+         up:stats?.totalNetSalaries?.isIncrease ,
          
        },
        {
-         title: "Total expense",
-         value: stats?.total_expense?.value,
-         change: stats?.total_expense?.percentage,
-         up:stats?.total_expense?.status ,
+         title: "Total Deductions",
+         value: stats?.totalDeductions?.value,
+         change: stats?.totalDeductions?.changePercentage,
+         up:stats?.totalDeductions?.isIncrease ,
        },
        {
          title: "Pending payments",
-         value: stats?.pending_payments?.value,
-         change: stats?.pending_payments?.percentage,
-         up:stats?.pending_payments?.status ,
+         value: stats?.pendingPayments?.value,
+         change: stats?.pendingPayments?.changePercentage,
+         up:stats?.pendingPayments?.isIncrease ,
        },
        {
-         title:"Total income",
-         value: stats?.total_income?.value,
-         change: stats?.total_income?.percentage,
-         up:stats?.total_income?.status ,
+         title:"Paid Amount",
+         value: stats?.paidAmount?.value,
+         change: stats?.paidAmount?.changePercentage,
+         up:stats?.paidAmount?.isIncrease ,
        },
      ];
      return (
