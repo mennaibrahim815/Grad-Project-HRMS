@@ -11,7 +11,7 @@ import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
 import http from "http";
-import Server from "socket.io";
+import { Server } from "socket.io";
 
 import usersRoutes from "./routes/users.routes.js";
 import authRoutes from "./routes/auth.routes.js";
@@ -79,7 +79,7 @@ const io = new Server(server, {
 
 app.set("io", io);
 
-io.set(socketAuthMiddleware);
+io.use(socketAuthMiddleware);
 
 io.on("connection", (socket) => {
     console.log("client connected via socket io: " + socket.id);
