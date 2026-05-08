@@ -240,7 +240,9 @@ export const getApplicantsByStatus = asyncWraper(async (req, res, next) => {
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit)
-        .select("firstName lastName avatar status experience.position");
+        .select(
+            "personalInfo.firstName personalInfo.lastName personalInfo.avatar personalInfo.department status"
+        );
 
     res.status(200).json({
         status: httpResponseText.SUCCESS,
