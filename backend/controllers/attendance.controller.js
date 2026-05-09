@@ -289,7 +289,7 @@ export const checkIn = asyncWraper(async (req, res, next) => {
         status: httpResponseText.SUCCESS,
         data: {
             firstName: user.general.firstName,
-            lastName: user.general.lastName,
+            status: newAttendance.status,
             newAttendance,
         },
     });
