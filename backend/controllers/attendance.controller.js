@@ -287,7 +287,11 @@ export const checkIn = asyncWraper(async (req, res, next) => {
     io.emit("new_checkin", socketData);
     res.status(200).json({
         status: httpResponseText.SUCCESS,
-        data: { newAttendance },
+        data: {
+            firstName: user.general.firstName,
+            lastName: user.general.lastName,
+            newAttendance,
+        },
     });
 });
 

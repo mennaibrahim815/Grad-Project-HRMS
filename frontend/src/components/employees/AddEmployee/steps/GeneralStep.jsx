@@ -2,51 +2,60 @@ const GeneralStep = ({ data, onChange }) => {
   const handleChange = (field, value) => {
     onChange(field, value);
   };
+     const handleFileChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    handleChange('photoPreview', URL.createObjectURL(file));
+    handleChange('image', file);
+  }
+};
 
   return (
   <div className="space-y-4">
 
-    {/* Photo */}
-    <div className="flex items-center gap-4">
-      {data.photo ? (
-        <img
-          src={data.photo}
-          alt="employee"
-          className="h-16 w-16 rounded-full object-cover border border-white/10"
-        />
-      ) : (
-        <div className="h-16 w-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 text-xs">
-          No Photo
-        </div>
-      )}
 
-      <div className="text-sm">
-        <label className="cursor-pointer text-blue-500 hover:text-blue-400 transition">
-          Change photo
-          <input
-            type="file"
-            hidden
-            accept="image/*"
-            onChange={(e) =>
-              handleChange('photo', URL.createObjectURL(e.target.files[0]))
-            }
-          />
-        </label>
-
-        <span className="mx-2 text-gray-500">|</span>
-
-        <button
-          onClick={() => handleChange('photo', '')}
-          className="text-pink-500 hover:text-pink-400 transition"
-        >
-          Delete
-        </button>
-
-        <p className="mt-1 text-xs text-gray-400">
-          Maximum photo size of 2mb.
-        </p>
-      </div>
+// في الـ JSX
+<div className="flex items-center gap-4">
+  {data.photoPreview ? (
+    <img
+      src={data.photoPreview}
+      alt="employee"
+      className="h-16 w-16 rounded-full object-cover border border-white/10"
+    />
+  ) : (
+    <div className="h-16 w-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 text-xs">
+      No Photo
     </div>
+  )}
+
+  <div className="text-sm">
+    <label className="cursor-pointer text-blue-500 hover:text-blue-400 transition">
+      Change photo
+      <input
+        type="file"
+        hidden
+        accept="image/*"
+        onChange={handleFileChange}
+      />
+    </label>
+
+    <span className="mx-2 text-gray-500">|</span>
+
+    <button
+      onClick={() => {
+        handleChange('photoPreview', '');
+        handleChange('image', '');
+      }}
+      className="text-pink-500 hover:text-pink-400 transition"
+    >
+      Delete
+    </button>
+
+    <p className="mt-1 text-xs text-gray-400">
+      Maximum photo size of 2mb.
+    </p>
+  </div>
+</div>
 
     {/* Name */}
     <div>

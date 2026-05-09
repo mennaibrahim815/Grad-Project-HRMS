@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import {
   executeSearch,
   clearSearch,
-} from "../../store/slices/navbar/searchSlice";
+} from "../../store/HrSlices/navbar/searchSlice";
 import defaultAvatar from "../../assets/avatars/avatar-default-symbolic-svgrepo-com.svg";
 
 const SearchModal = ({ isOpen, onClose, searchRef }) => {

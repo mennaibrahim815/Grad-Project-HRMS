@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-import { logout } from "../../store/slices/auth/loginSlice";
-import { fetchMyHRProfile } from "../../store/slices/navbar/hrProfileSlice";
+// import { logout } from "../../store/HrSlices/auth/loginSlice";
+import { fetchMyHRProfile } from "../../store/HrSlices/navbar/hrProfileSlice";
 
 import defaultAvatar from "../../assets/avatars/avatar-default-symbolic-svgrepo-com.svg";
 
@@ -24,13 +24,18 @@ const ProfileDropdown = ({ isOpen, setIsOpen, profileRef }) => {
   const displayUser = hrProfile || authUser;
 
   const handleLogout = () => {
-    dispatch(logout());
+    // dispatch(logout());
     navigate("/login");
     setIsOpen(false);
   };
 
+  // const goToProfile = () => {
+  //   navigate("/profile");
+  //   setIsOpen(false);
+  // };
   const goToProfile = () => {
-    navigate("/profile");
+    // بنقول له روح لصفحة السيتنج وخد معاك معلومة إننا عاوزين نفتح تاب الأكونت
+    navigate("/settings", { state: { activeTab: "account" } });
     setIsOpen(false);
   };
 

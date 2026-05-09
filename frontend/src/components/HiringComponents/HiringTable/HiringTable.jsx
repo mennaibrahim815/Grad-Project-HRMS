@@ -1,24 +1,21 @@
 import { useDispatch } from "react-redux";
-import { fetchEmployeeSummary} from "../../../store/slices/employeeSlice";
+import { fetchEmployeeSummary } from "../../../store/HrSlices/employeeSlice";
 import { useNavigate } from "react-router-dom";
 
-
-
-import DataTable from '../../table/DataTable';
-import TableControls from '../../table/TableControls';
-import Pagination from '../../table/Pagination';
+import DataTable from "../../table/DataTable";
+import TableControls from "../../table/TableControls";
+import Pagination from "../../table/Pagination";
 import EditIcon from "@mui/icons-material/Edit";
-import useTableController from '../../../hooks/useTableController';
-import RowActionMenu from '../../UI/RowActionMenu';
+import useTableController from "../../../hooks/useTableController";
+import RowActionMenu from "../../UI/RowActionMenu";
 import BaseCard from "../../UI/Card";
-import { useState } from 'react';
+import { useState } from "react";
 import { Eye, Trash2 } from "lucide-react";
 
-
 // Generate avatar URL using UI Avatars
-const getAvatarUrl = (name, background = '0D8ABC', color = 'fff') => {
-  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${background}&color=${color}&size=80&bold=true&rounded=true`
-}
+const getAvatarUrl = (name, background = "0D8ABC", color = "fff") => {
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${background}&color=${color}&size=80&bold=true&rounded=true`;
+};
 
 const AttendanceBadge = ({ status }) => {
   const getStatusStyles = () => {
