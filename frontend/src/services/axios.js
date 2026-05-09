@@ -72,34 +72,10 @@
 
 // export default instance;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "https://grad-project-hrms-production.up.railway.app/api", 
+  baseURL: "https://grad-project-hrms-production.up.railway.app/api",
   timeout: 15000,
   headers: {
     "Content-Type": "application/json",
@@ -117,7 +93,10 @@ instance.interceptors.response.use(
     // 💡 التعديل الجوهري هنا:
     // لو الطلب اللي فشل هو طلب التأكد من الجلسة (auth/me) أو (users/id)
     // نرفض الطلب بهدوء (Reject) عشان اليوزر يفضل واقف في الـ Splash وميتحولش للوجين غصب عنه
-    if (originalRequest.url.includes("/auth/me") || originalRequest.url.includes("/users/")) {
+    if (
+      originalRequest.url.includes("/auth/me") ||
+      originalRequest.url.includes("/users/")
+    ) {
       return Promise.reject(error);
     }
 
@@ -134,9 +113,11 @@ instance.interceptors.response.use(
         return instance(originalRequest);
       } catch (refreshError) {
         // 💡 تحويل للوجين فقط لو اليوزر كان جوه السيستم فعلاً (مش في الـ Splash)
-         if (window.location.pathname !== "/" && 
-            window.location.pathname !== "/login" && 
-            window.location.pathname !== "/reset-password") {
+        if (
+          window.location.pathname !== "/" &&
+          window.location.pathname !== "/login" &&
+          window.location.pathname !== "/reset-password"
+        ) {
           window.location.replace("/login");
         }
         return Promise.reject(refreshError);
@@ -144,48 +125,10 @@ instance.interceptors.response.use(
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
-
 export default instance;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import axios from "axios";
 
@@ -270,4 +213,3 @@ export default instance;
 // );
 
 // export default instance;
-
