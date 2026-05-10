@@ -71,7 +71,7 @@ export const updateValidateProjectSchema = z.object({
         .object({
             general: validateProjectSchema.shape.body.shape.general.partial().optional(),
             assignment:
-                validateProjectSchema.shape.body.shape.assignment.partial().optional,
+                validateProjectSchema.shape.body.shape.assignment.partial().optional(),
             documents: validateProjectSchema.shape.body.shape.documents.optional(),
         })
         .partial(),
