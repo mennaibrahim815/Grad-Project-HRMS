@@ -56,7 +56,7 @@ function HRApproval() {
       <img
         src={request.employee?.avatar} // ✅ nested
         alt={request.employee?.firstName}
-        className="w-11 h-11 rounded-full object-cover ring-2 ring-slate-600/50"
+        className="w-11 h-11 rounded-full object-cover ring-2 ring-slate-600/50 mb-3"
       />
       <div>
         <p className="text-white text-sm font-medium leading-tight">

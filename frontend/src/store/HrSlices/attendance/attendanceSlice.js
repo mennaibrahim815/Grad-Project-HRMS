@@ -6,15 +6,15 @@ export const fetchAttendance = createAsyncThunk(
   "attendance/fetchAttendance",
   async ({ date, page = 1, limit = 5, status = "" }, { rejectWithValue }) => {
     try {
-      // ✅ ابدأ بالـ params الأساسية بس
+      
       let url = `/attendance?page=${page}&limit=${limit}`;
 
-      // ✅ ضيف date بس لو موجودة
+     
       if (date) {
         url += `&date=${date}`;
       }
 
-      // ✅ ضيف status بس لو مش "All"
+     
       if (status && status !== "All") {
         url += `&status=${status}`;
       }
@@ -76,7 +76,7 @@ export const fetchAttendanceByEmployee = createAsyncThunk(
 
 const initialState = {
   attendanceList: [],
-  pagination: {       // ضيفي الكائن ده
+  pagination: {       
     totalRecords: 0,
     totalPages: 1,
     currentPage: 1,
@@ -113,10 +113,10 @@ const attendanceSlice = createSlice({
       })
       .addCase(fetchAttendance.fulfilled, (state, action) => {
        state.loading = false;
-       // الباك إيند بيبعت الداتا جوه action.payload.data
+       
        const { attendance, pagination } = action.payload.data;
-       state.attendanceList = attendance || []; // مصفوفة الموظفين
-       state.pagination = pagination || initialState.pagination; // بيانات الترقيم
+       state.attendanceList = attendance || []; 
+       state.pagination = pagination || initialState.pagination; 
       })
       .addCase(fetchAttendance.rejected, (state, action) => {
         state.loading = false;
@@ -173,9 +173,8 @@ const attendanceSlice = createSlice({
 })
 .addCase(fetchAttendanceByEmployee.fulfilled, (state, action) => {
   state.loading = false;
-  const { attendance, pagination } = action.payload.data;
-  state.attendanceList = attendance || [];
-  state.pagination = pagination || initialState.pagination;
+  state.attendanceList = action.payload.data.attendance || [];
+  state.pagination = action.payload.pagination || initialState.pagination; 
 })
 .addCase(fetchAttendanceByEmployee.rejected, (state, action) => {
   state.loading = false;

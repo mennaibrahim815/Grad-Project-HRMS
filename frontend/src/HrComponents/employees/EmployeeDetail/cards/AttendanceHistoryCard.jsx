@@ -23,8 +23,8 @@ const AttendanceBadge = ({ status }) => {
   );
 };
 
-const AttendanceHistoryCard = ({ employeeId }) => { // ✅ استقبلي الـ ID كـ prop
-  console.log("🟢 employeeId:", employeeId);
+const AttendanceHistoryCard = ({ employeeId }) => { 
+  
   const dispatch = useDispatch();
   const { attendanceList, pagination, selectedMonth, loading } = useSelector(
     (state) => state.attendance
@@ -33,7 +33,6 @@ const AttendanceHistoryCard = ({ employeeId }) => { // ✅ استقبلي الـ
   const [openMenuId, setOpenMenuId] = useState(null);
   const [recordsPerPage, setRecordsPerPage] = useState(5);
 
-  // ✅ استخرجي month و year من selectedMonth ("2025-03")
   const getMonthYear = () => {
     if (!selectedMonth) return {};
     const [year, month] = selectedMonth.split("-");
@@ -47,10 +46,10 @@ const AttendanceHistoryCard = ({ employeeId }) => { // ✅ استقبلي الـ
 };
 
   useEffect(() => {
-    console.log("🚀 useEffect running, employeeId:", employeeId); // ← وده
+   
     if (!employeeId) return;
     const { month, year } = getMonthYear();
-     console.log("📅 month:", month, "year:", year); // ← وده
+     
 
     dispatch(fetchAttendanceByEmployee({
       employeeId,

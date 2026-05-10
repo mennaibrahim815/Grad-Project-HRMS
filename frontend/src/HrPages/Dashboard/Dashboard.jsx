@@ -7,12 +7,9 @@ import DashboardHeader from "../../HrComponents/DashboardComponents/DashboardHea
 import StatsCards from "../../HrComponents/DashboardComponents/StatsCards";
 import AttendanceReport from "../../HrComponents/DashboardComponents/AttendanceReport";
 import EmployeeStatus from "../../HrComponents/DashboardComponents/EmployeeStatus";
+// import StatusPieChart from "../../HrComponents/StatusPieChart/StatusPieChart";
 import JobApplicants from "../../HrComponents/DashboardComponents/JobApplicants";
 import TaskSummary from "../../HrComponents/DashboardComponents/TaskSummary";
-
-
-
-
 
 // src/pages/Dashboard/Dashboard.jsx
 
@@ -27,7 +24,6 @@ const Dashboard = () => {
   useEffect(() => {
     dispatch(fetchDashboardAnalytics(selectedDate));
   }, [selectedDate, dispatch]);
-  
 
   // 💡 التعديل هنا: شيلنا شرط الـ if (error) اللي كان بيلغي الصفحة
   // وسيبنا بس اللودر في حالة إن الداتا لسه بتحمل لأول مرة خالص
@@ -38,18 +34,43 @@ const Dashboard = () => {
       </div>
     );
   }
+// const employeeRaw = analytics?.employeeStatus;
+// const employeeChartData = [
+//     {
+//       name: "Full Time",
+//       value: employeeRaw.fullTimePercentage || 0,
+//       color: "#3b82f6",
+//     },
+//     {
+//       name: "Part Time",
+//       value: employeeRaw.partTimePercentage || 0,
+//       color: "#4b5563",
+//     },
+//     {
+//       name: "Internship",
+//       value: employeeRaw.internshipPercentage || 0,
+//       color: "#10b981",
+//     },
+//     {
+//       name: "Contract",
+//       value: employeeRaw.contractPercentage || 0,
+//       color: "#ef4444",
+//     },
+//   ];
+
 
   return (
-    <div ref={dashboardRef} className="max-w-[1650px] mx-auto p-4 bg-transparent space-y-3">
+    <div
+      ref={dashboardRef}
+      className="max-w-[1650px] mx-auto p-4 bg-transparent space-y-3"
+    >
       <DashboardHeader printRef={dashboardRef} />
 
       <div className="grid grid-cols-12 gap-3">
         <div className="col-span-12 lg:col-span-8 space-y-3">
-          
-          {/* الكروت دلوقت هتظهر حتى لو السيرفر مبعتش حاجة */}
           <StatsCards stats={analytics} />
 
-           <AttendanceReport
+          <AttendanceReport
             title={"Attendance report"}
             desc={"Real-time employee attendance report"}
             data={analytics?.attendanceReport}
@@ -57,33 +78,29 @@ const Dashboard = () => {
           />
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-            {/* <EmployeeStatus data={analytics?.employeeStatus} title="Employee status" /> */}
             <EmployeeStatus
-  data={analytics?.employeeStatus}
-  title="Employee status"
-  pieStripes="Part-time" // 👈 مهم
-/>
+              data={analytics?.employeeStatus}
+              title="Employee status"
+              pieStripes="Part-time" 
+            />
+            {/* <StatusPieChart 
+  title="Employee Status" 
+  data={employeeChartData} 
+  totalCount={employeeRaw?.totalEmployee} 
+/> */}
             <JobApplicants applicants={analytics?.recentApplicants} />
           </div>
         </div>
 
         <div className="col-span-12 lg:col-span-4">
-          <TaskSummary data={analytics?.taskSummary} />
+          <TaskSummary
+            data={analytics?.projects}
+            pagination={analytics?.projectsPagination}
+          />
         </div>
       </div>
     </div>
   );
 };
 
-
 export default Dashboard;
-
-
-
-
-
-
-
-
-
-

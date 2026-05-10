@@ -1,6 +1,37 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../services/axios";
 
+
+
+export const fetchAllEmployees = createAsyncThunk(
+  "employees/fetchAll",
+  async ({ page = 1, limit = 5, jobType }, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`/users`, {
+        params: { 
+          page, 
+          limit,
+          ...(jobType && { jobType }) 
+        }
+      });
+      return response.data; 
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to fetch users");
+    }
+  }
+);
+//Fetches full profile details of a specific user
+export const fetchEmployeeById = createAsyncThunk(
+  "employees/fetchById",
+  async (id, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`/users/${id}`);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to fetch employee");
+    }
+  }
+);
 // 1. البحث في الموظفين
 export const searchEmployees = createAsyncThunk(
   "employees/search",
@@ -14,13 +45,28 @@ export const searchEmployees = createAsyncThunk(
     }
   },
 );
+// البحث المتقدم في الموظفين
+export const searchEmployeesByName = createAsyncThunk(
+  "employees/searchByName",
+  async (name, { rejectWithValue }) => {
+    try {
+      // المسار حسب الـ Documentation الخاص بكِ
+      const response = await axios.get(`/users/search`, {
+        params: { name }
+      });
+      return response.data; 
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Search failed");
+    }
+  }
+);
 
 // 2. جلب تفاصيل موظف معين
 export const fetchEmployeeSummary = createAsyncThunk(
   "employees/fetchSummary",
   async (id, { rejectWithValue }) => {
     try {
-      // ✅ المسار الصحيح: /api/employees/:id
+    
       const response = await axios.get(`/employees/${id}/summary`);
       return response.data;
     } catch (err) {
@@ -35,16 +81,21 @@ export const updateEmployee = createAsyncThunk(
   "employees/updateEmployee",
   async ({ id, updatedData }, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(
-        `/employees/${id}`,
-        updatedData
-      );
-
+      const response = await axios.patch(`/users/${id}`, updatedData); // ← /users بدل /employees
       return response.data;
     } catch (err) {
-      return rejectWithValue(
-        err.response?.data?.message || "Failed to update employee"
-      );
+      return rejectWithValue(err.response?.data?.message || "Failed to update employee");
+    }
+  }
+);
+export const deleteEmployee = createAsyncThunk(
+  "employees/delete",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await axios.delete(`/users/${userId}`);
+      return userId; // بنرجع الـ ID اللي اتمسح عشان نشيله من الـ state
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Delete failed");
     }
   }
 );
@@ -52,6 +103,13 @@ export const updateEmployee = createAsyncThunk(
 const employeeSlice = createSlice({
   name: "employees",
   initialState: {
+    employeesList: [], 
+    pagination: {
+      currentPage: 1,
+      totalPages: 1,
+      totalRecords: 0,
+      limit: 5,
+    },
     searchResults: [],
     employeeDetail: null,
     selectedEmployee: null,
@@ -72,6 +130,46 @@ const employeeSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+    // جلب كل الموظفين
+      .addCase(fetchAllEmployees.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllEmployees.fulfilled, (state, action) => {
+      console.log("API Response:", action.payload);
+  state.loading = false;
+  
+  const { users, pagination } = action.payload.data;
+  
+  state.employeesList = users || [];
+  
+  // تأكد إن أسماء الحقول مطابقة لـ API response
+  if (pagination) {
+    state.pagination = {
+      currentPage: pagination.currentPage ?? pagination.page ?? 1,
+      totalPages: pagination.totalPages ?? pagination.pages ?? 1,
+      totalRecords: pagination.totalRecords ?? pagination.total ?? 0,
+      limit: pagination.limit ?? 5,
+    };
+  }
+})
+      .addCase(fetchAllEmployees.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      //Fetches full profile details of a specific user
+      .addCase(fetchEmployeeById.pending, (state) => {
+  state.loading = true;
+  state.error = null;
+})
+.addCase(fetchEmployeeById.fulfilled, (state, action) => {
+  state.loading = false;
+  state.employeeDetail = action.payload.data.user; // ← الداتا الجاية من API
+})
+.addCase(fetchEmployeeById.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload;
+})
       // البحث
       .addCase(searchEmployees.pending, (state) => {
         state.searchLoading = true;
@@ -86,6 +184,36 @@ const employeeSlice = createSlice({
         state.error = action.payload;
         state.searchResults = [];
       })
+     
+
+.addCase(searchEmployeesByName.pending, (state) => {
+  state.loading = true;
+  state.error = null;
+})
+.addCase(searchEmployeesByName.fulfilled, (state, action) => {
+  state.loading = false;
+  
+  console.log("Search Response:", action.payload); // ← شوف الـ structure
+  
+  // تأكد إن النتيجة array دايماً
+  const raw = action.payload.data?.results 
+    ?? action.payload.data 
+    ?? action.payload 
+    ?? [];
+    
+  state.employeesList = Array.isArray(raw) ? raw : [];
+
+  state.pagination = {
+    currentPage: 1,
+    totalPages: 1,
+    totalRecords: state.employeesList.length,
+  };
+})
+.addCase(searchEmployeesByName.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload;
+  state.employeesList = []; 
+})
       // جلب التفاصيل
       .addCase(fetchEmployeeSummary.pending, (state) => {
         state.loading = true;
@@ -100,21 +228,22 @@ const employeeSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      // لما التحديث ينجح
+    
       .addCase(updateEmployee.fulfilled, (state, action) => {
-      state.loading = false;
+  state.loading = false;
+  const updatedUser = action.payload.data.user; 
+  
 
-      if (state.employeeDetail?.id === action.payload.id) {
-      state.employeeDetail = action.payload; }
+  if (state.employeeDetail?._id === updatedUser._id) {
+    state.employeeDetail = updatedUser;
+  }
 
-      const index = state.searchResults.findIndex(
-       emp => emp.id === action.payload.id
-      );
-
-      if (index !== -1) {
-    state.searchResults[index] = action.payload;
-     }
-     })
+  
+  const index = state.employeesList.findIndex(emp => emp._id === updatedUser._id);
+  if (index !== -1) {
+    state.employeesList[index] = updatedUser;
+  }
+})
 
     // أثناء التحميل
     .addCase(updateEmployee.pending, (state) => {
@@ -125,7 +254,23 @@ const employeeSlice = createSlice({
     .addCase(updateEmployee.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload;
-    });
+    })
+    // إضافة حذف من employeesList
+.addCase(deleteEmployee.fulfilled, (state, action) => {
+  state.employeesList = state.employeesList.filter(
+    (emp) => emp._id !== action.payload
+  );
+  state.searchResults = state.searchResults.filter(
+    (emp) => emp._id !== action.payload
+  );
+  
+  // تحديث totalRecords
+  if (state.pagination.totalRecords > 0) {
+    state.pagination.totalRecords -= 1;
+  }
+  
+  state.loading = false;
+})
   },
 });
 

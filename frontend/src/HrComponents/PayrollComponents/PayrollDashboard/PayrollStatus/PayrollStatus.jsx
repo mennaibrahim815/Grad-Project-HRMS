@@ -30,14 +30,15 @@ const renderCustomizedLabel = ({
     </g>
   );
 };
-const EmployeeStatus = ({ pieStripes, title }) => {
+
+const PayrollStatus = ({ data,pieStripes }) => {
   const navigate = useNavigate();
+
   const { analytics } = useSelector((state) => state.dashboard);
+  const totalCount = data?.total_employees|| "0";
 
-  const raw = analytics?.employeeStatus;
-
-  // لو مفيش داتا
-  if (!raw) {
+  // Error Handling
+  if (!data || data.length === 0) {
     return (
       <div className="bg-[#142129] p-8 rounded-[2.5rem] border border-gray-800/50 shadow-xl h-full flex items-center justify-center min-h-[420px]">
         <div className="text-center text-gray-500">
@@ -48,52 +49,26 @@ const EmployeeStatus = ({ pieStripes, title }) => {
     );
   }
 
-  // تحويل الـ API shape → PieChart shape
-  const data = [
-    {
-      name: "Full Time",
-      value: raw.fullTimePercentage || 0,
-      color: "#3b82f6",
-    },
-    {
-      name: "Part Time",
-      value: raw.partTimePercentage || 0,
-      color: "#4b5563",
-    },
-    {
-      name: "Internship",
-      value: raw.internshipPercentage || 0,
-      color: "#10b981",
-    },
-    {
-      name: "Contract",
-      value: raw.contractPercentage || 0,
-      color: "#ef4444",
-    },
-  ];
-
-  const totalCount = raw.totalEmployee || 0;
-
   return (
     <div className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] p-[20px] rounded-[2.5rem] border border-gray-800/50 shadow-xl h-full flex flex-col relative min-h-[420px] overflow-hidden">
-      
-      {/* Header */}
+      {/* الهيدر */}
       <div className="flex justify-between items-center mb-8">
-        <h3 className="text-xl font-bold text-white">{title}</h3>
+        <h3 className="text-xl font-bold text-white">Employee status</h3>
         <button
           onClick={() => navigate("/employees")}
-          className="w-9 h-9 bg-[#0b141a] rounded-full flex items-center justify-center text-gray-500 hover:text-blue-500 transition-all"
+          className="w-9 h-9 bg-[#0b141a] rounded-full flex items-center justify-center text-gray-500 hover:text-blue-500 transition-all border border-transparent hover:border-blue-500/30"
+          title="Go to Employees"
         >
           <i className="fas fa-arrow-right -rotate-45 text-xs"></i>
         </button>
       </div>
 
       <div className="flex flex-col lg:flex-row items-center gap-6 flex-1">
-
-        {/* Chart */}
+        {/* الرسم البياني (Donut Chart) */}
         <div className="w-56 h-56 relative flex-shrink-0">
-          <ResponsiveContainer width="100%" height="100%">
+          <ResponsiveContainer w-70 h-72>
             <PieChart>
+              {/* Pattern للخطوط المائلة (Part-time) */}
               <defs>
                 <pattern
                   id="pieStripes"
@@ -123,7 +98,7 @@ const EmployeeStatus = ({ pieStripes, title }) => {
               >
                 {data.map((entry, index) => (
                   <Cell
-                    key={index}
+                    key={`status-cell-${index}`}
                     fill={
                       entry.name === pieStripes
                         ? "url(#pieStripes)"
@@ -135,36 +110,46 @@ const EmployeeStatus = ({ pieStripes, title }) => {
             </PieChart>
           </ResponsiveContainer>
 
-          {/* Center */}
-          <div className="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
-            <span className="text-3xl font-black text-white">
+          {/* الرقم في منتصف الدائرة */}
+          <div className="absolute inset-0 flex items-center justify-center flex-col pointer-events-none translate-y-[-2px]">
+            <span className="text-3xl font-black text-white tracking-tight leading-none">
               {totalCount}
             </span>
-            <span className="text-[13px] text-gray-400">Employee</span>
+            <span className="text-[13px] text-gray-400 font-medium mt-1 uppercase tracking-wider">
+              Employee
+            </span>
           </div>
         </div>
 
-        {/* Legend */}
-        <div className="space-y-6 flex-1">
+        {/* القائمة الجانبية (Legend) */}
+        <div className="space-y-6 flex-1 min-w-0">
           {data.map((item, i) => (
-            <div key={i} className="flex items-center gap-3">
+            <div key={`legend-${i}`} className="flex items-center gap-3">
               <span
-                className="w-2.5 h-2.5 rounded-full"
-                style={{ background: item.color }}
-              />
-              <div>
-                <p className="text-gray-200 font-bold">{item.name}</p>
-                <p className="text-xs text-gray-500">
+                className="w-2.5 h-2.5 rounded-full shadow-lg"
+                style={{
+                  background:
+                    item.name === pieStripes
+                      ? "#4b5563"
+                      : item.color || "#fff",
+                }}
+              ></span>
+              <div className="flex-1">
+                <p className="text-l font-bold text-gray-200 leading-none mb-1">
+                  {item.name}
+                </p>
+                <p className="text-[11px] text-gray-500 font-medium">
                   {item.value}% Employees
                 </p>
               </div>
             </div>
           ))}
         </div>
-
       </div>
     </div>
   );
 };
 
-export default EmployeeStatus;
+export default PayrollStatus;
+
+

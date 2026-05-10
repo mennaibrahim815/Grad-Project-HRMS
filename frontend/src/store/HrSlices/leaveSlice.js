@@ -6,8 +6,8 @@ export const fetchAllLeaves = createAsyncThunk(
   "leaves/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      // ✅ Pending بس في الكارد + limit صغير
-      const response = await axios.get("/leaves?status=Pending");
+      
+      const response = await axios.get("/leaves?limit=5&page=1");
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Failed");

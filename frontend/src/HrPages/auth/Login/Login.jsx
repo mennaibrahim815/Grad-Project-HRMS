@@ -25,11 +25,12 @@ const Login = () => {
     return error.toLowerCase().includes(word.toLowerCase());
   };
 
+  const PasswordRules = /^.{8,}/
   const formik = useFormik({
     initialValues: { email: "", password: "" },
     validationSchema: Yup.object({
       email: Yup.string().email("Invalid email format").required("Required"),
-      password: Yup.string().required("Required"),
+      password: Yup.string().min(8).matches(PasswordRules,{message:"password must be 8 characters at least"}).required("Required"),
     }),
 
 
