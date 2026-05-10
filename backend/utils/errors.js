@@ -7,6 +7,8 @@ class appErrors extends Error {
         error.statusCode = statusCode;
         error.message = message;
         error.statusText = statusText;
+
+        error.data = { statusCode, statusText };
         return error;
     }
 }

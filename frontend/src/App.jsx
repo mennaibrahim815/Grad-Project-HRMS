@@ -1,15 +1,15 @@
-import { RouterProvider } from "react-router";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { RouterProvider } from "react-router-dom";
 import { router } from "./routes/AppRoutes";
-import { Toaster } from "react-hot-toast";
-
+import { checkAuthStatus } from "./store/HrSlices/auth/loginSlice";
 
 export default function App() {
-  return (
-    <>
-      <Toaster position="top-right" reverseOrder={false} />
-      <div style={{ overflow: 'visible' }}>
-        <RouterProvider router={router} />
-      </div>
-    </>
-  );
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(checkAuthStatus());
+  }, [dispatch]);
+
+  return <RouterProvider router={router} />;
 }

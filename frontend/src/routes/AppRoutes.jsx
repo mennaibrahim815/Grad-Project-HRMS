@@ -1,138 +1,79 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-
-// Layouts
 import MainLayout from "../layouts/MainLayout";
-import ProtectedLayout from "../layouts/ProtectedLayout";
+import EmployeeLayout from "../layouts/EmployeeLayout";
+import ProtectedRoute from "./ProtectedRoute";
+import Login from "../HrPages/auth/Login/Login";
+import ForgotPassword from "../HrPages/auth/ForgotPassword/ForgotPassword";
+import VerifyCode from "../HrPages/auth/VerifyCode/VerifyCode";
+import ResetPassword from "../HrPages/auth/ResetPassword/ResetPassword";
 
-// Auth Pages
-import Login from "../pages/auth/Login/Login";
-import ForgotPassword from "../pages/auth/ForgotPassword/ForgotPassword";
-import VerifyCode from "../pages/auth/VerifyCode/VerifyCode";
-import Splash from "../pages/Splash/Splash";
-import Error from "../pages/Error/Error";
+import Splash from "../HrPages/Splash/Splash";
+import Error from "../HrPages/Error/Error";
+import Dashboard from "../HrPages/Dashboard/Dashboard";
+import Employees from "../HrPages/Emlpoyees/Employees";
+import EmployeeDetail from "../HrPages/EmployeeDetail/EmployeeDetail";
+import Project from "../HrPages/Project/Project";
+import Payroll from "../HrPages/Payroll/PayrollDashboard/Payroll";
+import PayrollManagment from "../HrPages/Payroll/PayrollManagement/payrollManagement"
+import Hiring from "../HrPages/Hiring/Hiring";
+import Attendance from "../HrPages/Attendance/Attendance";
+import Performance from "../HrPages/Performance/Performance";
+import LeaveRequests from "../HrPages/Leave/LeaveRequests/LeaveRequests";
+import EmployeeDashboard from "../EmployeePages/EmployeeDashboard/EmployeeDashboard";
+import Settings from "../HrPages/sett/Settings"; // تأكدي من صحة المسار
 
-// Leave Pages
-import LeaveDetails from "../pages/Leave/LeaveDetails/LeaveDetails";
-import LeaveRequests from "../pages/Leave/LeaveRequests/LeaveRequests";
 
-// Dashboard Pages
-import Dashboard from "../pages/Dashboard/Dashboard";
-import Employees from "../pages/Emlpoyees/Employees";
-import EmployeeDetail from "../pages/EmployeeDetail/EmployeeDetail";
-import Project from "../pages/Project/Project";
-import Payroll from "../pages/Payroll/Payroll";
-import Hiring from "../pages/Hiring/Hiring";
-import Attendance from "../pages/Attendance/Attendance";
-import Performance from "../pages/Performance/Performance";
 // import Settings from "../pages/sett/Settings";
-import Sett from "../pages/sett/Sett";
 
 export const router = createBrowserRouter(
   [
-    // Public Routes (غير محمية)
+    { path: "/", element: <Splash />, errorElement: <Error /> },
+    { path: "/login", element: <Login /> },
+    { path: "/forgot-password", element: <ForgotPassword /> },
+    { path: "/verify", element: <VerifyCode /> },
+    { path: "/reset-password", element: <ResetPassword /> },
+
+    // --- 🔵 موديول الـ HR ---
     {
-      path: "/",
-      element: <Splash />,
-      errorElement: <Error />,
-    },
-    {
-      path: "/login",
-      element: <Login />,
-    },
-    {
-      path: "/forgot-password",
-      element: <ForgotPassword />,
-    },
-    {
-      path: "/verify",
-      element: <VerifyCode />,
-    },
-    {
-      path: "/job",
       element: (
-        <div className="min-h-screen flex items-center justify-center bg-[#0b141a]">
-          <div className="text-center">
-            <i className="fas fa-briefcase text-6xl text-blue-500 mb-4"></i>
-            <h2 className="text-2xl font-bold text-white mb-2">
-              Job Application
-            </h2>
-            <p className="text-gray-400">Coming Soon...</p>
-          </div>
-        </div>
+        <ProtectedRoute allowedRoles={["HR"]}>
+          <MainLayout />
+        </ProtectedRoute>
       ),
-    },
-
-    // Protected Routes (محمية بـ Authentication)
-    {
-      element: <ProtectedLayout />,
       children: [
-        // Dashboard Layout Routes (مع Sidebar و Navbar)
-        {
-          element: <MainLayout />,
-          children: [
-            {
-              path: "/",
-              element: <Navigate to="/dashboard" replace />,
-            },
-            {
-              path: "/dashboard",
-              element: <Dashboard />,
-            },
-            {
-              path: "/employees",
-              element: <Employees />,
-            },
-            {
-              path: "/project",
-              element: <Project />,
-            },
-            {
-              path: "/payroll",
-              element: <Payroll />,
-            },
-            {
-              path: "/hiring",
-              element: <Hiring />,
-            },
-          
-            {
-              path: "/attendance",
-              element: <Attendance />,
-            },
-            {
-              path: "/leave-requests",
-              element: <LeaveRequests />,
-            },
-            {
-              path: "/leave-details/:id",
-              element: <LeaveDetails />,
-            },
-            {
-              path: "/performance",
-              element: <Performance />,
-            },
-          ],
-        },
-
-        // Full Screen Protected Pages (without Sidebar)
-        {
-          path: "/employee/:id",
-          element: <EmployeeDetail />,
-        },
-        {
-          path: "/profile",
-          element: <EmployeeDetail />,
-        },
-        {
-          path: "/sett",
-          element: <Sett />,
-        },
+        { path: "/dashboard", element: <Dashboard /> },
+        { path: "/employees", element: <Employees /> },
+        { path: "/project", element: <Project /> },
+        { path: "/payroll/dashboard", element: <Payroll /> },
+        { path: "/payroll/management", element: <PayrollManagment/> },
+        { path: "/hiring", element: <Hiring /> },
+        { path: "/attendance", element: <Attendance /> },
+        { path: "/leave-requests", element: <LeaveRequests /> },
+        { path: "/performance", element: <Performance /> },
       ],
     },
+
+    // --- 🟢 موديول الموظف ---
     {
-      path: "*",
-      element: <Error />,
+      element: (
+        <ProtectedRoute allowedRoles={["EMPLOYEE"]}>
+          <EmployeeLayout />
+        </ProtectedRoute>
+      ),
+      children: [{ path: "/my-dashboard", element: <EmployeeDashboard /> }],
     },
+
+    // --- 🟡 صفح مشتركة ---
+    {
+      element: <ProtectedRoute allowedRoles={["HR", "EMPLOYEE"]} />,
+      children: [
+        { path: "/profile", element: <EmployeeDetail /> },
+        { path: "/settings", element: <Settings /> },
+        { path: "/employee/:id", element: <EmployeeDetail /> },
+      ],
+    },
+
+    { path: "*", element: <Error /> },
   ],
   {
     future: {
@@ -145,4 +86,3 @@ export const router = createBrowserRouter(
     },
   },
 );
-

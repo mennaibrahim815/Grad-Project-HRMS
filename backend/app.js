@@ -1,5 +1,3 @@
-
-
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -12,6 +10,9 @@ dotenv.config();
 import cors from "cors";
 import helmet from "helmet";
 import cookieParser from "cookie-parser";
+import http from "http";
+import { Server } from "socket.io";
+
 import usersRoutes from "./routes/users.routes.js";
 import authRoutes from "./routes/auth.routes.js";
 import appErrors from "./utils/errors.js";
@@ -28,11 +29,14 @@ import jobRouter from "./routes/jobs.routes.js";
 import applicantRouter from "./routes/applicants.routes.js";
 import scheduleresetDefaultLeaves from "./jobs/resetDefaultLeaves.js";
 import dashboardRouter from "./routes/dashboard.routes.js";
+import { socketAuthMiddleware } from "./guards/socketAuth.middleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+const server = http.createServer(app);
 // const logsDir = path.join(__dirname, "logs");
 // if (!fs.existsSync(logsDir)) {
 //     fs.mkdirSync(logsDir);
@@ -68,6 +72,22 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
+const io = new Server(server, {
+    cors: corsOptions,
+});
+
+app.set("io", io);
+
+io.use(socketAuthMiddleware);
+
+io.on("connection", (socket) => {
+    console.log("client connected via socket io: " + socket.id);
+    socket.on("disconnect", () => {
+        console.log("client disconnected via socket io: " + socket.id);
+    });
+});
+
 app.use(helmet());
 app.use(cookieParser());
 
@@ -110,7 +130,7 @@ mongoose
         await scheduleAttendanceJob();
         await scheduleresetDefaultLeaves();
 
-        app.listen(port, () => {
+        server.listen(port, () => {
             console.log(`listening on the port ${port}`);
         });
     })

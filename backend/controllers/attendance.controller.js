@@ -266,9 +266,32 @@ export const checkIn = asyncWraper(async (req, res, next) => {
         checkIn: now,
     });
     newAttendance.__v = undefined;
+
+    const socketData = {
+        _id: newAttendance._id,
+        employeeId: newAttendance.employeeId,
+        date: newAttendance.date,
+        checkIn: newAttendance.checkIn,
+        status: newAttendance.status,
+
+        employee: {
+            firstName: user.general.firstName,
+            lastName: user.general.lastName,
+            email: user.general.email,
+            department: user.employee.department,
+            jobType: user.employee.jobType,
+            avatar: user.general.avatar,
+        },
+    };
+    const io = req.app.get("io");
+    io.emit("new_checkin", socketData);
     res.status(200).json({
         status: httpResponseText.SUCCESS,
-        data: { newAttendance },
+        data: {
+            firstName: user.general.firstName,
+            status: newAttendance.status,
+            newAttendance,
+        },
     });
 });
 

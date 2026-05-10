@@ -1,6 +1,6 @@
 const DataTable = ({ columns, data }) => {
   return (
-    <div className="overflow-x-auto scrollbar-hide">
+    <div className="overflow-x-auto custom-scrollbar">
       <table className="w-full  text-slate-100">
         <thead>
           <tr className="border-b border-slate-700/50">
@@ -18,7 +18,7 @@ const DataTable = ({ columns, data }) => {
         <tbody>
           {data.map((row, index) => (
             <tr
-              key={`${row.id}-${index}`}
+              key={`${row._id}-${index}`}
               className="border-b border-slate-700/30 hover:bg-slate-700/20 transition-colors"
             >
               {columns.map((col) => (
