@@ -28,8 +28,18 @@ export const validateProjectSchema = z.object({
         assignment: z.object({
             assignedTo: z
                 .array(
-                    z.string().regex(/^[0-9a-fA-F]{24}$/, {
-                        message: "Invalid Team Member ID",
+                    z.object({
+                        _id: z.string().regex(/^[0-9a-fA-F]{24}$/, {
+                            message: "Invalid Team Member ID format",
+                        }),
+                        general: z.object({
+                            firstName: z.string({ required_error: "First name is required" }),
+                            lastName: z.string({ required_error: "Last name is required" }),
+                            avatar: z.string({ required_error: "Avatar is required" }),
+                        }),
+                        employee: z.object({
+                            jobTitle: z.string().optional(),
+                        }),
                     })
                 )
                 .min(1, {
