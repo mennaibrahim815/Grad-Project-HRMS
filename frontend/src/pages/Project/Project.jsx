@@ -155,118 +155,118 @@
 //   );
 // }
 
-import { useState, useEffect } from "react";
-import { DndContext } from "@dnd-kit/core";
+// import { useState, useEffect } from "react";
+// import { DndContext } from "@dnd-kit/core";
 
-import Column from "../../components/ProjectPageComponents/Column.jsx";
-import ProjectHeader from "../../components/ProjectPageComponents/ProjectHeader.jsx";
+// import Column from "../../components/ProjectPageComponents/Column.jsx";
+// import ProjectHeader from "../../components/ProjectPageComponents/ProjectHeader.jsx";
 
-import api from "../../services/api";
+// import api from "../../services/api";
 
-export default function Project() {
-  const [columns, setColumns] = useState({
-    Todo: [],
-    "On-going": [],
-    Pending: [],
-    Completed: [],
-  });
+// export default function Project() {
+//   const [columns, setColumns] = useState({
+//     Todo: [],
+//     "On-going": [],
+//     Pending: [],
+//     Completed: [],
+//   });
 
-  // ===============================
-  // 📌 GET ALL PROJECTS FROM BACKEND
-  // ===============================
-  useEffect(() => {
-    api.get("/projects")
-      .then((res) => {
-        const projects = res.data.data.projects;
+//   // ===============================
+//   // 📌 GET ALL PROJECTS FROM BACKEND
+//   // ===============================
+//   useEffect(() => {
+//     api.get("/projects")
+//       .then((res) => {
+//         const projects = res.data.data.projects;
 
-        const formatted = {
-          Todo: [],
-          "On-going": [],
-          Pending: [],
-          Completed: [],
-        };
+//         const formatted = {
+//           Todo: [],
+//           "On-going": [],
+//           Pending: [],
+//           Completed: [],
+//         };
 
-        projects.forEach((project) => {
-          const status = project.assignment.status;
+//         projects.forEach((project) => {
+//           const status = project.assignment.status;
 
-          const task = {
-            id: project._id,
-            title: project.general.name,
-            description: project.general.description,
-            priority: project.assignment.priority,
-          };
+//           const task = {
+//             id: project._id,
+//             title: project.general.name,
+//             description: project.general.description,
+//             priority: project.assignment.priority,
+//           };
 
-          if (formatted[status]) {
-            formatted[status].push(task);
-          } else {
-            formatted["Todo"].push(task);
-          }
-        });
+//           if (formatted[status]) {
+//             formatted[status].push(task);
+//           } else {
+//             formatted["Todo"].push(task);
+//           }
+//         });
 
-        setColumns(formatted);
-      })
-      .catch((err) => {
-        console.log("GET PROJECTS ERROR:", err);
-      });
-  }, []);
+//         setColumns(formatted);
+//       })
+//       .catch((err) => {
+//         console.log("GET PROJECTS ERROR:", err);
+//       });
+//   }, []);
 
-  // ===============================
-  // 📌 DRAG & DROP HANDLER
-  // ===============================
-  const handleDragEnd = (event) => {
-    const { active, over } = event;
+//   // ===============================
+//   // 📌 DRAG & DROP HANDLER
+//   // ===============================
+//   const handleDragEnd = (event) => {
+//     const { active, over } = event;
 
-    if (!over) return;
+//     if (!over) return;
 
-    const sourceCol = Object.keys(columns).find((col) =>
-      columns[col].some((task) => task.id === active.id)
-    );
+//     const sourceCol = Object.keys(columns).find((col) =>
+//       columns[col].some((task) => task.id === active.id)
+//     );
 
-    const targetCol = over.id;
+//     const targetCol = over.id;
 
-    if (!sourceCol || !targetCol || sourceCol === targetCol) return;
+//     if (!sourceCol || !targetCol || sourceCol === targetCol) return;
 
-    const task = columns[sourceCol].find((t) => t.id === active.id);
+//     const task = columns[sourceCol].find((t) => t.id === active.id);
 
-    // 🔥 UI UPDATE
-    setColumns((prev) => ({
-      ...prev,
-      [sourceCol]: prev[sourceCol].filter((t) => t.id !== active.id),
-      [targetCol]: [...prev[targetCol], task],
-    }));
+//     // 🔥 UI UPDATE
+//     setColumns((prev) => ({
+//       ...prev,
+//       [sourceCol]: prev[sourceCol].filter((t) => t.id !== active.id),
+//       [targetCol]: [...prev[targetCol], task],
+//     }));
 
-    // 🔥 BACKEND UPDATE
-    api.put(`/projects/${task.id}`, {
-      assignment: {
-        status: targetCol,
-      },
-    }).catch((err) => {
-      console.log("UPDATE ERROR:", err);
-    });
-  };
+//     // 🔥 BACKEND UPDATE
+//     api.put(`/projects/${task.id}`, {
+//       assignment: {
+//         status: targetCol,
+//       },
+//     }).catch((err) => {
+//       console.log("UPDATE ERROR:", err);
+//     });
+//   };
 
-  return (
-    <div className="max-w-[1650px] mx-auto p-4 bg-transparent">
-      {/* Header */}
-      <ProjectHeader />
+//   return (
+//     <div className="max-w-[1650px] mx-auto p-4 bg-transparent">
+//       {/* Header */}
+//       <ProjectHeader />
 
-      {/* Kanban Board */}
-      <DndContext onDragEnd={handleDragEnd}>
-        <div className="w-full overflow-hidden">
-          <div className="flex items-start gap-6 overflow-x-auto pb-4">
+//       {/* Kanban Board */}
+//       <DndContext onDragEnd={handleDragEnd}>
+//         <div className="w-full overflow-hidden">
+//           <div className="flex items-start gap-6 overflow-x-auto pb-4">
 
-            {Object.keys(columns).map((col) => (
-              <Column
-                key={col}
-                id={col}
-                title={col}
-                tasks={columns[col]}
-              />
-            ))}
+//             {Object.keys(columns).map((col) => (
+//               <Column
+//                 key={col}
+//                 id={col}
+//                 title={col}
+//                 tasks={columns[col]}
+//               />
+//             ))}
 
-          </div>
-        </div>
-      </DndContext>
-    </div>
-  );
-}
+//           </div>
+//         </div>
+//       </DndContext>
+//     </div>
+//   );
+// }
