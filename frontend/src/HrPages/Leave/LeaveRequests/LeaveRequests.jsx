@@ -1,5 +1,5 @@
 
-// import LeaveTable from "../../../components/LeavePageComponents/LeaveTable.jsx";
+// import LeaveTable from "@/HrComponents/LeavePageComponents/LeaveTable.jsx";
 
 
 // export default function LeaveRequests() {
@@ -23,163 +23,110 @@
 //     </div>
 //   );
 // }
-
 import React, { useState, useEffect } from "react";
 import LeaveTable from "@/HrComponents/LeavePageComponents/LeaveTable";
 import instance from "@/services/axios";
 
 export default function LeaveRequests() {
-  // ===== STATE =====
   const [leaves, setLeaves] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // ===== PAGINATION =====
   const [page, setPage] = useState(1);
   const [limit] = useState(5);
   const [totalPages, setTotalPages] = useState(1);
-
-  // ===== FILTER =====
   const [searchName, setSearchName] = useState("");
   const [searchDate, setSearchDate] = useState("");
 
-  // ===== FETCH =====
   const fetchLeaves = async () => {
     try {
       setLoading(true);
-
-      const params = {
-        page,
-        limit,
-      };
-
-      // ✔️ important: avoid sending empty strings (fix 400 error)
-      if (searchName.trim() !== "") {
-        params.employeeName = searchName.trim();
-      }
-
-      if (searchDate !== "") {
-        params.date = searchDate;
-      }
-
-      // ⚠️ backend search endpoint
-      const response = await instance.get("/leaves/search", {
-        params,
-      });
-
-      console.log("API RESPONSE:", response.data);
-
-      // ✔️ safe fallback (fix undefined crash)
-      const data = response.data?.data?.leave || [];
-
-      setLeaves(Array.isArray(data) ? data : []);
-
-      setTotalPages(
-        response.data?.data?.pagination?.totalPages || 1
-      );
-
       setError(null);
+
+      const params = { page, limit };
+      let endpoint = "/leaves"; // المسار الافتراضي
+
+      // إذا كان هناك بحث بالاسم أو التاريخ نستخدم مسار الـ search
+      if (searchName.trim() || searchDate) {
+        endpoint = "/leaves/search";
+        if (searchName.trim()) params.employeeName = searchName.trim();
+        if (searchDate) params.date = searchDate;
+      }
+
+      const response = await instance.get(endpoint, { params });
+      
+      console.log("API Response:", response.data);
+
+      // --- التعامل مع اختلاف الـ Response Structure ---
+      let fetchedData = [];
+      let total = 1;
+
+      if (endpoint === "/leaves/search") {
+        // في البحث البيانات تكون داخل data.leave
+        fetchedData = response.data?.data?.leave || [];
+        total = response.data?.data?.pagination?.totalPages || 1;
+      } else {
+        // في العرض العادي البيانات تكون داخل data مباشرة
+        fetchedData = response.data?.data || [];
+        total = response.data?.pagination?.totalPages || 1;
+      }
+
+      setLeaves(fetchedData);
+      setTotalPages(total);
+
     } catch (err) {
-      console.error("Error fetching leaves:", err);
-      setError("تعذر تحميل البيانات");
-      setLeaves([]);
+      console.error("Fetch Error:", err.response?.data);
+      const errorObj = err.response?.data;
+      // حل مشكلة [object Object]
+      const msg = Array.isArray(errorObj?.message) ? errorObj.message[0] : errorObj?.message;
+      setError(msg || "تعذر تحميل البيانات");
     } finally {
       setLoading(false);
     }
   };
 
-  // ===== EFFECT =====
   useEffect(() => {
-    const delay = setTimeout(() => {
-      fetchLeaves();
-    }, 400);
-
+    const delay = setTimeout(() => fetchLeaves(), 500);
     return () => clearTimeout(delay);
   }, [page, searchName, searchDate]);
 
-  // ===== STATUS UPDATE =====
-  const handleStatusUpdate = async (leaveId, newStatus) => {
+  // دالة التحديث والحذف (نفس الـ Logic السابق)
+  const handleStatusUpdate = async (id, status) => {
     try {
-      await instance.patch(`/leaves/${leaveId}/status`, {
-        status: newStatus,
-      });
-
-      setLeaves((prev) =>
-        prev.map((l) =>
-          l._id === leaveId ? { ...l, status: newStatus } : l
-        )
-      );
-    } catch (err) {
-      console.error(err);
-      alert("فشل تحديث الحالة");
-    }
+      await instance.patch(`/leaves/${id}/status`, { status });
+      setLeaves(prev => prev.map(l => l._id === id ? { ...l, status } : l));
+    } catch (err) { alert("فشل تحديث الحالة"); }
   };
 
-  // ===== DELETE =====
-  const handleDeleteLeave = async (leaveId) => {
-    if (!window.confirm("هل أنت متأكد من الحذف؟")) return;
-
+  const handleDeleteLeave = async (id) => {
+    if (!window.confirm("حذف؟")) return;
     try {
-      await instance.delete(`/leaves/${leaveId}`);
-
-      setLeaves((prev) =>
-        prev.filter((l) => l._id !== leaveId)
-      );
-    } catch (err) {
-      console.error(err);
-      alert("فشل الحذف");
-    }
+      await instance.delete(`/leaves/${id}`);
+      setLeaves(prev => prev.filter(l => l._id !== id));
+    } catch (err) { alert("فشل الحذف"); }
   };
 
-  // ===== LOADING =====
-  if (loading) {
-    return (
-      <div className="p-10 text-center text-cyan-400">
-        جاري تحميل الطلبات...
-      </div>
-    );
-  }
-
-  // ===== ERROR =====
-  if (error) {
-    return (
-      <div className="p-10 text-center text-red-500">
-        {error}
-      </div>
-    );
-  }
+  if (loading) return <div className="p-10 text-center text-cyan-400 font-bold">جاري التحميل...</div>;
 
   return (
     <div className="p-6">
-
-      {/* ===== SEARCH ===== */}
-      <div className="flex gap-3 mb-5">
-
-        {/* name search */}
+      {error && <p className="text-red-500 text-center mb-4">{String(error)}</p>}
+      
+      <div className="flex gap-4 mb-6">
         <input
           type="text"
-          placeholder="Search by employee name"
+          placeholder="Search by name..."
           value={searchName}
-          onChange={(e) => {
-            setSearchName(e.target.value);
-            setPage(1);
-          }}
-          className="px-3 py-2 rounded bg-slate-800 text-white"
+          onChange={(e) => { setSearchName(e.target.value); setPage(1); }}
+          className="px-4 py-2 rounded bg-slate-800 text-white outline-none border border-slate-700 focus:border-cyan-500"
         />
-
-        {/* date filter */}
         <input
           type="date"
           value={searchDate}
-          onChange={(e) => {
-            setSearchDate(e.target.value);
-            setPage(1);
-          }}
-          className="px-3 py-2 rounded bg-slate-800 text-white"
+          onChange={(e) => { setSearchDate(e.target.value); setPage(1); }}
+          className="px-4 py-2 rounded bg-slate-800 text-white border border-slate-700 focus:border-cyan-500"
         />
       </div>
 
-      {/* ===== TABLE ===== */}
       <LeaveTable
         leaves={leaves}
         onStatusUpdate={handleStatusUpdate}

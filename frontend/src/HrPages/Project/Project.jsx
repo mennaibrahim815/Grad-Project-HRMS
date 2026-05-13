@@ -1,12 +1,15 @@
 
+
 import { useState, useEffect } from "react";
 import { DndContext, closestCorners } from "@dnd-kit/core";
 import Column from "@/HrComponents/ProjectPageComponents/Column.jsx";
 import ProjectHeader from "@/HrComponents/ProjectPageComponents/ProjectHeader.jsx";
 import EditProjectModal from "@/HrComponents/ProjectPageComponents/EditProjectModal.jsx";
+import DeleteModal from "@/components/UI/DeleteModel.jsx"; // استدعاء الموديل اللي عملناه
 import API from "@/services/axios"; 
 
 export default function Project() {
+  // --- States ---
   const [columns, setColumns] = useState({
     "On-going": [],
     Pending: [],
@@ -14,10 +17,14 @@ export default function Project() {
   });
   const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
-  // --- ضفت الـ States دي ---
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
 
+  // حالات موديل الحذف
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState(null);
+
+  // --- API Calls ---
   const fetchStats = async () => {
     try {
       const response = await API.get("/projects/stats");
@@ -50,6 +57,7 @@ export default function Project() {
     setColumns(newColumns);
   };
 
+  // --- Handlers ---
   const handleSearch = async (query) => {
     if (!query || query.trim() === "") {
       fetchProjects();
@@ -65,7 +73,6 @@ export default function Project() {
     }
   };
 
-  // --- دالة التحديث الجديدة ---
   const handleUpdateProject = async (projectId, updatedData) => {
     try {
       const response = await API.patch(`/projects/${projectId}`, updatedData);
@@ -78,22 +85,26 @@ export default function Project() {
     }
   };
 
-  const handleDeleteProject = async (projectId) => {
-    if (!window.confirm("Are you sure you want to delete this project?")) return;
+  // وظيفة فتح موديل الحذف وتخزين بيانات المشروع مؤقتاً
+  const openDeleteModal = (id, name) => {
+    setProjectToDelete({ id, title: name });
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!projectToDelete) return;
     try {
-      await API.delete(`/projects/${projectId}`);
+      await API.delete(`/projects/${projectToDelete.id}`);
       fetchProjects();
       fetchStats();
+      setIsDeleteModalOpen(false);
+      setProjectToDelete(null);
     } catch (error) {
       console.error("Delete Error:", error);
       alert("Failed to delete project");
+      setIsDeleteModalOpen(false);
     }
   };
-
-  useEffect(() => {
-    fetchProjects();
-    fetchStats();
-  }, []);
 
   const handleDragEnd = async (event) => {
     const { active, over } = event;
@@ -113,17 +124,33 @@ export default function Project() {
     }
   };
 
+  useEffect(() => {
+    fetchProjects();
+    fetchStats();
+  }, []);
+
   return (
     <div className="w-full max-w-[1700px] mx-auto p-4 bg-transparent">
+      {/* الهيدر */}
       <ProjectHeader 
         onProjectAdded={() => { fetchProjects(); fetchStats(); }} 
         stats={stats} 
         onSearch={handleSearch}
       />
 
+      {/* موديل الحذف (Component مستدعى) */}
+      <DeleteModal 
+        isOpen={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleConfirmDelete}
+        title={projectToDelete?.title}
+        message="Are you sure you want to delete this project? This action will remove all associated tasks and data permanently."
+      />
+
+      {/* محتوى الصفحة */}
       {loading ? (
         <div className="flex items-center justify-center h-64 text-slate-400">
-            <div className="animate-pulse text-lg">Loading Projects...</div>
+            <div className="animate-pulse text-lg font-medium">Loading Projects...</div>
         </div>
       ) : (
         <DndContext collisionDetection={closestCorners} onDragEnd={handleDragEnd}>
@@ -133,7 +160,11 @@ export default function Project() {
                 key={col}
                 id={col}
                 title={col}
-                onDeleteProject={handleDeleteProject}
+                onDeleteProject={(id) => {
+                  // بنجيب اسم المشروع عشان نعرضه في موديل الحذف
+                  const project = columns[col].find(p => p._id === id);
+                  openDeleteModal(id, project?.general?.name);
+                }}
                 tasks={columns[col].map(p => ({
                   ...p,
                   id: p._id,
@@ -142,7 +173,7 @@ export default function Project() {
                   tag: p.general.tag,
                   avatar: p.general.avatar,
                   priority: p.assignment?.priority,
-                  // --- تمرير دالة الفتح هنا ---
+                  assignedTo: p.assignment?.assignedTo || [], 
                   onEdit: () => {
                     setSelectedProject({
                       id: p._id,
@@ -163,7 +194,7 @@ export default function Project() {
         </DndContext>
       )}
 
-      {/* --- المودال في نهاية الصفحة بنفس الستايل --- */}
+      {/* موديل التعديل */}
       {isEditModalOpen && selectedProject && (
         <EditProjectModal 
           project={selectedProject}
