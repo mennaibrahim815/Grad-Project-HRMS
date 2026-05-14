@@ -1,11 +1,11 @@
 import ReusableCalendar from "../../../../components/UI/ReusableCalendar";
 import { setPayrollMonth } from "../../../../store/HrSlices/payroll/payrollSlice";
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
+
 
 function PayrollHeader() {
   const dispatch = useDispatch();
-  const { analytics, selectedMonth, loading } = useSelector((state) => state.payroll);
+  const {  selectedMonth, loading } = useSelector((state) => state.payroll);
   const handleMonthSave = (newMonth) => {
   dispatch(setPayrollMonth(newMonth));
 };

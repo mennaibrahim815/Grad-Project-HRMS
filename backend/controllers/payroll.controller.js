@@ -8,6 +8,7 @@ import { httpResponseText } from "../utils/httpResponseText.js";
 import { asyncWraper } from "../Middleware/asyncWraper.js";
 import dayjs from "dayjs";
 import { buildNameSearchQuery } from "../utils/searchHelper.js";
+import { months } from "../utils/monthsArray.js";
 
 export const generatePayrollDraft = asyncWraper(async (req, res, next) => {
     let { month, year } = req.body;
@@ -31,28 +32,26 @@ export const generatePayrollDraft = asyncWraper(async (req, res, next) => {
         );
         return next(error);
     }
+    const existingPayrollForMonth = await Payroll.findOne({
+        month,
+        year,
+        status: { $in: ["Pending", "Paid"] },
+    });
+
+    if (existingPayrollForMonth) {
+        const error = appErrors.create(
+            400,
+            `Cannot generate drafts. Salaries for ${months[month]} ${year} have already been approved or paid.`,
+            httpResponseText.FAIL
+        );
+        return next(error);
+    }
 
     const cutoffDay = setting.payrollCutoffDay;
     const minutesMultiplier = setting.minutesMultiplier;
 
     const prevMonth = month === 1 ? 12 : month - 1;
     const prevYear = month === 1 ? year - 1 : year;
-
-    const months = [
-        "",
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-    ];
 
     const isFirstTimeRuning = (await Payroll.countDocuments()) === 0;
 
@@ -227,21 +226,6 @@ export const ApprovePayroll = asyncWraper(async (req, res, next) => {
         return next(error);
     }
 
-    const months = [
-        "",
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-    ];
     const approvedMonthPayroll = await Payroll.findOne({
         month,
         year,
@@ -330,6 +314,8 @@ export const getEmployeesPayroll = asyncWraper(async (req, res, next) => {
     }
     if (status) {
         searchQuery.status = status;
+    } else {
+        searchQuery.status = { $in: ["Pending", "Paid"] };
     }
 
     const limitNumber = Number(limit) || 10;
@@ -344,14 +330,7 @@ export const getEmployeesPayroll = asyncWraper(async (req, res, next) => {
         .skip(skip)
         .limit(limitNumber)
         .lean();
-    if (payrolls.length === 0) {
-        const error = appErrors.create(
-            404,
-            "No payroll found for employees in the specified period",
-            httpResponseText.FAIL
-        );
-        return next(error);
-    }
+
     const formattedPayrolls = payrolls.map((payroll) => {
         return {
             _id: payroll._id,
@@ -767,22 +746,6 @@ export const getYearlyPayrollChart = asyncWraper(async (req, res, next) => {
         },
         { $sort: { _id: 1 } },
     ]);
-
-    const months = [
-        "",
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-    ];
 
     const formattedData = [];
 

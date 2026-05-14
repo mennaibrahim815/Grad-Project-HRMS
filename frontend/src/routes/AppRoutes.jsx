@@ -1,3 +1,4 @@
+
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import EmployeeLayout from "../layouts/EmployeeLayout";
@@ -19,11 +20,9 @@ import Hiring from "../HrPages/Hiring/Hiring";
 import Attendance from "../HrPages/Attendance/Attendance";
 import Performance from "../HrPages/Performance/Performance";
 import LeaveRequests from "../HrPages/Leave/LeaveRequests/LeaveRequests";
+import LeaveDetails from "../HrPages/Leave/LeaveDetails/LeaveDetails"; 
 import EmployeeDashboard from "../EmployeePages/EmployeeDashboard/EmployeeDashboard";
-import Settings from "../HrPages/sett/Settings"; // تأكدي من صحة المسار
-
-
-// import Settings from "../pages/sett/Settings";
+import Settings from "../HrPages/sett/Settings";
 
 export const router = createBrowserRouter(
   [
@@ -33,7 +32,7 @@ export const router = createBrowserRouter(
     { path: "/verify", element: <VerifyCode /> },
     { path: "/reset-password", element: <ResetPassword /> },
 
-    // --- 🔵 موديول الـ HR ---
+    // --- 🔵 HR ---
     {
       element: (
         <ProtectedRoute allowedRoles={["HR"]}>
@@ -49,11 +48,14 @@ export const router = createBrowserRouter(
         { path: "/hiring", element: <Hiring /> },
         { path: "/attendance", element: <Attendance /> },
         { path: "/leave-requests", element: <LeaveRequests /> },
+
+        { path: "/leave-details/:id", element: <LeaveDetails /> },
+
         { path: "/performance", element: <Performance /> },
       ],
     },
 
-    // --- 🟢 موديول الموظف ---
+    // --- 🟢 Employee ---
     {
       element: (
         <ProtectedRoute allowedRoles={["EMPLOYEE"]}>
@@ -63,7 +65,7 @@ export const router = createBrowserRouter(
       children: [{ path: "/my-dashboard", element: <EmployeeDashboard /> }],
     },
 
-    // --- 🟡 صفح مشتركة ---
+    // --- 🟡 Shared ---
     {
       element: <ProtectedRoute allowedRoles={["HR", "EMPLOYEE"]} />,
       children: [
@@ -84,5 +86,5 @@ export const router = createBrowserRouter(
       v7_partialHydration: true,
       v7_skipActionErrorRevalidation: true,
     },
-  },
+  }
 );

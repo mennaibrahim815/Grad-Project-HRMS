@@ -88,11 +88,11 @@ function PayrollTable() {
     accessor: "baseSalary",
     render: (row) => `$${row.baseSalary?.toLocaleString()}`
   },
-  { 
-    header: "Deductions", 
-    accessor: "deductions",
-    render: (row) => `$${row.deductions?.toLocaleString()}`
-  },
+  // { 
+  //   header: "Deductions", 
+  //   accessor: "deductions",
+  //   render: (row) => `$${row.deductions?.toLocaleString()}`
+  // },
   { 
     header: "Net Salary", 
     accessor: "netSalary",
@@ -105,42 +105,19 @@ function PayrollTable() {
       <span className="text-emerald-400">{row.daysPresent} days</span>
     )
   },
+  { 
+    header: "Days Absents", 
+    accessor: "daysAbsent",
+    render: (row) => (
+      <span className="text-pink-400">{row.daysAbsent} days</span>
+    )
+  },
   {
     header: "Status",
     accessor: "status",
     render: (row) => <AttendanceBadge status={row.status} />,
   },
-  {
-    header: "Action",
-    accessor: "action",
-    render: (row) => (
-      <div className="relative">
-        <button
-          onClick={() => setOpenMenuId(openMenuId === row._id ? null : row._id)}
-          className="p-2 text-slate-400 hover:text-slate-200"
-        >
-          <EditIcon />
-        </button>
-        <RowActionMenu
-          isOpen={openMenuId === row._id}
-          onClose={() => setOpenMenuId(null)}
-          actions={[
-            {
-              label: "See Details",
-              icon: Eye,
-              onClick: () => console.log("Details", row._id),
-            },
-            // {
-            //   label: "Delete",
-            //   variant: "danger",
-            //   icon: Trash2,
-            //   onClick: () => console.log("Delete", row._id),
-            // },
-          ]}
-        />
-      </div>
-    ),
-  },
+ 
 ];
   const dispatch = useDispatch();
   const { payrollList, pagination, tableLoading, selectedMonth } = useSelector((state) => state.payroll);
