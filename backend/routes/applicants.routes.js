@@ -53,8 +53,6 @@ router
 router
     .route("/apply/:jobId")
     .post(
-        verifyToken,
-        allowedTo(userRoles.HR),
         upload.fields([{ name: "documents[resume]", maxCount: 1 },
             {name:"personalInfo[avatar]", maxCount: 1}
         ]),

@@ -48,10 +48,11 @@ const applicantSchema = new mongoose.Schema(
             },
             avatar: {
                 type: String,
-                default: "/uploads/default-avatar.png",
+                default:
+                    "https://res.cloudinary.com/dh4qznqpd/image/upload/v1779032447/hrms_project_uploads/kngdov6r1k5bwujm0pud.jpg",
             },
         },
-        
+
         professionalInfo: {
             yearsOfExperience: { type: String },
             currentJobTitle: { type: String },

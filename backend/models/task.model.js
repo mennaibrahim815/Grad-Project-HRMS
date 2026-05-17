@@ -12,9 +12,34 @@
                 type: String,
                 required: [true, "Task title is required"],
             },
-            done: {
-                type: Boolean,
-                default: false,
+            assignment: {
+                assignedTo: [
+                    {
+                        _id: {
+                            type: mongoose.Schema.Types.ObjectId,
+                            ref: "User",
+                            required: true,
+                        },
+                        general: {
+                            firstName: { type: String, required: true },
+                            lastName: { type: String, required: true },
+                            avatar: { type: String, required: true },
+                        },
+                        employee: {
+                            jobTitle: { type: String },
+                        },
+                    },
+                ],
+                status: {
+                    type: String,
+                    enum: ["On-going", "Pending", "Completed"],
+                    default: "Pending",
+                },
+                priority: {
+                    type: String,
+                    enum: ["High", "Medium", "Low"],
+                    default: "Medium",
+                },
             },
         },
         modelConfig

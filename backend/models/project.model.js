@@ -5,7 +5,8 @@ const projectSchema = new mongoose.Schema(
         general: {
             avatar: {
                 type: String,
-                default: "default-avatar.png",
+                default:
+                    "https://res.cloudinary.com/dh4qznqpd/image/upload/v1779033102/hrms_uploads/fuawxxtbgih0g5e5drax.jpg",
             },
             name: {
                 type: String,
@@ -41,16 +42,16 @@ const projectSchema = new mongoose.Schema(
                     _id: {
                         type: mongoose.Schema.Types.ObjectId,
                         ref: "User",
-                        required: true
+                        required: true,
                     },
                     general: {
                         firstName: { type: String, required: true },
                         lastName: { type: String, required: true },
-                        avatar: { type: String, required: true }
+                        avatar: { type: String, required: true },
                     },
                     employee: {
-                        jobTitle: { type: String }
-                    }
+                        jobTitle: { type: String },
+                    },
                 },
             ],
             status: {
