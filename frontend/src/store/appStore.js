@@ -4,7 +4,7 @@ import loginReducer from "./HrSlices/auth/loginSlice";
 import forgotPasswordReducer from "./HrSlices/auth/forgotPasswordSlice";
 import verifyCodeReducer from "./HrSlices/auth/verifyCodeSlice";
 import resetPasswordReducer from "./HrSlices/auth/resetPasswordSlice"; // 💡 السطر الجديد
-
+import careersReducer from "./HrSlices/careersSlice/careersSlice";
 
 // Navbar
 import notificationReducer from "./HrSlices/navbar/notificationSlice";
@@ -18,7 +18,7 @@ import dashboardReducer from "./HrSlices/HrDashboard/dashboardSlice";
 // Features
 import employeeReducer from "./HrSlices/employeeSlice";
 import projectReducer from "./HrSlices/projectSlice";
-import hiringReducer from "./HrSlices/hiringSlice";
+import hiringReducer from "./HrSlices/Hiring/hiringSlice";
 import leaveReducer from "./HrSlices/leaveSlice";
 import attendanceReducer from "./HrSlices/attendance/attendanceSlice";
 import payrollReducer from "./HrSlices/payroll/payrollSlice";
@@ -30,6 +30,7 @@ export const store = configureStore({
     forgotPassword: forgotPasswordReducer,
     verifyCode: verifyCodeReducer,
     resetPassword: resetPasswordReducer, 
+    
 
 
     // Navbar Features
@@ -47,7 +48,8 @@ export const store = configureStore({
     leaves: leaveReducer,
     hiring: hiringReducer,
     attendance: attendanceReducer,
-    payroll:payrollReducer
+    payroll:payrollReducer,
+    careers: careersReducer,
     
   },
 });

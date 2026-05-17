@@ -27,7 +27,15 @@ const Sidebar = () => {
         { name: "Management", path: "/payroll/management" },
       ],
     },
-    { name: "Hiring", icon: "fas fa-user-plus", path: "/hiring" },
+    // { name: "Hiring", icon: "fas fa-user-plus", path: "/hiring" },
+    {
+      name: "Hiring",
+      icon: "fas fa-user-plus",
+      children: [
+        { name: "Applicants", path: "/hiring" },
+        { name: "Jobs", path: "/hiring/jobs" },
+      ],
+    },
     { name: "Attendance", icon: "fas fa-calendar-check", path: "/attendance" },
     { name: "Leave", icon: "fas fa-envelope-open-text", path: "/leave-requests" },
     { name: "Performance", icon: "fas fa-chart-line", path: "/performance" },
@@ -66,9 +74,8 @@ const Sidebar = () => {
       {/* Logo */}
       <NavLink
         to={userRole === "HR" ? "/dashboard" : "/my-dashboard"}
-        className={`h-20 flex items-center px-6 mb-4 ${
-          isCollapsed ? "justify-center" : "justify-start gap-3"
-        }`}
+        className={`h-20 flex items-center px-6 mb-4 ${isCollapsed ? "justify-center" : "justify-start gap-3"
+          }`}
       >
         <div className="w-9 flex items-center justify-center">
           <img src={icon} alt="Logo" className="w-8 h-8" />
@@ -98,21 +105,13 @@ const Sidebar = () => {
                 onClick={() => !isCollapsed && setOpenDropdown(openDropdown === item.name ? null : item.name)}
                 className={[
                   "w-full flex items-center gap-4 p-3.5 rounded-xl transition-all hover:bg-[#142129] hover:text-white",
-                  location.pathname.startsWith("/payroll") ? "bg-[#182731] text-white" : "",
+                  (item.name === "Payroll" && location.pathname.startsWith("/payroll")) ||
+                    (item.name === "Hiring" && location.pathname.startsWith("/hiring"))
+                    ? "bg-[#182731] text-white"
+                    : "",
                   isCollapsed ? "justify-center" : ""
                 ].join(" ")}
-              >
-                <i className={`${item.icon} text-lg`}></i>
-                {!isCollapsed && (
-                  <>
-                    <span className="text-sm font-medium flex-1 text-left">{item.name}</span>
-                    <i className={[
-                      "fas fa-chevron-down text-xs transition-transform duration-200",
-                      openDropdown === item.name ? "rotate-180" : ""
-                    ].join(" ")} />
-                  </>
-                )}
-              </button>
+              ></button>
             ) : (
               <NavLink
                 to={item.path}

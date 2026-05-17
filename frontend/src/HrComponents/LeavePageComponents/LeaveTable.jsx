@@ -153,6 +153,7 @@ const LeaveTable = ({
         handlePageChange={onPageChange}
         handleRecordsPerPageChange={onLimitChange}
         currentDataLength={leaves.length}
+        entityName="leaves"
       />
 
       {/* نافذة التأكيد المنبثقة (Confirm Modal) */}
