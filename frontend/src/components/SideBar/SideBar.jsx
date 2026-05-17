@@ -111,7 +111,19 @@ const Sidebar = () => {
                     : "",
                   isCollapsed ? "justify-center" : ""
                 ].join(" ")}
-              ></button>
+              >
+                {/* 👇 المحتوى اللي اتمسح */}
+                <i className={`${item.icon} text-lg`}></i>
+                {!isCollapsed && (
+                  <>
+                    <span className="text-sm font-medium flex-1 text-left">{item.name}</span>
+                    <i className={[
+                      "fas fa-chevron-down text-xs transition-transform duration-200",
+                      openDropdown === item.name ? "rotate-180" : ""
+                    ].join(" ")} />
+                  </>
+                )}
+              </button>
             ) : (
               <NavLink
                 to={item.path}
