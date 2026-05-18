@@ -91,7 +91,7 @@ const Splash = () => {
             </p>
             
             <button 
-              onClick={() => navigate("/job")}
+              onClick={() => navigate("/apply-job")}
               className="w-full bg-[#a5c0f3] hover:bg-blue-300 text-[#0b141a] py-3.5 rounded-full font-black text-xs uppercase tracking-widest transition-all active:scale-95 shadow-lg shadow-blue-500/10"
             >
               Apply Now

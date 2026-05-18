@@ -17,18 +17,16 @@ const EmployeeDetail = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
 
-  // تأكدي إن اسم الـ slice هنا "employees" ولا "attendance" حسب الـ store عندك
+
   const { employeeDetail, loading, error } = useSelector(
     (state) => state.employees,
   );
 
-  // useEffect(() => {
-  //   dispatch(fetchEmployeeSummary(id));
-  // }, [dispatch, id]);
 
-  // بدل ما نرجع فقرة فاضية، بنعرض الهيكل الأساسي للصفحة
+
+  
   return (
-    <div className="min-h-screen bg-slate-900">
+    <div className="min-h-screen">
       <main className="px-4 md:px-6 py-6">
         {/* Page title */}
         <div className="flex items-center gap-3 mb-6">
@@ -39,7 +37,7 @@ const EmployeeDetail = () => {
             <ArrowLeft size={20} className="text-slate-400" />
           </button>
           <h1 className="text-white text-xl font-semibold">Employee detail</h1>
-          {/* إظهار علامة تحميل بسيطة أو رسالة خطأ بدون إخفاء الصفحة */}
+     
           {loading && <span className="text-xs text-cyan-400 ml-4 animate-pulse">Loading data...</span>}
          
         </div>
@@ -47,7 +45,7 @@ const EmployeeDetail = () => {
         {/* Top section */}
         <div className="text-white grid grid-cols-1 lg:grid-cols-12 gap-4 mb-4">
           <div className="lg:col-span-6">
-            {/* تأكدي إن الكارد ده جوه بيستخدم employee?.name مش employee.name */}
+          
             <EmployeeProfileCard employee={employeeDetail} />
           </div>
 

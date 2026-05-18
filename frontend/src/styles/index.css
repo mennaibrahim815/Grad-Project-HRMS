@@ -74,9 +74,9 @@ html, body, #root {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-/* تخصيص السكرول بار ليكون أنيقاً */
+
 .custom-scrollbar::-webkit-scrollbar {
-  width: 5px;
+  width: 2px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {

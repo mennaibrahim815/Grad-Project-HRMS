@@ -7,6 +7,8 @@ import Login from "../HrPages/auth/Login/Login";
 import ForgotPassword from "../HrPages/auth/ForgotPassword/ForgotPassword";
 import VerifyCode from "../HrPages/auth/VerifyCode/VerifyCode";
 import ResetPassword from "../HrPages/auth/ResetPassword/ResetPassword";
+import ApplyJob from "../HrPages/ApplyJob/ApplyJob";
+import ApplyJobForm from "../HrPages/ApplyJobForm/ApplyJobForm";
 
 import Splash from "../HrPages/Splash/Splash";
 import Error from "../HrPages/Error/Error";
@@ -17,6 +19,9 @@ import Project from "../HrPages/Project/Project";
 import Payroll from "../HrPages/Payroll/PayrollDashboard/Payroll";
 import PayrollManagment from "../HrPages/Payroll/PayrollManagement/payrollManagement"
 import Hiring from "../HrPages/Hiring/Hiring";
+import HiringJobs from "../HrPages/HiringJobs/HiringJobs";
+import HiringDetail from "../HrPages/HiringDetail/HiringDetail";
+import JobDetailPage from "../HrPages/JobDetailPage/JobDetailPage";
 import Attendance from "../HrPages/Attendance/Attendance";
 import Performance from "../HrPages/Performance/Performance";
 import LeaveRequests from "../HrPages/Leave/LeaveRequests/LeaveRequests";
@@ -31,6 +36,9 @@ export const router = createBrowserRouter(
     { path: "/forgot-password", element: <ForgotPassword /> },
     { path: "/verify", element: <VerifyCode /> },
     { path: "/reset-password", element: <ResetPassword /> },
+    { path: "/apply-job", element: <ApplyJob/> },
+    { path: "/careers/apply/:id", element: <ApplyJobForm/> },
+    
 
     // --- 🔵 HR ---
     {
@@ -46,12 +54,14 @@ export const router = createBrowserRouter(
         { path: "/payroll/dashboard", element: <Payroll /> },
         { path: "/payroll/management", element: <PayrollManagment/> },
         { path: "/hiring", element: <Hiring /> },
+        { path: "/hiring/jobs", element: <HiringJobs /> },
         { path: "/attendance", element: <Attendance /> },
         { path: "/leave-requests", element: <LeaveRequests /> },
 
         { path: "/leave-details/:id", element: <LeaveDetails /> },
 
         { path: "/performance", element: <Performance /> },
+       
       ],
     },
 
@@ -72,6 +82,8 @@ export const router = createBrowserRouter(
         { path: "/profile", element: <EmployeeDetail /> },
         { path: "/settings", element: <Settings /> },
         { path: "/employee/:id", element: <EmployeeDetail /> },
+        { path: "/hiring/:id", element: <HiringDetail/> },
+        { path: "/hiring/jobs/:id", element: <JobDetailPage /> },
       ],
     },
 

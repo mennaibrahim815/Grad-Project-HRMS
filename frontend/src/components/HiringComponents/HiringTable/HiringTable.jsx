@@ -2,13 +2,13 @@ import { useDispatch } from "react-redux";
 import { fetchEmployeeSummary } from "../../../store/HrSlices/employeeSlice";
 import { useNavigate } from "react-router-dom";
 
-import DataTable from "../../table/DataTable";
-import TableControls from "../../table/TableControls";
-import Pagination from "../../table/Pagination";
+import DataTable from "../../../table/DataTable";
+import TableControls from "../../../table/TableControls";
+import Pagination from "../../../table/Pagination";
 import EditIcon from "@mui/icons-material/Edit";
 import useTableController from "../../../hooks/useTableController";
-import RowActionMenu from "../../UI/RowActionMenu";
-import BaseCard from "../../UI/Card";
+import RowActionMenu from "../../../UI/RowActionMenu";
+import BaseCard from "../../../UI/Card";
 import { useState } from "react";
 import { Eye, Trash2 } from "lucide-react";
 

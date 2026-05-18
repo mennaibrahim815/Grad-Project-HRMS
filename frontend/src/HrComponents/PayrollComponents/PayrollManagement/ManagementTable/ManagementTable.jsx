@@ -220,13 +220,6 @@ function ManagementTable() {
             }));
         }
     };
-    if (tableLoading && !payrollList) {
-        return (
-            <div className="flex items-center justify-center min-h-[60vh]">
-                <i className="fas fa-spinner fa-spin text-4xl text-blue-500"></i>
-            </div>
-        );
-    }
     return (
         <BaseCard padding="p-0" >
             <TableControls
@@ -238,14 +231,22 @@ function ManagementTable() {
                 setCurrentPage={() => { }}
 
             />
+            {tableLoading ? (
+                <div className="flex items-center justify-center py-20">
+                    <i className="fas fa-spinner fa-spin text-4xl text-blue-500"></i>
+                </div>
+            ) : (
+                <DataTable columns={columns} data={payrollList || []} />
+            )}
 
-            <DataTable columns={columns} data={payrollList || []} />
+        
             <Pagination
                 pagination={pagination}
                 handlePageChange={handlePageChange}
                 handleRecordsPerPageChange={(newLimit) => setRecordsPerPage(newLimit)}
                 currentDataLength={payrollList.length}
                 recordsPerPage={recordsPerPage}
+                entityName="payrolls"
             />
             {activeModal && (
                 <PayrollActionModal
@@ -257,7 +258,7 @@ function ManagementTable() {
                     }}
                 />
             )}
-              {detailsId && (
+            {detailsId && (
                 <PayrollDetailsModal
                     payrollId={detailsId}
                     onClose={() => setDetailsId(null)}

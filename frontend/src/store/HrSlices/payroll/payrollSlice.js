@@ -252,7 +252,7 @@ const payrollSlice = createSlice({
         state.yearlyLoading = false;
         state.error = action.payload;
       })
-           // ── Generate Draft ─────────────────────────────────────────────────────
+      // ── Generate Draft ─────────────────────────────────────────────────────
       .addCase(generateDraft.pending, (state) => {
         state.actionState = { loading: true, result: null };
       })
