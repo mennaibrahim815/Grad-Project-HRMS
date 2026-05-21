@@ -333,8 +333,6 @@ export const getEmployeesPayroll = asyncWraper(async (req, res, next) => {
     }
     if (status) {
         searchQuery.status = status;
-    } else {
-        searchQuery.status = { $in: ["Pending", "Paid"] };
     }
 
     const limitNumber = Number(limit) || 10;
@@ -919,7 +917,7 @@ export const editPayrollDraft = asyncWraper(async (req, res, next) => {
     }
 
     payroll.manualAdditions = manualAdditions;
-    payroll.manualDeductions  = manualDeductions;
+    payroll.manualDeductions = manualDeductions;
     payroll.adjustedBy = req.currentUser.userId;
     payroll.adjustmentReason = adjustmentReason;
 
