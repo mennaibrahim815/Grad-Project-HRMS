@@ -41,7 +41,7 @@ router
 
 router.route("/me").get(verifyToken, getMe);
 
-router.route("/login").post(validate(validateLogInSchema), loginLimiter, login);
+router.route("/login").post(validate(validateLogInSchema), login);
 
 router.route("/logout").post(verifyToken, logout);
 
