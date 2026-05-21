@@ -22,21 +22,28 @@ import { setFilesToBody } from "../Middleware/setFilesToBody.js";
 import upload from "../Middleware/multerConfig.js";
 import { processUploadedFile } from "../Middleware/processUploads.js";
 
+import { setFilesToBody2 } from "../Middleware/setFilesToBody2.js";
+import { processUploadedFile2 } from "../Middleware/processUploads2.js";
+
 router
     .route("/")
     .get(verifyToken, allowedTo("HR"), validate(validateProjectQueryParamsSchema), getAllProjects)
     .post(
         verifyToken,
         allowedTo("HR", "MANAGER"),
-        upload.fields([
-            { name: "general[avatar]", maxCount: 1 },
-            { name: "documents", maxCount: 10 },
-        ]),
-        processUploadedFile,
-        setFilesToBody({
-            "general[avatar]": "general.avatar",
-            documents: "documents",
-        }),
+        // upload.fields([
+        //     { name: "general[avatar]", maxCount: 1 },
+        //     { name: "documents", maxCount: 10 },
+        // ]),
+        // processUploadedFile,
+        // setFilesToBody({
+        //     "general[avatar]": "general.avatar",
+        //     documents: "documents",
+        // }),
+        upload.any(),
+        processUploadedFile2, 
+        setFilesToBody2(),
+
         validate(validateProjectSchema),
         createProject
     );

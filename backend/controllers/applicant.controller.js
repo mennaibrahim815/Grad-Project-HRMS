@@ -63,16 +63,7 @@ export const getAllApplicantsWithFilters = asyncWraper(async (req, res, next) =>
 export const getApplicantById = asyncWraper(async (req, res, next) => {
     const applicantId = req.params.id;
 
-    const applicant = await Applicant.findById(applicantId, {
-        "personalInfo.firstName": 1,
-        "personalInfo.lastName": 1,
-        "personalInfo.email": 1,
-        "personalInfo.department": 1,
-        "personalInfo.experienceLevel": 1,
-        "personalInfo.avatar": 1,
-        status: 1,
-        createdAt: 1
-    });
+    const applicant = await Applicant.findById(applicantId).select("-__v");
 
     if (!applicant) {
         const error = appErrors.create(404, "Applicant Not Found", httpResponseText.FAIL);
