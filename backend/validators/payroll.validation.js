@@ -30,8 +30,21 @@ export const editPayrollDraftSchema = z.object({
                 .number()
                 .min(0, "Deductions cannot be negative")
                 .optional(),
-            adjustmentReason: z.string().optional(),
+            adjustmentReason: z.string().trim().optional(),
         })
+        .refine(
+            (data) => {
+                return (
+                    data.manualAdditions !== undefined ||
+                    data.manualDeductions !== undefined
+                );
+            },
+            {
+                message:
+                    "You must provide at least 'manualAdditions' or 'manualDeductions'. Empty requests are not allowed.",
+                path: ["body"],
+            }
+        )
         .refine(
             (data) => {
                 const hasAdditions =
@@ -44,7 +57,7 @@ export const editPayrollDraftSchema = z.object({
                 if (hasAdditions || hasDeductions) {
                     return (
                         typeof data.adjustmentReason === "string" &&
-                        data.adjustmentReason.trim().length > 0
+                        data.adjustmentReason.length > 0
                     );
                 }
 

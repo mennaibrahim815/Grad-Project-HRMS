@@ -2,8 +2,9 @@ import { Router } from "express";
 import {
     checkIn,
     getAllAttandence,
-    getAttendanceByEmployeeId,
+    getEmployeeAttendanceById,
     getMonthlyAttendanceStats,
+    getMyAttendance,
     getSixMonthsAttendanceStats,
     searchAttendance,
 } from "../controllers/attendance.controller.js";
@@ -34,12 +35,11 @@ router
 router.get("/search", validate(dailySearchSchema), searchAttendance);
 
 router
+    .route("/employee/me")
+    .get(verifyToken, allowedTo("HR", "EMPLOYEE"), getMyAttendance);
+router
     .route("/employee/:id")
-    .get(
-        verifyToken,
-        validate(AttendanceByEmployeeIdQuery),
-        getAttendanceByEmployeeId
-    );
+    .get(verifyToken, allowedTo("HR"), getEmployeeAttendanceById);
 
 router.route("/check-in").post(validate(validateCheckInSchema), checkIn);
 

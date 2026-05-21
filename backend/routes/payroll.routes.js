@@ -11,13 +11,17 @@ import {
     getMonthlyDashboardStats,
     getYearlyPayrollChart,
     searchPayroll,
+    editPayrollDraft,
 } from "../controllers/payroll.controller.js";
 
 import { verifyToken } from "../guards/verifyToken.js";
 import { allowedTo } from "../guards/allowedTo.js";
 import { validate } from "../Middleware/validate.Middelware.js";
 
-import { editPayrollDraftSchema, generatePayrolSchema } from "../validators/payroll.validation.js";
+import {
+    editPayrollDraftSchema,
+    generatePayrolSchema,
+} from "../validators/payroll.validation.js";
 import {
     monthlySearchSchema,
     monthYearBodySchema,
@@ -112,7 +116,7 @@ router.patch(
     "/draft/:id/edit",
     verifyToken,
     allowedTo("HR", "MANAGER"),
-    validateSchema(editPayrollDraftSchema),
+    validate(editPayrollDraftSchema),
     editPayrollDraft
 );
 
