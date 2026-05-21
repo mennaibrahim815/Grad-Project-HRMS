@@ -8,6 +8,7 @@ import { httpResponseText } from "../utils/httpResponseText.js";
 import { asyncWraper } from "../Middleware/asyncWraper.js";
 import dayjs from "dayjs";
 import { buildNameSearchQuery } from "../utils/searchHelper.js";
+import { months } from "../utils/monthsArray.js";
 
 export const generatePayrollDraft = asyncWraper(async (req, res, next) => {
     let { month, year } = req.body;
@@ -15,93 +16,104 @@ export const generatePayrollDraft = asyncWraper(async (req, res, next) => {
     year = parseInt(year);
 
     if (!month || !year) {
-        const error = appErrors.create(
-            400,
-            "Month and Year are required",
-            httpResponseText.FAIL
+        return next(
+            appErrors.create(
+                400,
+                "Month and Year are required",
+                httpResponseText.FAIL
+            )
         );
-        return next(error);
-    }
-    const setting = await Setting.findOne({});
-    if (!setting) {
-        const error = appErrors.create(
-            400,
-            "No settings found in the database.",
-            httpResponseText.FAIL
-        );
-        return next(error);
     }
 
-    const cutoffDay = setting.payrollCutoffDay;
-    const minutesMultiplier = setting.minutesMultiplier;
+    const setting = await Setting.findOne({});
+    if (!setting) {
+        return next(
+            appErrors.create(
+                400,
+                "No settings found in the database.",
+                httpResponseText.FAIL
+            )
+        );
+    }
+
+    const existingPayrollForMonth = await Payroll.findOne({
+        month,
+        year,
+        status: { $in: ["Pending", "Paid"] },
+    });
+
+    if (existingPayrollForMonth) {
+        return next(
+            appErrors.create(
+                400,
+                `Cannot generate drafts. Salaries for ${months[month]} ${year} have already been approved or paid.`,
+                httpResponseText.FAIL
+            )
+        );
+    }
 
     const prevMonth = month === 1 ? 12 : month - 1;
     const prevYear = month === 1 ? year - 1 : year;
-
-    const months = [
-        "",
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-    ];
-
     const isFirstTimeRuning = (await Payroll.countDocuments()) === 0;
 
     if (!isFirstTimeRuning) {
-        const PrevPayroll = await Payroll.findOne({
+        const prevPayroll = await Payroll.findOne({
             month: prevMonth,
             year: prevYear,
         });
-
-        if (!PrevPayroll || PrevPayroll.status === "Draft") {
-            const error = appErrors.create(
-                400,
-                `Salaries for ${months[month]} ${year} can not be generated before the ${months[prevMonth]} ${prevYear} payroll is approved.`,
-                httpResponseText.FAIL
+        if (!prevPayroll || prevPayroll.status === "Draft") {
+            return next(
+                appErrors.create(
+                    400,
+                    `Salaries for ${months[month]} ${year} can not be generated before the ${months[prevMonth]} ${prevYear} payroll is approved.`,
+                    httpResponseText.FAIL
+                )
             );
-            return next(error);
         }
     }
+
+    const cutoffDay = setting.payrollCutoffDay;
     const currentMonthCutoff = dayjs(
         `${year}-${month}-${cutoffDay}`,
         "YYYY-M-D"
     );
     const prevMonthCutoff = currentMonthCutoff.subtract(1, "month");
-
     const cutoffDateString = currentMonthCutoff.format("YYYY-MM-DD");
+    const cycleStartDateStr = prevMonthCutoff
+        .add(1, "day")
+        .format("YYYY-MM-DD");
+
     const employees = await User.find({
         "general.role": { $in: ["EMPLOYEE", "HR"] },
         "employee.status": "Active",
     });
+
     if (employees.length === 0) {
-        const error = appErrors.create(
-            404,
-            "No active employees found",
-            httpResponseText.FAIL
+        return next(
+            appErrors.create(
+                404,
+                "No active employees found",
+                httpResponseText.FAIL
+            )
         );
-        return next(error);
     }
 
+    const existingDrafts = await Payroll.find({ month, year, status: "Draft" });
+
     const payrollResults = [];
+
     for (const user of employees) {
-        const baseSalary = user.employee.baseSalary;
-        const joiningDate = dayjs(user.employee.joiningDate);
-        const workingHours = user.employee.workingHours;
+        const {
+            baseSalary,
+            joiningDate: joiningDateRaw,
+            workingHours,
+        } = user.employee;
+        const joiningDate = dayjs(joiningDateRaw);
 
         const dayRate = baseSalary / 30;
         const minuteRate = dayRate / workingHours / 60;
 
         let payableDays = 30;
-
         if (joiningDate.isAfter(prevMonthCutoff)) {
             const daysWorked = currentMonthCutoff.diff(joiningDate, "day") + 1;
             payableDays = Math.max(0, Math.min(daysWorked, 30));
@@ -113,30 +125,23 @@ export const generatePayrollDraft = asyncWraper(async (req, res, next) => {
             date: { $lte: cutoffDateString },
         });
 
-        let totalAbsentDays = 0;
-        let totalDelayMinutes = 0;
-        let actualDaysPresent = 0;
-
-        unhandledAttendances.forEach((record) => {
-            if (record.status === "Absent") {
-                totalAbsentDays += 1;
-            } else if (record.status === "Late") {
-                totalDelayMinutes += record.delayMinutes || 0;
-                actualDaysPresent += 1;
-            } else if (record.status === "On Time") {
-                actualDaysPresent += 1;
-            }
-        });
-
-        const cycleStartDateStr = prevMonthCutoff
-            .add(1, "day")
-            .format("YYYY-MM-DD");
-
         const approvedLeaves = await Leave.find({
             employeeId: user._id,
             status: "Approved",
             startDate: { $lte: cutoffDateString },
             endDate: { $gte: cycleStartDateStr },
+        });
+
+        let totalAbsentDays = 0;
+        let totalDelayMinutes = 0;
+        let actualDaysPresent = 0;
+
+        unhandledAttendances.forEach((record) => {
+            if (record.status === "Absent") totalAbsentDays += 1;
+            else if (record.status === "Late") {
+                totalDelayMinutes += record.delayMinutes || 0;
+                actualDaysPresent += 1;
+            } else if (record.status === "On Time") actualDaysPresent += 1;
         });
 
         let unpaidLeaveDays = 0;
@@ -151,43 +156,57 @@ export const generatePayrollDraft = asyncWraper(async (req, res, next) => {
             const leaveEnd = dayjs(leave.endDate).isAfter(cutoffDateString)
                 ? dayjs(cutoffDateString)
                 : dayjs(leave.endDate);
-
             const overlapDays = leaveEnd.diff(leaveStart, "day") + 1;
 
             if (overlapDays > 0) {
-                if (leave.type === "Unpaid") {
-                    unpaidLeaveDays += overlapDays;
-                } else {
-                    paidLeaveDays += overlapDays;
-                }
+                if (leave.type === "Unpaid") unpaidLeaveDays += overlapDays;
+                else paidLeaveDays += overlapDays;
             }
         });
 
         totalAbsentDays += unpaidLeaveDays;
-
         actualDaysPresent += paidLeaveDays;
 
         const absenceDeduction = totalAbsentDays * dayRate;
         const delayDeduction =
-            totalDelayMinutes * minuteRate * minutesMultiplier;
-        let calculatedBaseSalary = Math.min(dayRate * payableDays, baseSalary);
+            totalDelayMinutes * minuteRate * setting.minutesMultiplier;
+        const calculatedBaseSalary = Math.min(
+            dayRate * payableDays,
+            baseSalary
+        );
         const totalDeductions = Math.floor(absenceDeduction + delayDeduction);
-        let netSalary = calculatedBaseSalary - totalDeductions;
 
-        if (netSalary > calculatedBaseSalary) netSalary = calculatedBaseSalary;
-        if (netSalary < 0) netSalary = 0;
+        const userDraft = existingDrafts.find(
+            (draft) => draft.employeeId.toString() === user._id.toString()
+        );
+        const currentManualAdditions = userDraft
+            ? userDraft.manualAdditions
+            : 0;
+        const currentManualDeductions = userDraft
+            ? userDraft.manualDeductions
+            : 0;
+
+        let finalNetSalary =
+            calculatedBaseSalary -
+            totalDeductions +
+            currentManualAdditions -
+            currentManualDeductions;
+        if (finalNetSalary < 0) finalNetSalary = 0;
 
         const totalExpectedMinutes = actualDaysPresent * workingHours * 60;
-        const totalActualMinutes = totalExpectedMinutes - totalDelayMinutes;
-        const totalHours = Math.floor(totalActualMinutes / 60);
-        const totalMinutes = totalActualMinutes % 60;
+        const totalActualMinutes = Math.max(
+            0,
+            totalExpectedMinutes - totalDelayMinutes
+        );
 
         const payrollRecord = await Payroll.findOneAndUpdate(
             { employeeId: user._id, month, year },
             {
                 baseSalary: calculatedBaseSalary,
-                netSalary,
+                netSalary: finalNetSalary,
                 deductions: totalDeductions,
+                manualAdditions: currentManualAdditions,
+                manualDeductions: currentManualDeductions,
                 daysPresent: actualDaysPresent,
                 daysAbsent: totalAbsentDays,
                 status: "Draft",
@@ -196,11 +215,10 @@ export const generatePayrollDraft = asyncWraper(async (req, res, next) => {
                     .format("DD MMM YYYY"),
                 cycleEndDate: currentMonthCutoff.format("DD MMM YYYY"),
                 totalDelayMinutes,
-                totalHours,
-                totalMinutes,
+                totalHours: Math.floor(totalActualMinutes / 60),
+                totalMinutes: totalActualMinutes % 60,
                 generatedBy: req.currentUser.userId,
             },
-
             { new: true, upsert: true, runValidators: true }
         );
 
@@ -227,21 +245,6 @@ export const ApprovePayroll = asyncWraper(async (req, res, next) => {
         return next(error);
     }
 
-    const months = [
-        "",
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-    ];
     const approvedMonthPayroll = await Payroll.findOne({
         month,
         year,
@@ -330,6 +333,8 @@ export const getEmployeesPayroll = asyncWraper(async (req, res, next) => {
     }
     if (status) {
         searchQuery.status = status;
+    } else {
+        searchQuery.status = { $in: ["Pending", "Paid"] };
     }
 
     const limitNumber = Number(limit) || 10;
@@ -344,14 +349,7 @@ export const getEmployeesPayroll = asyncWraper(async (req, res, next) => {
         .skip(skip)
         .limit(limitNumber)
         .lean();
-    if (payrolls.length === 0) {
-        const error = appErrors.create(
-            404,
-            "No payroll found for employees in the specified period",
-            httpResponseText.FAIL
-        );
-        return next(error);
-    }
+
     const formattedPayrolls = payrolls.map((payroll) => {
         return {
             _id: payroll._id,
@@ -456,48 +454,35 @@ export const getPayrollDetails = asyncWraper(async (req, res, next) => {
     });
 });
 
-export const getEmployeePayrollHistory = asyncWraper(async (req, res, next) => {
+
+const fetchPayrollHistoryLogic = async (req, res, next, targetEmployeeId) => {
     const { month, year, status, limit, page } = req.query;
-    const id = req.params.id;
     const limitNumber = Number(limit) || 10;
     const pageNumber = Number(page) || 1;
     const skip = (pageNumber - 1) * limitNumber;
 
-    if (req.currentUser.role !== "HR" && req.currentUser.userId !== id) {
-        const error = appErrors.create(
-            403,
-            "Forbidden, You are not allowed to view other users' payroll"
-        );
-        return next(error);
-    }
 
-    const searchQuery = {};
+    const searchQuery = { employeeId: targetEmployeeId };
+
     if (month && year) {
         searchQuery.month = month;
         searchQuery.year = year;
     }
+
     if (status) {
         searchQuery.status = status;
+    } else {
+        searchQuery.status = { $in: ["Pending", "Paid"] };
     }
-    searchQuery.employeeId = id;
 
     const payrolls = await Payroll.find(searchQuery)
+        .sort({ year: -1, month: -1 })
         .skip(skip)
         .limit(limitNumber)
         .populate(
             "employeeId",
             "general.firstName general.lastName general.email general.phone general.gender general.role general.avatar employee.department employee.jobTitle employee.jobType"
         );
-
-    if (!payrolls || payrolls.length === 0) {
-        return next(
-            appErrors.create(
-                404,
-                "Payroll not found for this employee in the specified period",
-                httpResponseText.FAIL
-            )
-        );
-    }
 
     const formattedPayrolls = payrolls.map((payroll) => ({
         _id: payroll._id,
@@ -537,6 +522,15 @@ export const getEmployeePayrollHistory = asyncWraper(async (req, res, next) => {
             limit: limitNumber,
         },
     });
+};
+
+export const getMyPayrollHistory = asyncWraper(async (req, res, next) => {
+    await fetchPayrollHistoryLogic(req, res, next, req.currentUser.userId);
+});
+
+export const getEmployeePayrollHistory = asyncWraper(async (req, res, next) => {
+    const targetId = req.params.id;
+    await fetchPayrollHistoryLogic(req, res, next, targetId);
 });
 
 export const payingOnemonthtoEmployees = asyncWraper(async (req, res, next) => {
@@ -768,22 +762,6 @@ export const getYearlyPayrollChart = asyncWraper(async (req, res, next) => {
         { $sort: { _id: 1 } },
     ]);
 
-    const months = [
-        "",
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec",
-    ];
-
     const formattedData = [];
 
     for (let i = 1; i <= 12; i++) {
@@ -919,5 +897,47 @@ export const searchPayroll = asyncWraper(async (req, res, next) => {
                 limit: limitNumber,
             },
         },
+    });
+});
+
+export const editPayrollDraft = asyncWraper(async (req, res, next) => {
+    const payrollId = req.params.id;
+    const {
+        manualAdditions = 0,
+        manualDeductions = 0,
+        adjustmentReason = "",
+    } = req.body;
+
+    const payroll = await Payroll.findOne({ _id: payrollId, status: "Draft" });
+
+    if (!payroll) {
+        return next(
+            appErrors.create(
+                404,
+                "Payroll draft not found",
+                httpResponseText.FAIL
+            )
+        );
+    }
+
+    payroll.manualAdditions = manualAdditions;
+    payroll.manualDeductions = manualDeductions;
+    payroll.adjustedBy = req.currentUser.userId;
+    payroll.adjustmentReason = adjustmentReason;
+
+    let finalNetSalary =
+        payroll.baseSalary -
+        payroll.deductions +
+        payroll.manualAdditions -
+        payroll.manualDeductions;
+
+    payroll.netSalary = finalNetSalary < 0 ? 0 : finalNetSalary;
+
+    await payroll.save();
+
+    res.status(200).json({
+        status: httpResponseText.SUCCESS,
+        message: `Payroll draft has been updated successfully`,
+        data: { updatedPayroll: payroll },
     });
 });

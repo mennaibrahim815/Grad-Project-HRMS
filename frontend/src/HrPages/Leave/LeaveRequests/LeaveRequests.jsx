@@ -1,25 +1,234 @@
-// import LeaveHero from "../../../components/LeavePageComponents/LeaveHero.jsx";
-import LeaveTable from "../../../components/LeavePageComponents/LeaveTable.jsx";
 
+// import React, { useState, useEffect } from "react";
+// import LeaveTable from "@/HrComponents/LeavePageComponents/LeaveTable";
+// import instance from "@/services/axios";
+
+// export default function LeaveRequests() {
+//   const [leaves, setLeaves] = useState([]);
+//   const [loading, setLoading] = useState(true);
+//   const [searchName, setSearchName] = useState("");
+//   const [searchDate, setSearchDate] = useState("");
+//   const [statusFilter, setStatusFilter] = useState("All");
+
+//   const [paginationInfo, setPaginationInfo] = useState({
+//     currentPage: 1,
+//     totalPages: 1,
+//     totalRecords: 0,
+//     limit: 5
+//   });
+
+//   const fetchLeaves = async () => {
+//     try {
+//       setLoading(true);
+//       let endpoint = (searchName.trim() || searchDate) ? "/leaves/search" : "/leaves";
+      
+//       const params = { 
+//         page: paginationInfo.currentPage, 
+//         limit: paginationInfo.limit,
+//         ...(searchName.trim() && { employeeName: searchName.trim() }),
+//         ...(searchDate && { date: searchDate }),
+//         ...(statusFilter !== "All" && { status: statusFilter })
+//       };
+
+//       const response = await instance.get(endpoint, { params });
+      
+//       const isSearch = endpoint === "/leaves/search";
+//       const resultData = isSearch ? response.data?.data : response.data;
+//       const fetchedLeaves = isSearch ? resultData?.leave : resultData?.data;
+//       const pag = isSearch ? resultData?.pagination : response.data?.pagination;
+
+//       setLeaves(fetchedLeaves || []);
+      
+//       setPaginationInfo(prev => ({
+//         ...prev,
+//         totalPages: pag?.totalPages || 1,
+//         totalRecords: pag?.totalRecords || (fetchedLeaves?.length || 0)
+//       }));
+
+//     } catch (err) {
+//       console.error("Fetch Error:", err);
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   // --- الدالة الجديدة لتحديث الحالة ---
+//   const handleUpdateStatus = async (id, newStatus) => {
+//     try {
+//       // نداء الـ API بناءً على الـ Route بتاعك
+//       const response = await instance.patch(`/leaves/${id}/status`, { 
+//         status: newStatus 
+//       });
+
+//       if (response.data.status === "success" || response.status === 200) {
+//         // تحديث الحالة في الـ State فوراً عشان الجدول يحس بالتغيير
+//         setLeaves(prevLeaves => 
+//           prevLeaves.map(leave => 
+//             (leave._id === id || leave.id === id) ? { ...leave, status: newStatus } : leave
+//           )
+//         );
+//         console.log(`Leave ${newStatus} successfully`);
+//       }
+//     } catch (err) {
+//       console.error("Error updating status:", err);
+//       alert("Failed to update status. Please try again.");
+//     }
+//   };
+
+//   // --- دالة الحذف (اختياري لو محتاجاها) ---
+//   const handleDeleteLeave = async (id) => {
+//     if (window.confirm("Are you sure you want to delete this request?")) {
+//       try {
+//         await instance.delete(`/leaves/${id}`);
+//         setLeaves(prev => prev.filter(l => (l._id !== id && l.id !== id)));
+//       } catch (err) {
+//         console.error("Delete Error:", err);
+//       }
+//     }
+//   };
+
+//   useEffect(() => {
+//     const delay = setTimeout(() => fetchLeaves(), 500);
+//     return () => clearTimeout(delay);
+//   }, [paginationInfo.currentPage, paginationInfo.limit, searchName, searchDate, statusFilter]);
+
+//   const handlePageChange = (newPage) => {
+//     setPaginationInfo(prev => ({ ...prev, currentPage: newPage }));
+//   };
+
+//   const handleLimitChange = (newLimit) => {
+//     setPaginationInfo(prev => ({ ...prev, limit: newLimit, currentPage: 1 }));
+//   };
+
+//   return (
+//     <div className="p-6 bg-[#0f172a] min-h-screen">
+//       <div className="mb-6 text-white text-2xl font-bold tracking-tight">Leave Requests</div>
+
+//       <LeaveTable
+//         leaves={leaves}
+//         loading={loading}
+//         pagination={paginationInfo}
+//         onPageChange={handlePageChange}
+//         onLimitChange={handleLimitChange}
+//         // مررنا الدالة هنا للجدول
+//         onStatusUpdate={handleUpdateStatus} 
+//         onDelete={handleDeleteLeave}
+//         searchName={searchName}
+//         setSearchName={(val) => { setSearchName(val); handlePageChange(1); }}
+//         searchDate={searchDate}
+//         setSearchDate={(val) => { setSearchDate(val); handlePageChange(1); }}
+//         statusFilter={statusFilter}
+//         setStatusFilter={(val) => { setStatusFilter(val); handlePageChange(1); }}
+//       />
+//     </div>
+//   );
+// }
+import React, { useState, useEffect } from "react";
+import LeaveTable from "@/HrComponents/LeavePageComponents/LeaveTable";
+import instance from "@/services/axios";
 
 export default function LeaveRequests() {
-  const leaves = [
-    { id: 1, name: "Ahmed Ali", type: "Annual", from: "1 Mar", to: "3 Mar", days: 3 },
-    { id: 2, name: "Sara Omar", type: "Sick", from: "2 Mar", to: "2 Mar", days: 1 },
-    { id: 3, name: "Mohamed Hassan", type: "Annual", from: "5 Mar", to: "8 Mar", days: 4 },
-    { id: 4, name: "Laila Samir", type: "Sick", from: "6 Mar", to: "7 Mar", days: 2 },
-    { id: 5, name: "Omar Khaled", type: "Annual", from: "8 Mar", to: "12 Mar", days: 5 },
-    { id: 6, name: "Nour Ahmed", type: "Sick", from: "10 Mar", to: "10 Mar", days: 1 },
-    { id: 7, name: "Hossam Ali", type: "Annual", from: "12 Mar", to: "14 Mar", days: 3 },
-    { id: 8, name: "Mona Adel", type: "Annual", from: "13 Mar", to: "15 Mar", days: 3 },
-    { id: 9, name: "Tamer Fathy", type: "Sick", from: "14 Mar", to: "14 Mar", days: 1 },
-    { id: 10, name: "Yasmine Omar", type: "Annual", from: "16 Mar", to: "18 Mar", days: 3 },
-  ];
+  const [leaves, setLeaves] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchName, setSearchName] = useState("");
+  const [searchDate, setSearchDate] = useState("");
+  const [statusFilter, setStatusFilter] = useState("All");
+
+  const [paginationInfo, setPaginationInfo] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalRecords: 0,
+    limit: 5
+  });
+
+  const fetchLeaves = async () => {
+    try {
+      setLoading(true);
+      let endpoint = (searchName.trim() || searchDate) ? "/leaves/search" : "/leaves";
+      
+      const params = { 
+        page: paginationInfo.currentPage, 
+        limit: paginationInfo.limit,
+        ...(searchName.trim() && { employeeName: searchName.trim() }),
+        ...(searchDate && { date: searchDate }),
+        ...(statusFilter !== "All" && { status: statusFilter })
+      };
+
+      const response = await instance.get(endpoint, { params });
+      
+      const isSearch = endpoint === "/leaves/search";
+      const resultData = isSearch ? response.data?.data : response.data;
+      const fetchedLeaves = isSearch ? resultData?.leave : resultData?.data;
+      const pag = isSearch ? resultData?.pagination : response.data?.pagination;
+
+      setLeaves(fetchedLeaves || []);
+      
+      setPaginationInfo(prev => ({
+        ...prev,
+        totalPages: pag?.totalPages || 1,
+        totalRecords: pag?.totalRecords || (fetchedLeaves?.length || 0)
+      }));
+
+    } catch (err) {
+      console.error("Fetch Error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // --- تحديث الحالة مع استلام سبب الرفض ---
+  const handleUpdateStatus = async (id, newStatus, reason = "") => {
+    try {
+      const response = await instance.patch(`/leaves/${id}/status`, { 
+        status: newStatus,
+        rejectReason: reason // إرسال السبب للباك إند
+      });
+
+      if (response.data.status === "success" || response.status === 200) {
+        setLeaves(prevLeaves => 
+          prevLeaves.map(leave => 
+            (leave._id === id || leave.id === id) ? { ...leave, status: newStatus, rejectReason: reason } : leave
+          )
+        );
+        console.log(`Leave ${newStatus} successfully`);
+      }
+    } catch (err) {
+      console.error("Error updating status:", err);
+      alert("Failed to update status. Please try again.");
+    }
+  };
+
+  useEffect(() => {
+    const delay = setTimeout(() => fetchLeaves(), 500);
+    return () => clearTimeout(delay);
+  }, [paginationInfo.currentPage, paginationInfo.limit, searchName, searchDate, statusFilter]);
+
+  const handlePageChange = (newPage) => {
+    setPaginationInfo(prev => ({ ...prev, currentPage: newPage }));
+  };
+
+  const handleLimitChange = (newLimit) => {
+    setPaginationInfo(prev => ({ ...prev, limit: newLimit, currentPage: 1 }));
+  };
 
   return (
-    <div className="p-6">
-      {/* <LeaveHero /> */}
-      <LeaveTable leaves={leaves} />
+    <div className="p-6 bg-[#0f172a] min-h-screen text-slate-200">
+      <div className="mb-6 text-white text-2xl font-bold tracking-tight">Leave Requests</div>
+
+      <LeaveTable
+        leaves={leaves}
+        loading={loading}
+        pagination={paginationInfo}
+        onPageChange={handlePageChange}
+        onLimitChange={handleLimitChange}
+        onStatusUpdate={handleUpdateStatus} 
+        searchName={searchName}
+        setSearchName={(val) => { setSearchName(val); handlePageChange(1); }}
+        searchDate={searchDate}
+        setSearchDate={(val) => { setSearchDate(val); handlePageChange(1); }}
+        statusFilter={statusFilter}
+        setStatusFilter={(val) => { setStatusFilter(val); handlePageChange(1); }}
+      />
     </div>
   );
 }

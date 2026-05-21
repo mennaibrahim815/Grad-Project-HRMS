@@ -1,4 +1,4 @@
-import { useState,useEffect} from 'react';
+import { useState, useEffect } from 'react';
 import { fetchAllPayrolls, searchPayrolls, setPayrollMonth } from "../../../../store/HrSlices/payroll/payrollSlice";
 import { useDispatch, useSelector } from 'react-redux'
 //Components
@@ -18,20 +18,20 @@ const getAvatarUrl = (name, background = '0D8ABC', color = 'fff') => {
 const AttendanceBadge = ({ status }) => {
   const getStatusStyles = () => {
     switch (status) {
-     case 'Paid':
-     return 'bg-emerald-500/15 text-emerald-400 border-emerald-400/40'
+      case 'Paid':
+        return 'bg-emerald-500/15 text-emerald-400 border-emerald-400/40'
 
-    case 'Pending':
-    return 'bg-sky-500/15 text-sky-400 border-sky-400/40'
+      case 'Pending':
+        return 'bg-sky-500/15 text-sky-400 border-sky-400/40'
 
-   case 'Draft,':
-   return 'bg-slate-500/20 text-slate-400 border-slate-400/40'
+      case 'Draft,':
+        return 'bg-slate-500/20 text-slate-400 border-slate-400/40'
 
 
     }
   }
-    
-    return (
+
+  return (
     <span className={`
     inline-flex items-center gap-2
     px-3 py-1
@@ -48,100 +48,77 @@ const AttendanceBadge = ({ status }) => {
 function PayrollTable() {
   const [openMenuId, setOpenMenuId] = useState(null);
   const columns = [
-  {
-    header: "Employee",
-    accessor: "employee.firstName",
-    render: (row) => {
-      const fullName = `${row.employee?.firstName || ""} ${row.employee?.lastName || ""}`;
-      return (
-        <div className="flex items-center gap-3">
-          <img
-            src={row.employee?.avatar || getAvatarUrl(fullName)}
-            alt={fullName}
-            className="w-10 h-10 rounded-full object-cover"
-          />
-          <div>
-            <p className="text-sm font-medium text-slate-100">{fullName}</p>
-            <p className="text-xs text-slate-500">{row._id?.slice(-6)}</p>
+    {
+      header: "Employee",
+      accessor: "employee.firstName",
+      render: (row) => {
+        const fullName = `${row.employee?.firstName || ""} ${row.employee?.lastName || ""}`;
+        return (
+          <div className="flex items-center gap-3">
+            <img
+              src={row.employee?.avatar || getAvatarUrl(fullName)}
+              alt={fullName}
+              className="w-10 h-10 rounded-full object-cover"
+            />
+            <div>
+              <p className="text-sm font-medium text-slate-100">{fullName}</p>
+              <p className="text-xs text-slate-500">{row._id?.slice(-6)}</p>
+            </div>
           </div>
-        </div>
-      );
+        );
+      },
     },
-  },
-  { 
-    header: "Department", 
-    accessor: "employee.department",
-    render: (row) => row.employee?.department
-  },
-  { 
-    header: "Period", 
-    accessor: "month",
-    render: (row) => {
-      // دمج month و year مع بعض
-      const date = new Date(row.year, row.month - 1);
-      return date.toLocaleString("en-US", { month: "long", year: "numeric" });
-      
-    }
-  },
-  { 
-    header: "Base Salary", 
-    accessor: "baseSalary",
-    render: (row) => `$${row.baseSalary?.toLocaleString()}`
-  },
-  { 
-    header: "Deductions", 
-    accessor: "deductions",
-    render: (row) => `$${row.deductions?.toLocaleString()}`
-  },
-  { 
-    header: "Net Salary", 
-    accessor: "netSalary",
-    render: (row) => `$${row.netSalary?.toLocaleString()}`
-  },
-  { 
-    header: "Days Present", 
-    accessor: "daysPresent",
-    render: (row) => (
-      <span className="text-emerald-400">{row.daysPresent} days</span>
-    )
-  },
-  {
-    header: "Status",
-    accessor: "status",
-    render: (row) => <AttendanceBadge status={row.status} />,
-  },
-  {
-    header: "Action",
-    accessor: "action",
-    render: (row) => (
-      <div className="relative">
-        <button
-          onClick={() => setOpenMenuId(openMenuId === row._id ? null : row._id)}
-          className="p-2 text-slate-400 hover:text-slate-200"
-        >
-          <EditIcon />
-        </button>
-        <RowActionMenu
-          isOpen={openMenuId === row._id}
-          onClose={() => setOpenMenuId(null)}
-          actions={[
-            {
-              label: "See Details",
-              icon: Eye,
-              onClick: () => console.log("Details", row._id),
-            },
-            // {
-            //   label: "Delete",
-            //   variant: "danger",
-            //   icon: Trash2,
-            //   onClick: () => console.log("Delete", row._id),
-            // },
-          ]}
-        />
-      </div>
-    ),
-  },
-];
+    {
+      header: "Department",
+      accessor: "employee.department",
+      render: (row) => row.employee?.department
+    },
+    {
+      header: "Period",
+      accessor: "month",
+      render: (row) => {
+        // دمج month و year مع بعض
+        const date = new Date(row.year, row.month - 1);
+        return date.toLocaleString("en-US", { month: "long", year: "numeric" });
+
+      }
+    },
+    {
+      header: "Base Salary",
+      accessor: "baseSalary",
+      render: (row) => `$${row.baseSalary?.toLocaleString()}`
+    },
+    // { 
+    //   header: "Deductions", 
+    //   accessor: "deductions",
+    //   render: (row) => `$${row.deductions?.toLocaleString()}`
+    // },
+    {
+      header: "Net Salary",
+      accessor: "netSalary",
+      render: (row) => `$${row.netSalary?.toLocaleString()}`
+    },
+    {
+      header: "Days Present",
+      accessor: "daysPresent",
+      render: (row) => (
+        <span className="text-emerald-400">{row.daysPresent} days</span>
+      )
+    },
+    {
+      header: "Days Absents",
+      accessor: "daysAbsent",
+      render: (row) => (
+        <span className="text-pink-400">{row.daysAbsent} days</span>
+      )
+    },
+    {
+      header: "Status",
+      accessor: "status",
+      render: (row) => <AttendanceBadge status={row.status} />,
+    },
+
+  ];
   const dispatch = useDispatch();
   const { payrollList, pagination, tableLoading, selectedMonth } = useSelector((state) => state.payroll);
 
@@ -198,32 +175,35 @@ function PayrollTable() {
       }));
     }
   };
-  if (tableLoading && !payrollList) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <i className="fas fa-spinner fa-spin text-4xl text-blue-500"></i>
-      </div>
-    );
-  }
+
   return (
-      <BaseCard padding="p-0" >
-       <TableControls
-      searchTerm={searchQuery}
-      setSearchTerm={setSearchQuery}
-      filterValue={activeFilter}
-      setFilterValue={setActiveFilter}
-      filterOptions={["All", "Paid", "Pending", "Draft"]}
-      setCurrentPage={() => {}}
+    <BaseCard padding="p-0" >
+      <TableControls
+        searchTerm={searchQuery}
+        setSearchTerm={setSearchQuery}
+        filterValue={activeFilter}
+        setFilterValue={setActiveFilter}
+        filterOptions={["All", "Paid", "Pending", "Draft"]}
+        setCurrentPage={() => { }}
 
       />
-    
-      <DataTable columns={columns}  data={payrollList || []} />
+
+      {tableLoading ? (
+        <div className="flex items-center justify-center py-20">
+          <i className="fas fa-spinner fa-spin text-4xl text-blue-500"></i>
+        </div>
+      ) : (
+        <DataTable columns={columns} data={payrollList || []} />
+      )}
+
+
       <Pagination
         pagination={pagination}
         handlePageChange={handlePageChange}
         handleRecordsPerPageChange={(newLimit) => setRecordsPerPage(newLimit)}
         currentDataLength={payrollList.length}
         recordsPerPage={recordsPerPage}
+        entityName="payrolls"
       />
     </BaseCard>
   );

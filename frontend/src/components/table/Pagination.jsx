@@ -18,14 +18,15 @@ const ChevronDown = () => (
   </svg>
 )
 const Pagination = ({
-  pagination, // استلام الكائن كامل من الـ Redux
+  pagination, 
   handlePageChange,
   handleRecordsPerPageChange,
-  currentDataLength // طول المصفوفة الحالية (attendanceList.length)
+  currentDataLength ,
+  entityName = "records"
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
-  // فك الكائن لتسهيل الاستخدام
+ 
  const { 
   currentPage = 1, 
   totalPages = 1, 
@@ -40,7 +41,7 @@ const Pagination = ({
         
         {/* Showing info: */}
         <p className="text-sm text-slate-400">
-          Showing: <span className="text-cyan-400 font-medium">{currentDataLength}</span> of {totalRecords} attendance
+          Showing: <span className="text-cyan-400 font-medium">{currentDataLength}</span> of {totalRecords} {entityName}
         </p>
 
         {/* Page numbers */}

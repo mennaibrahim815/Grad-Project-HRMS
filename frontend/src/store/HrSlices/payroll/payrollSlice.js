@@ -72,12 +72,75 @@ export const fetchYearlyPayroll = createAsyncThunk(
     }
   }
 );
+// ─── New Action Thunks ────────────────────────────────────────────────────────
+ 
+export const generateDraft = createAsyncThunk(
+  "payroll/generateDraft",
+  async ({ month, year }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/payroll/draft", { month, year });
+      return response.data; // { status, message, data: { payrolls } }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to generate draft. Please try again." }
+      );
+    }
+  }
+);
+ 
+export const approvePayroll = createAsyncThunk(
+  "payroll/approve",
+  async ({ month, year }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post("/payroll/approve", { month, year });
+      return response.data; // { status, message, data: { approvedEmployeesCount } }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to approve payroll. Please try again." }
+      );
+    }
+  }
+);
+ 
+export const bulkPayPayroll = createAsyncThunk(
+  "payroll/bulkPay",
+  async ({ month, year }, { rejectWithValue }) => {
+    try {
+      // PATCH — not POST
+      const response = await axios.patch("/payroll/pay/bulk", { month, year });
+      return response.data; // { status, message, data: { paidEmployeesCount } }
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to process payment. Please try again." }
+      );
+    }
+  }
+);
+export const paySinglePayroll = createAsyncThunk(
+  "payroll/paySingle",
+  async ({ id, month, year }, { rejectWithValue }) => {
+    try {
+      
+      const response = await axios.patch(`/payroll/pay/${id}`, { 
+        month, 
+        year 
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to process payment." }
+      );
+    }
+  }
+);
 
 const payrollSlice = createSlice({
   name: "payroll",
   initialState: {
     selectedMonth: new Date().toISOString().slice(0, 7),
     selectedYear: new Date().getFullYear(),
+    managementSelectedMonth: new Date().toISOString().slice(0, 7),
+    managementSelectedYear: new Date().getFullYear(),
     analytics: null,
     payrollList: [],
     pagination: {
@@ -90,6 +153,13 @@ const payrollSlice = createSlice({
     tableLoading: false,
     yearlyLoading: false,
     error: null,
+     // State for payroll actions (Generate / Approve / Pay)
+    actionState: {
+      loading: false,
+      // After the API call resolves, we store the full response here.
+      // The modal reads this to show the backend message.
+      result: null, // { ok: bool, message: string, data: any } | null
+    },
   },
   reducers: {
     setPayrollMonth: (state, action) => {
@@ -97,7 +167,17 @@ const payrollSlice = createSlice({
     },
     setPayrollYear: (state, action) => {
       state.selectedYear = action.payload;
-    }
+    },
+    setManagementMonth: (state, action) => {
+      state.managementSelectedMonth = action.payload;
+    },
+    setManagementYear: (state, action) => {
+      state.managementSelectedYear = action.payload;
+    },
+       // Call this when the modal is closed so the result is cleared for next time
+    clearActionResult: (state) => {
+      state.actionState = { loading: false, result: null };
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -171,10 +251,77 @@ const payrollSlice = createSlice({
       .addCase(fetchYearlyPayroll.rejected, (state, action) => {
         state.yearlyLoading = false;
         state.error = action.payload;
+      })
+      // ── Generate Draft ─────────────────────────────────────────────────────
+      .addCase(generateDraft.pending, (state) => {
+        state.actionState = { loading: true, result: null };
+      })
+      .addCase(generateDraft.fulfilled, (state, action) => {
+        state.actionState = {
+          loading: false,
+          result: { ok: true, message: action.payload.message, data: action.payload.data },
+        };
+      })
+      .addCase(generateDraft.rejected, (state, action) => {
+        state.actionState = {
+          loading: false,
+          result: { ok: false, message: action.payload?.message || "Something went wrong.", data: null },
+        };
+      })
+ 
+      // ── Approve Payroll ────────────────────────────────────────────────────
+      .addCase(approvePayroll.pending, (state) => {
+        state.actionState = { loading: true, result: null };
+      })
+      .addCase(approvePayroll.fulfilled, (state, action) => {
+        state.actionState = {
+          loading: false,
+          result: { ok: true, message: action.payload.message, data: action.payload.data },
+        };
+      })
+      .addCase(approvePayroll.rejected, (state, action) => {
+        state.actionState = {
+          loading: false,
+          result: { ok: false, message: action.payload?.message || "Something went wrong.", data: null },
+        };
+      })
+ 
+      // ── Bulk Pay ───────────────────────────────────────────────────────────
+      .addCase(bulkPayPayroll.pending, (state) => {
+        state.actionState = { loading: true, result: null };
+      })
+      .addCase(bulkPayPayroll.fulfilled, (state, action) => {
+        state.actionState = {
+          loading: false,
+          result: { ok: true, message: action.payload.message, data: action.payload.data },
+        };
+      })
+      .addCase(bulkPayPayroll.rejected, (state, action) => {
+        state.actionState = {
+          loading: false,
+          result: { ok: false, message: action.payload?.message || "Something went wrong.", data: null },
+        };
+      })
+      // ── Pay single payroll───────────────────────────────────────────────────────────
+      .addCase(paySinglePayroll.pending, (state) => {
+        state.actionState = { loading: true, result: null };
+      })
+      .addCase(paySinglePayroll.fulfilled, (state, action) => {
+        state.actionState = {
+          loading: false,
+          result: { ok: true, message: action.payload.message, data: action.payload.data },
+        };
+      })
+      .addCase(paySinglePayroll.rejected, (state, action) => {
+        state.actionState = {
+          loading: false,
+          result: { ok: false, message: action.payload?.message || "Something went wrong.", data: null },
+        };
       });
+      
 
   },
 });
 
-export const { setPayrollMonth,setPayrollYear } = payrollSlice.actions;
+export const { setPayrollMonth,setPayrollYear,clearActionResult,setManagementMonth,setManagementYear, } = payrollSlice.actions;
 export default payrollSlice.reducer;

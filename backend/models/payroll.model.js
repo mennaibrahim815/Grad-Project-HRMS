@@ -6,7 +6,7 @@ const payrollSchema = new mongoose.Schema(
         employeeId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
         month: { type: Number, required: true },
         year: { type: Number, required: true },
-        baseSalary: { type: Number, required: true }, 
+        baseSalary: { type: Number, required: true },
         netSalary: { type: Number, required: true },
         deductions: { type: Number, required: true },
         daysPresent: { type: Number, required: true },
@@ -35,6 +35,24 @@ const payrollSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
             default: null,
+        },
+        manualAdditions: { type: Number, default: 0 },
+        manualDeductions: { type: Number, default: 0 },
+        adjustedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            default: null,
+        },
+        manualAdditions: { type: Number, default: 0 },
+        manualDeductions: { type: Number, default: 0 },
+        adjustedBy: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            default: null,
+        },
+        adjustmentReason: {
+            type: String,
+            default: "",
         },
     },
     modelConfig

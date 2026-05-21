@@ -35,6 +35,7 @@ const RowActionMenu = ({ isOpen, onClose, actions }) => {
 
         {actions.map((action, index) => {
           const isDanger = action.variant === "danger";
+          const isSuccess = action.variant === "success";
 
           return (
             <button
@@ -43,14 +44,16 @@ const RowActionMenu = ({ isOpen, onClose, actions }) => {
                 action.onClick();
                 onClose();
               }}
-              className={`flex items-center gap-3 px-4 py-3 
-                          rounded-[10px] w-full text-sm font-medium
-                          transition-all duration-200 active:scale-[0.98]
-                          ${
-                            isDanger
-                              ? "text-pink-400 hover:bg-pink-400/10"
-                              : "text-slate-200 hover:bg-white/[0.08]"
-                          }`}
+  className={`flex items-center gap-3 px-4 py-3 
+            rounded-[10px] w-full text-sm font-medium
+            transition-all duration-200 active:scale-[0.98]
+            ${
+              isDanger
+                ? "text-pink-400 hover:bg-pink-400/10"
+                : isSuccess
+                ? "text-emerald-400 hover:bg-emerald-400/10" 
+                : "text-slate-200 hover:bg-white/[0.08]"
+            }`}
             >
               {/* Icon */}
               {action.icon && (
