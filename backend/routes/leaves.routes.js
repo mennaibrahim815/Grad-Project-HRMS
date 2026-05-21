@@ -6,8 +6,9 @@ import {
     createLeave,
     deleteLeave,
     getAllLeaves,
+    getEmployeeLeavesById,
     getLeaveById,
-    getUserLeavesById,
+    getMyLeaves,
     searchLeave,
     updateLeave,
     updateLeaveStatus,
@@ -38,8 +39,12 @@ router
 router.get("/search", validate(dailySearchSchema), searchLeave);
 
 router
+    .route("/employee/me")
+    .get(verifyToken, allowedTo("HR", "EMPLOYEE"), getMyLeaves);
+
+router
     .route("/employee/:id")
-    .get(verifyToken, validate(validateIdParams), getUserLeavesById);
+    .get(verifyToken, allowedTo("HR"), getEmployeeLeavesById);
 
 router.route("/:id").get(verifyToken, validate(validateIdParams), getLeaveById);
 

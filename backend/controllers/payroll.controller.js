@@ -454,13 +454,11 @@ export const getPayrollDetails = asyncWraper(async (req, res, next) => {
     });
 });
 
-
 const fetchPayrollHistoryLogic = async (req, res, next, targetEmployeeId) => {
     const { month, year, status, limit, page } = req.query;
     const limitNumber = Number(limit) || 10;
     const pageNumber = Number(page) || 1;
     const skip = (pageNumber - 1) * limitNumber;
-
 
     const searchQuery = { employeeId: targetEmployeeId };
 
@@ -921,7 +919,7 @@ export const editPayrollDraft = asyncWraper(async (req, res, next) => {
     }
 
     payroll.manualAdditions = manualAdditions;
-    payroll.manualDeductions = manualDeductions;
+    payroll.manualDeductions  = manualDeductions;
     payroll.adjustedBy = req.currentUser.userId;
     payroll.adjustmentReason = adjustmentReason;
 

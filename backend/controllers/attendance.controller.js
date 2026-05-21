@@ -96,23 +96,21 @@ export const getAllAttandence = asyncWraper(async (req, res, next) => {
     });
 });
 
-export const getAttendanceByEmployeeId = asyncWraper(async (req, res, next) => {
+const fetchAttendanceHistoryLogic = async (
+    req,
+    res,
+    next,
+    targetEmployeeId
+) => {
     const { month, year, limit, page } = req.query;
-    const id = req.params.id;
-
-    if (req.currentUser.role !== "HR" && req.currentUser.userId !== id) {
-        const error = appErrors.create(
-            403,
-            "Forbidden, You are not allowed to view other users' attendance"
-        );
-        return next(error);
-    }
 
     const limitNumber = parseInt(limit) || 10;
     const pageNumber = parseInt(page) || 1;
     const skip = (pageNumber - 1) * limitNumber;
 
-    const matchQuery = { employeeId: new mongoose.Types.ObjectId(id) };
+    const matchQuery = {
+        employeeId: new mongoose.Types.ObjectId(targetEmployeeId),
+    };
 
     if (month && year) {
         const startDate = dayjs(`${year}-${month}-01`).format("YYYY-MM-DD");
@@ -127,13 +125,10 @@ export const getAttendanceByEmployeeId = asyncWraper(async (req, res, next) => {
             $match: matchQuery,
         },
         {
-            $sort: { date: -1 },
-        },
-        {
             $facet: {
                 metadata: [{ $count: "totalRecords" }],
-
                 data: [
+                    { $sort: { date: -1, _id: -1 } },
                     { $skip: skip },
                     { $limit: limitNumber },
                     {
@@ -145,7 +140,10 @@ export const getAttendanceByEmployeeId = asyncWraper(async (req, res, next) => {
                         },
                     },
                     {
-                        $unwind: "$employeeDetails",
+                        $unwind: {
+                            path: "$employeeDetails",
+                            preserveNullAndEmptyArrays: true,
+                        },
                     },
                     {
                         $project: {
@@ -154,11 +152,15 @@ export const getAttendanceByEmployeeId = asyncWraper(async (req, res, next) => {
                             date: 1,
                             checkIn: 1,
                             status: 1,
-                            firstName: "$employeeDetails.general.firstName",
-                            lastName: "$employeeDetails.general.lastName",
-                            email: "$employeeDetails.general.email",
-                            department: "$employeeDetails.employee.department",
-                            jobType: "$employeeDetails.employee.jobType",
+                            employee: {
+                                firstName: "$employeeDetails.general.firstName",
+                                lastName: "$employeeDetails.general.lastName",
+                                email: "$employeeDetails.general.email",
+                                department:
+                                    "$employeeDetails.employee.department",
+                                jobType: "$employeeDetails.employee.jobType",
+                                avatar: "$employeeDetails.general.avatar",
+                            },
                         },
                     },
                 ],
@@ -170,20 +172,30 @@ export const getAttendanceByEmployeeId = asyncWraper(async (req, res, next) => {
 
     const attendanceData = result[0].data;
 
-    const totalRecords =
-        result[0].metadata.length > 0 ? result[0].metadata[0].totalRecords : 0;
+    const totalRecords = result[0].metadata[0]?.totalRecords || 0;
     const totalPages = Math.ceil(totalRecords / limitNumber);
 
     res.status(200).json({
         status: httpResponseText.SUCCESS,
-        data: { attendance: attendanceData },
-        pagination: {
-            totalRecords,
-            totalPages,
-            currentPage: pageNumber,
-            limit: limitNumber,
+        data: {
+            attendance: attendanceData,
+            pagination: {
+                totalRecords,
+                totalPages,
+                currentPage: pageNumber,
+                limit: limitNumber,
+            },
         },
     });
+};
+
+export const getMyAttendance = asyncWraper(async (req, res, next) => {
+    await fetchAttendanceHistoryLogic(req, res, next, req.currentUser.userId);
+});
+
+export const getEmployeeAttendanceById = asyncWraper(async (req, res, next) => {
+    const targetId = req.params.id;
+    await fetchAttendanceHistoryLogic(req, res, next, targetId);
 });
 
 export const checkIn = asyncWraper(async (req, res, next) => {
