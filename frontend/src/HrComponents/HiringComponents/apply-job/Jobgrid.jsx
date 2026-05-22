@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import JobCard from "./JobCard";
+import JobCard from "./Jobcard";
 
 // ── Skeleton لكارد واحد ───────────────────────────
 const CardSkeleton = () => (
