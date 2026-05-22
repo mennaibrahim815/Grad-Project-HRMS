@@ -9,6 +9,7 @@ import { asyncWraper } from "../Middleware/asyncWraper.js";
 import dayjs from "dayjs";
 import { buildNameSearchQuery } from "../utils/searchHelper.js";
 import { months } from "../utils/monthsArray.js";
+import mongoose from "mongoose";
 
 export const generatePayrollDraft = asyncWraper(async (req, res, next) => {
     let { month, year } = req.body;
@@ -621,44 +622,64 @@ export const getMonthlyDashboardStats = asyncWraper(async (req, res, next) => {
         );
     }
 
+    let targetId = null;
+    if (req.path.includes("/me")) {
+        targetId = req.currentUser.userId;
+    } else if (req.params.id) {
+        targetId = req.params.id;
+    }
+
     const prevMonth = month === 1 ? 12 : month - 1;
     const prevYear = month === 1 ? year - 1 : year;
 
-    const getMonthStatsPipeline = (targetMonth, targetYear) => [
-        { $match: { month: targetMonth, year: targetYear } },
-        {
-            $group: {
-                _id: null,
-                totalNetSalaries: { $sum: "$netSalary" },
-                totalDeductions: { $sum: "$deductions" },
-                totalPending: {
-                    $sum: {
-                        $cond: [
-                            { $eq: ["$status", "Pending"] },
-                            "$netSalary",
-                            0,
-                        ],
-                    },
-                },
-                totalPaidAmount: {
-                    $sum: {
-                        $cond: [{ $eq: ["$status", "Paid"] }, "$netSalary", 0],
-                    },
-                },
+    const getMonthStatsPipeline = (targetMonth, targetYear) => {
+        const matchStage = { month: targetMonth, year: targetYear };
 
-                paidCount: {
-                    $sum: { $cond: [{ $eq: ["$status", "Paid"] }, 1, 0] },
+        if (targetId) {
+            matchStage.employeeId = new mongoose.Types.ObjectId(targetId);
+        }
+
+        return [
+            { $match: matchStage },
+            {
+                $group: {
+                    _id: null,
+                    totalNetSalaries: { $sum: "$netSalary" },
+                    totalDeductions: { $sum: "$deductions" },
+                    totalPending: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ["$status", "Pending"] },
+                                "$netSalary",
+                                0,
+                            ],
+                        },
+                    },
+                    totalPaidAmount: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ["$status", "Paid"] },
+                                "$netSalary",
+                                0,
+                            ],
+                        },
+                    },
+                    paidCount: {
+                        $sum: { $cond: [{ $eq: ["$status", "Paid"] }, 1, 0] },
+                    },
+                    pendingCount: {
+                        $sum: {
+                            $cond: [{ $eq: ["$status", "Pending"] }, 1, 0],
+                        },
+                    },
+                    draftCount: {
+                        $sum: { $cond: [{ $eq: ["$status", "Draft"] }, 1, 0] },
+                    },
+                    totalEmployees: { $sum: 1 },
                 },
-                pendingCount: {
-                    $sum: { $cond: [{ $eq: ["$status", "Pending"] }, 1, 0] },
-                },
-                draftCount: {
-                    $sum: { $cond: [{ $eq: ["$status", "Draft"] }, 1, 0] },
-                },
-                totalEmployees: { $sum: 1 },
             },
-        },
-    ];
+        ];
+    };
 
     const [currentMonthResult, prevMonthResult] = await Promise.all([
         Payroll.aggregate(getMonthStatsPipeline(month, year)),
@@ -675,6 +696,7 @@ export const getMonthlyDashboardStats = asyncWraper(async (req, res, next) => {
         draftCount: 0,
         totalEmployees: 0,
     };
+
     const prev = prevMonthResult[0] || {
         totalNetSalaries: 0,
         totalDeductions: 0,
@@ -688,27 +710,31 @@ export const getMonthlyDashboardStats = asyncWraper(async (req, res, next) => {
         return Number((((curr - prv) / prv) * 100).toFixed(2));
     };
 
-    res.status(200).json({
-        status: httpResponseText.SUCCESS,
-        data: {
+    const netSalaryCard = {
+        value: current.totalNetSalaries,
+        changePercentage: calcChange(
+            current.totalNetSalaries,
+            prev.totalNetSalaries
+        ),
+        isIncrease: current.totalNetSalaries > prev.totalNetSalaries,
+    };
+
+    const deductionsCard = {
+        value: current.totalDeductions,
+        changePercentage: calcChange(
+            current.totalDeductions,
+            prev.totalDeductions
+        ),
+        isIncrease: current.totalDeductions > prev.totalDeductions,
+    };
+
+    let responseData = {};
+
+    if (!targetId) {
+        responseData = {
             summaryCards: {
-                totalNetSalaries: {
-                    value: current.totalNetSalaries,
-                    changePercentage: calcChange(
-                        current.totalNetSalaries,
-                        prev.totalNetSalaries
-                    ),
-                    isIncrease:
-                        current.totalNetSalaries > prev.totalNetSalaries,
-                },
-                totalDeductions: {
-                    value: current.totalDeductions,
-                    changePercentage: calcChange(
-                        current.totalDeductions,
-                        prev.totalDeductions
-                    ),
-                    isIncrease: current.totalDeductions > prev.totalDeductions,
-                },
+                totalNetSalaries: netSalaryCard,
+                totalDeductions: deductionsCard,
                 pendingPayments: {
                     value: current.totalPending,
                     changePercentage: calcChange(
@@ -732,7 +758,25 @@ export const getMonthlyDashboardStats = asyncWraper(async (req, res, next) => {
                 draftCount: current.draftCount,
                 totalEmployees: current.totalEmployees,
             },
-        },
+        };
+    } else {
+        responseData = {
+            summaryCards: {
+                totalNetSalaries: netSalaryCard,
+                totalDeductions: deductionsCard,
+            },
+            paymentStatus:
+                current.totalPending > 0
+                    ? "Pending"
+                    : current.totalPaidAmount > 0
+                      ? "Paid"
+                      : "Draft",
+        };
+    }
+
+    res.status(200).json({
+        status: httpResponseText.SUCCESS,
+        data: responseData,
     });
 });
 
@@ -746,8 +790,20 @@ export const getYearlyPayrollChart = asyncWraper(async (req, res, next) => {
         );
     }
 
+    let targetId = null;
+    if (req.path.includes("/me")) {
+        targetId = req.currentUser.userId;
+    } else if (req.params.id) {
+        targetId = req.params.id;
+    }
+
+    const matchStage = { year: year };
+    if (targetId) {
+        matchStage.employeeId = new mongoose.Types.ObjectId(targetId);
+    }
+
     const yearlyData = await Payroll.aggregate([
-        { $match: { year: year } },
+        { $match: matchStage },
         {
             $group: {
                 _id: "$month",
@@ -777,7 +833,6 @@ export const getYearlyPayrollChart = asyncWraper(async (req, res, next) => {
         },
     });
 });
-
 export const searchPayroll = asyncWraper(async (req, res, next) => {
     const { page, limit, month, year, employeeName } = req.query;
 

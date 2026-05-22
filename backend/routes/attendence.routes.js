@@ -20,6 +20,7 @@ import { allowedTo } from "../guards/allowedTo.js";
 import {
     dailySearchSchema,
     monthlyStatsSchema,
+    validateIdParams,
 } from "../validators/common.validation.js";
 
 const router = Router();
@@ -44,12 +45,38 @@ router
 router.route("/check-in").post(validate(validateCheckInSchema), checkIn);
 
 router
+    .route("/stats/monthly/me")
+    .get(
+        verifyToken,
+        allowedTo("HR", "EMPLOYEE"),
+        validate(monthlyStatsSchema),
+        getMonthlyAttendanceStats
+    );
+
+router
     .route("/stats/monthly")
     .get(
         verifyToken,
         allowedTo("HR"),
         validate(monthlyStatsSchema),
         getMonthlyAttendanceStats
+    );
+router
+    .route("/stats/monthly/:id")
+    .get(
+        verifyToken,
+        allowedTo("HR"),
+        validate(monthlyStatsSchema),
+        validate(validateIdParams),
+        getMonthlyAttendanceStats
+    );
+router
+    .route("/stats-six-months/me")
+    .get(
+        verifyToken,
+        allowedTo("HR", "EMPLOYEE"),
+        validate(monthlyStatsSchema),
+        getSixMonthsAttendanceStats
     );
 
 router
@@ -58,6 +85,16 @@ router
         verifyToken,
         allowedTo("HR"),
         validate(monthlyStatsSchema),
+        getSixMonthsAttendanceStats
+    );
+
+router
+    .route("/stats-six-months/:id")
+    .get(
+        verifyToken,
+        allowedTo("HR"),
+        validate(monthlyStatsSchema),
+        validate(validateIdParams),
         getSixMonthsAttendanceStats
     );
 

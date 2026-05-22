@@ -8,7 +8,9 @@ import {
     getAllLeaves,
     getEmployeeLeavesById,
     getLeaveById,
+    getMonthlyLeaveStats,
     getMyLeaves,
+    getYearlyLeaveChart,
     searchLeave,
     updateLeave,
     updateLeaveStatus,
@@ -22,7 +24,9 @@ import upload from "../Middleware/multerConfig.js";
 import { setFilesToBody } from "../Middleware/setFilesToBody.js";
 import {
     dailySearchSchema,
+    monthYearQuerySchema,
     validateIdParams,
+    validateYearQuery,
 } from "../validators/common.validation.js";
 import { getAllLeavesQuerySchema } from "../validators/leave.validation.js";
 
@@ -89,5 +93,55 @@ router
         validate(validateIdParams),
         deleteLeave
     );
+
+router.get(
+    "/stats/monthly/me",
+    verifyToken,
+    allowedTo("HR", "EMPLOYEE"),
+    validate(monthYearQuerySchema),
+    getMonthlyLeaveStats
+);
+
+router.get(
+    "/stats/monthly",
+    verifyToken,
+    allowedTo("HR", "MANAGER"),
+    validate(monthYearQuerySchema),
+    getMonthlyLeaveStats
+);
+
+router.get(
+    "/stats/monthly/:id",
+    verifyToken,
+    allowedTo("HR"),
+    validate(monthYearQuerySchema),
+    validate(validateIdParams),
+    getMonthlyLeaveStats
+);
+
+router.get(
+    "/stats/yearly/me",
+    verifyToken,
+    allowedTo("HR", "EMPLOYEE"),
+    validate(validateYearQuery),
+    getYearlyLeaveChart
+);
+
+router.get(
+    "/stats/yearly",
+    verifyToken,
+    allowedTo("HR", "MANAGER"),
+    validate(validateYearQuery),
+    getYearlyLeaveChart
+);
+
+router.get(
+    "/stats/yearly/:id",
+    verifyToken,
+    allowedTo("HR"),
+    validate(validateYearQuery),
+    validate(validateIdParams),
+    getYearlyLeaveChart
+);
 
 export default router;

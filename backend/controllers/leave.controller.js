@@ -6,6 +6,7 @@ import dayjs from "dayjs";
 import { httpResponseText } from "../utils/httpResponseText.js";
 import mongoose from "mongoose";
 import { buildNameSearchQuery } from "../utils/searchHelper.js";
+import { months } from "../utils/monthsArray.js";
 
 export const getAllLeaves = asyncWraper(async (req, res, next) => {
     const { date, status, page, limit } = req.query;
@@ -831,6 +832,159 @@ export const searchLeave = asyncWraper(async (req, res, next) => {
                 currentPage: pageNumber,
                 limit: limitNumber,
             },
+        },
+    });
+});
+
+export const getMonthlyLeaveStats = asyncWraper(async (req, res, next) => {
+    let { month, year } = req.query;
+    month = parseInt(month);
+    year = parseInt(year);
+
+    if (!month || !year) {
+        return next(
+            appErrors.create(
+                400,
+                "Month and Year are required",
+                httpResponseText.FAIL
+            )
+        );
+    }
+
+    let targetId = null;
+    if (req.path.includes("/me")) {
+        targetId = req.currentUser.userId;
+    } else if (req.params.id) {
+        targetId = req.params.id;
+    }
+
+    const startDate = dayjs(`${year}-${month}-01`).startOf("month").toDate();
+    const endDate = dayjs(`${year}-${month}-01`).endOf("month").toDate();
+
+    const matchStage = {
+        startDate: { $gte: startDate, $lte: endDate },
+    };
+
+    if (targetId) {
+        matchStage.employeeId = new mongoose.Types.ObjectId(targetId);
+    }
+
+    const stats = await Leave.aggregate([
+        { $match: matchStage },
+        {
+            $group: {
+                _id: null,
+                totalRequests: { $sum: 1 },
+                approvedCount: {
+                    $sum: { $cond: [{ $eq: ["$status", "Approved"] }, 1, 0] },
+                },
+                pendingCount: {
+                    $sum: { $cond: [{ $eq: ["$status", "Pending"] }, 1, 0] },
+                },
+                rejectedCount: {
+                    $sum: { $cond: [{ $eq: ["$status", "Rejected"] }, 1, 0] },
+                },
+                totalApprovedDays: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$status", "Approved"] },
+                            "$duration",
+                            0,
+                        ],
+                    },
+                },
+            },
+        },
+        {
+            $project: {
+                _id: 0,
+                totalRequests: 1,
+                approvedCount: 1,
+                pendingCount: 1,
+                rejectedCount: 1,
+                totalApprovedDays: 1,
+            },
+        },
+    ]);
+
+    const result = stats[0] || {
+        totalRequests: 0,
+        approvedCount: 0,
+        pendingCount: 0,
+        rejectedCount: 0,
+        totalApprovedDays: 0,
+    };
+
+    res.status(200).json({
+        status: httpResponseText.SUCCESS,
+        data: result,
+    });
+});
+
+export const getYearlyLeaveChart = asyncWraper(async (req, res, next) => {
+    let { year } = req.query;
+    year = parseInt(year);
+
+    if (!year) {
+        return next(
+            appErrors.create(400, "Year is required", httpResponseText.FAIL)
+        );
+    }
+
+    let targetId = null;
+    if (req.path.includes("/me")) {
+        targetId = req.currentUser.userId;
+    } else if (req.params.id) {
+        targetId = req.params.id;
+    }
+
+    const startDate = dayjs(`${year}-01-01`).startOf("year").toDate();
+    const endDate = dayjs(`${year}-12-31`).endOf("year").toDate();
+
+    const matchStage = {
+        startDate: { $gte: startDate, $lte: endDate },
+    };
+
+    if (targetId) {
+        matchStage.employeeId = new mongoose.Types.ObjectId(targetId);
+    }
+
+    const yearlyData = await Leave.aggregate([
+        { $match: matchStage },
+        {
+            $group: {
+                _id: { $month: "$startDate" },
+                totalRequests: { $sum: 1 },
+                approvedDays: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$status", "Approved"] },
+                            "$duration",
+                            0,
+                        ],
+                    },
+                },
+            },
+        },
+        { $sort: { _id: 1 } },
+    ]);
+
+    const formattedData = [];
+
+    for (let i = 1; i <= 12; i++) {
+        const monthData = yearlyData.find((m) => m._id === i);
+        formattedData.push({
+            month: i,
+            monthName: months[i],
+            totalRequests: monthData ? monthData.totalRequests : 0,
+            approvedDays: monthData ? monthData.approvedDays : 0,
+        });
+    }
+
+    res.status(200).json({
+        status: httpResponseText.SUCCESS,
+        data: {
+            yearlyOverview: formattedData,
         },
     });
 });

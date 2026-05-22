@@ -41,11 +41,13 @@ export const statusValidation = (...status) => {
     });
 };
 
+export const objectIdValidation = z
+    .string()
+    .regex(/^[0-9a-fA-F]{24}$/, { message: "Invalid user ID" });
+
 export const validateIdParams = z.object({
     params: z.object({
-        id: z
-            .string()
-            .regex(/^[0-9a-fA-F]{24}$/, { message: "Invalid user ID" }),
+        id: objectIdValidation,
     }),
 });
 
