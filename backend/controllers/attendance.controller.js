@@ -403,11 +403,24 @@ export const getMonthlyAttendanceStats = asyncWraper(async (req, res, next) => {
         .endOf("month")
         .format("YYYY-MM-DD");
 
+    let targetId = null;
+
+    if (req.path.includes("/me")) {
+        targetId = req.currentUser.userId;
+    } else if (req.params.id) {
+        targetId = req.params.id;
+    }
+    const matchQuery = {
+        date: { $gte: startDate, $lte: endDate },
+    };
+
+    if (targetId) {
+        matchQuery.employeeId = new mongoose.Types.ObjectId(targetId);
+    }
+
     const stats = await Attendance.aggregate([
         {
-            $match: {
-                date: { $gte: startDate, $lte: endDate },
-            },
+            $match: matchQuery,
         },
         {
             $group: {
@@ -464,7 +477,14 @@ export const getMonthlyAttendanceStats = asyncWraper(async (req, res, next) => {
         },
     ]);
 
-    const result = stats[0];
+    const result = stats[0] || {
+        totalAttendanceRecords: 0,
+        totalOnTimeCount: 0,
+        totalLateCount: 0,
+        totalAbsentCount: 0,
+        totalDelayMinutes: 0,
+        attendanceRate: 0,
+    };
 
     res.status(200).json({
         status: httpResponseText.SUCCESS,
@@ -509,17 +529,27 @@ export const getSixMonthsAttendanceStats = asyncWraper(
             "November",
             "December",
         ];
-
-        const attendence = await Attendance.aggregate([
-            {
-                $match: {
-                    date: {
-                        $gte: startDate,
-                        $lte: endDate,
-                    },
-                },
+        const matchStage = {
+            date: {
+                $gte: startDate,
+                $lte: endDate,
             },
+        };
 
+        let targetId = null;
+        if (req.path.includes("/me")) {
+            targetId = req.currentUser.userId;
+        } else if (req.params.id) {
+            targetId = req.params.id;
+        }
+        if (targetId) {
+            matchStage.employeeId = new mongoose.Types.ObjectId(targetId);
+        }
+
+        const attendance = await Attendance.aggregate([
+            {
+                $match: matchStage,
+            },
             {
                 $facet: {
                     overallStats: [
@@ -632,9 +662,16 @@ export const getSixMonthsAttendanceStats = asyncWraper(
                 },
             },
         ]);
+
+        const overallStats = attendance[0].overallStats[0] || {
+            totalOnTime: 0,
+            totalLate: 0,
+            totalAbsent: 0,
+        };
+        const monthlyStats = attendance[0].monthlyStats || [];
         res.status(200).json({
             status: httpResponseText.SUCCESS,
-            data: { monthlyAttendenceStats: attendence },
+            data: { overallStats, monthlyStats },
         });
     }
 );

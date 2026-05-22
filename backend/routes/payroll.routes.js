@@ -26,6 +26,7 @@ import {
     monthlySearchSchema,
     monthYearBodySchema,
     monthYearQuerySchema,
+    validateIdParams,
     validateYearQuery,
 } from "../validators/common.validation.js";
 
@@ -85,18 +86,48 @@ router.get(
 );
 
 router.get(
+    "/dashboard/monthly/me",
+    verifyToken,
+    allowedTo("HR", "EMPLOYEE"),
+    validate(monthYearQuerySchema),
+    getMonthlyDashboardStats
+);
+router.get(
     "/dashboard/monthly",
     verifyToken,
     allowedTo("HR", "MANAGER"),
     validate(monthYearQuerySchema),
     getMonthlyDashboardStats
 );
+router.get(
+    "/dashboard/monthly/:id",
+    verifyToken,
+    allowedTo("HR"),
+    validate(monthYearQuerySchema),
+    validate(validateIdParams),
+    getMonthlyDashboardStats
+);
 
+router.get(
+    "/dashboard/yearly/me",
+    verifyToken,
+    allowedTo("HR", "EMPLOYEE"),
+    validate(validateYearQuery),
+    getYearlyPayrollChart
+);
 router.get(
     "/dashboard/yearly",
     verifyToken,
     allowedTo("HR", "MANAGER"),
     validate(validateYearQuery),
+    getYearlyPayrollChart
+);
+router.get(
+    "/dashboard/yearly/:id",
+    verifyToken,
+    allowedTo("HR"),
+    validate(validateYearQuery),
+    validate(validateIdParams),
     getYearlyPayrollChart
 );
 

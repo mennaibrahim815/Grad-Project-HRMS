@@ -56,7 +56,7 @@ app.use(morgan("dev"));
 const allowedOrigins = [
     "http://localhost:5173",
     "https://localhost:5173",
-    // "https://adl-legal.vercel.app"
+    "https://staffly-hrms.netlify.app",
 ];
 
 const corsOptions = {
