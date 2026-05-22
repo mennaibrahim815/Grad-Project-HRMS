@@ -10,12 +10,12 @@ import { useEffect, useState } from "react";
 // ✨ استدعاء السوكيت ✨
 import { io } from "socket.io-client";
 
-import DataTable from "../../Components/table/DataTable";
-import TableControls from "../../Components/table/TableControls";
-import Pagination from "../../Components/table/Pagination";
+import DataTable from "../../components/table/DataTable";
+import TableControls from "../../components/table/TableControls";
+import Pagination from "../../components/table/Pagination";
 import EditIcon from "@mui/icons-material/Edit";
-import RowActionMenu from "../../Components/UI/RowActionMenu";
-import BaseCard from "../../Components/UI/Card";
+import RowActionMenu from "../../components/UI/RowActionMenu";
+import BaseCard from "../../components/UI/Card";
 import { Eye, Trash2 } from "lucide-react";
 
 const getAvatarUrl = (name, background = "0D8ABC", color = "fff") =>
