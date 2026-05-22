@@ -6,7 +6,7 @@ import {
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import BaseCard from "../../../Components/UI/Card";
+import BaseCard from "../../../components/UI/Card";
 
 function HRApproval() {
   const navigate = useNavigate();

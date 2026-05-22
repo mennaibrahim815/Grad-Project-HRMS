@@ -9,7 +9,7 @@ import icon from "../../assets/icons/Icon.svg";
 import HeroSection from "../../HrComponents/HiringComponents/apply-job/HeroSection";
 import SearchBar from "../../HrComponents/HiringComponents/apply-job/SearchBar";
 import FilterBar from "../../HrComponents/HiringComponents/apply-job/FilterBar";
-import JobGrid from "../../HrComponents/HiringComponents/apply-job/JobGrid";
+import JobGrid from "../../HrComponents/HiringComponents/apply-job/Jobgrid";
 
 function ApplyJob() {
     const dispatch = useDispatch();
