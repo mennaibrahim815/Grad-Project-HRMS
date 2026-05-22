@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import EditJobModal from "./EditJobModal";
+import EditJobModal from "./Editjobmodal";
 
 const InfoRow = ({ label, value }) => (
     <div className="flex flex-col gap-1">
