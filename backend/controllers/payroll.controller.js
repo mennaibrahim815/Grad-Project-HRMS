@@ -459,18 +459,27 @@ const fetchPayrollHistoryLogic = async (req, res, next, targetEmployeeId) => {
     const pageNumber = Number(page) || 1;
     const skip = (pageNumber - 1) * limitNumber;
 
-    const searchQuery = { employeeId: targetEmployeeId };
+    // 1. يفضل دايماً تحويل الـ String لـ ObjectId في الـ Find عشان تتفادى أي مشاكل
+    const searchQuery = {
+        employeeId: new mongoose.Types.ObjectId(targetEmployeeId),
+    };
 
+    // 2. تحويل الـ Strings لـ Numbers عشان الـ Database تفهمهم
     if (month && year) {
-        searchQuery.month = month;
-        searchQuery.year = year;
+        searchQuery.month = parseInt(month);
+        searchQuery.year = parseInt(year);
     }
 
     if (status) {
         searchQuery.status = status;
     } else {
         searchQuery.status = { $in: ["Pending", "Paid"] };
+        // ملحوظة: لو عايز الموظف يشوف الـ Draft كمان، ضيف "Draft" للمصفوفة دي
     }
+
+    // سطر للـ Debugging عشان تتأكد إن الـ ID مش undefined
+    console.log("Searching for Employee ID:", targetEmployeeId);
+    console.log("Search Query Object:", searchQuery);
 
     const payrolls = await Payroll.find(searchQuery)
         .sort({ year: -1, month: -1 })

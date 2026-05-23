@@ -12,6 +12,7 @@ import {
     getYearlyPayrollChart,
     searchPayroll,
     editPayrollDraft,
+    getMyPayrollHistory,
 } from "../controllers/payroll.controller.js";
 
 import { verifyToken } from "../guards/verifyToken.js";
@@ -141,7 +142,7 @@ router.get(
     "/employees/me",
     verifyToken,
     allowedTo("HR", "EMPLOYEE"),
-    getEmployeePayrollHistory
+    getMyPayrollHistory
 );
 router.get(
     "/employees/:id",
