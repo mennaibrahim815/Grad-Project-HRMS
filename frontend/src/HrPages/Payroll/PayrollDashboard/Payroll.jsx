@@ -1,18 +1,19 @@
 import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchPayrollSummary } from "../../../store/HrSlices/payroll/payrollSlice";
-// import { fetchPayrollSummary, fetchMonthlyStats, fetchPayrollEmployees } from "../../redux/HrSlices/payrollSlice";
+import { fetchPayrollSummary, fetchYearlyPayroll,setPayrollYear } from "../../../store/HrSlices/payroll/payrollSlice";
+
+
 //components
 import PayrollHeader from "../../../HrComponents/PayrollComponents/PayrollDashboard/PayrollHeader/PayrollHeader";
 import StatsCards from "../../../HrComponents/PayrollComponents/PayrollDashboard/StatsCards/StatsCards";
 import PayrollTable from "../../../HrComponents/PayrollComponents/PayrollDashboard/PayrollTable/PayrollTable";
 import StatusPieChart from "../../../HrComponents/StatusPieChart/StatusPieChart";
-import PayrollChart from "../../../HrComponents/PayrollComponents/PayrollDashboard/PayrollChart/PayrollChart";
+import YearlyChart from "../../../components/Charts/YearlyChart";
 
 export default function Payroll() {
   const dispatch = useDispatch();
   const payrollRef = useRef(null);
-  const { analytics, loading, selectedMonth } = useSelector(
+  const { analytics, loading, selectedMonth, yearlyData, yearlyLoading, selectedYear } = useSelector(
     (state) => state.payroll,
   );
 
@@ -22,6 +23,9 @@ export default function Payroll() {
       fetchPayrollSummary({ month: parseInt(month), year: parseInt(year) }),
     );
   }, [dispatch, selectedMonth]);
+  useEffect(() => {
+    dispatch(fetchYearlyPayroll(selectedYear));
+  }, [dispatch, selectedYear]);
 
   const summaryCards = analytics?.data?.summaryCards;
   const payrollRaw = analytics?.data?.paymentStatusChart;
@@ -64,7 +68,17 @@ export default function Payroll() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-3 mb-[12px]">
         {/* Left: Bar Chart (Occupies 2 columns) */}
         <div className="lg:col-span-2">
-          <PayrollChart />
+          <YearlyChart
+            title="Payroll cost overview"
+            data={yearlyData}
+            isLoading={yearlyLoading}
+            selectedYear={selectedYear}
+            onYearChange={(y) => dispatch(setPayrollYear(y))}
+            bar1Key="netSalaries"
+            bar1Label="Net Salaries"
+            bar2Key="deductions"
+            bar2Label="Deduction"
+          />
         </div>
         {/* Right: Payments Status (Occupies 1 column) */}
         <div className="lg:col-span-1">

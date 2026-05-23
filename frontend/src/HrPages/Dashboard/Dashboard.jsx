@@ -5,7 +5,7 @@ import { fetchDashboardAnalytics } from "../../store/HrSlices/HrDashboard/dashbo
 //  components
 import DashboardHeader from "../../HrComponents/DashboardComponents/DashboardHeader";
 import StatsCards from "../../HrComponents/DashboardComponents/StatsCards";
-import AttendanceReport from "../../HrComponents/DashboardComponents/AttendanceReport";
+import AttendanceReport from "../../components/Charts/AttendanceReport";
 import EmployeeStatus from "../../HrComponents/DashboardComponents/EmployeeStatus";
 // import StatusPieChart from "../../HrComponents/StatusPieChart/StatusPieChart";
 import JobApplicants from "../../HrComponents/DashboardComponents/JobApplicants";

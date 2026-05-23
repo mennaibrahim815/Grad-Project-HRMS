@@ -6,7 +6,7 @@ import { fetchMonthlyAttendance, fetchAttendance } from "../../store/HrSlices/at
 import EmployeesTable from "../../HrComponents/employees/EmployeesTable/EmployeesTable";
 import EmployeeHeader from "../../HrComponents/employees/EmployeeHeader/EmployeeHeader";
 import HRApproval from "../../HrComponents/employees/HRApproval/HRApproval";
-import AttendanceReport from "../../HrComponents/DashboardComponents/AttendanceReport";
+import AttendanceReport from "../../components/Charts/AttendanceReport";
 
 const Employees = () => {
   const dispatch = useDispatch();
