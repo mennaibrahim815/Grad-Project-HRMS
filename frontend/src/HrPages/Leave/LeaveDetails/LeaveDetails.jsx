@@ -178,7 +178,7 @@ const fetchEmployeeHistory = async () => {
   if (!leave) return <div className="text-white p-10 text-center">No data found.</div>;
 
   return (
-    <div className="p-6 bg-[#0f172a] min-h-screen text-slate-200">
+    <div >
       <div className="max-w-4xl mx-auto space-y-4">
         
         <div className="flex justify-between items-center">
@@ -206,7 +206,11 @@ const fetchEmployeeHistory = async () => {
         </div>
 
         {/* الكارد الأساسي للتفاصيل */}
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
+        <div className="
+        bg-gradient-to-br from-transparent/20 to-45% to-[#182731]
+        backdrop-blur-sm
+        rounded-[2rem] border border-gray-800/50
+        border border-slate-700/50">
           <div className="p-8 border-b border-slate-800 flex items-center gap-6">
             <img 
               src={leave.employee?.avatar || `https://ui-avatars.com/api/?name=${leave.employee?.firstName || 'User'}&background=0D8ABC&color=fff`} 
