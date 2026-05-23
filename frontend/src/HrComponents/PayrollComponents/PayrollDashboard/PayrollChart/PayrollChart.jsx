@@ -18,7 +18,7 @@ const PayrollChart = () => {
   const years = [currentYear - 2, currentYear - 1, currentYear];
 
   return (
-    <div className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] p-[20px] rounded-[2.5rem] border border-gray-800/50 shadow-xl w-full mb-8 min-h-[420px]">
+    <div className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] p-[20px] rounded-[2.5rem] border border-gray-800/50 shadow-xl w-full mb-8 min-h-[420px] h-full">
       
       {/* Header -*/}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
@@ -29,11 +29,11 @@ const PayrollChart = () => {
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
-              <span className="text-slate-400 text-xs">Income</span>
+              <span className="text-slate-400 text-xs">Net Salaries</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-slate-500" />
-              <span className="text-slate-400 text-xs">Expenses</span>
+              <span className="text-slate-400 text-xs">Deduction</span>
             </div>
           </div>
 
@@ -101,8 +101,8 @@ const PayrollChart = () => {
                       <div className="bg-[#0b141a] border border-gray-700 rounded-xl p-3 shadow-xl">
                         <p className="text-xs text-gray-400 font-bold mb-2">{d.monthName} {selectedYear}</p>
                         <div className="text-xs space-y-1">
-                          <p className="text-cyan-400">Income: ${d.netSalaries?.toLocaleString()}</p>
-                          <p className="text-slate-500">Expenses: ${d.deductions?.toLocaleString()}</p>
+                          <p className="text-cyan-400">Net Salaries: ${d.netSalaries?.toLocaleString()}</p>
+                          <p className="text-slate-500">Deduction: ${d.deductions?.toLocaleString()}</p>
                         </div>
                       </div>
                     );

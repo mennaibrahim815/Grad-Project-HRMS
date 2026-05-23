@@ -7,10 +7,11 @@ import Pagination from "../../../../components/table/Pagination";
 import TableControls from "../../../../components/table/TableControls";
 import RowActionMenu from "../../../../components/UI/RowActionMenu";
 import BaseCard from "../../../../components/UI/Card";
-import { Eye, Trash2, CreditCard } from "lucide-react";
+import { Eye, Trash2, CreditCard, Download } from "lucide-react";
 import EditIcon from "@mui/icons-material/Edit";
 import { PayrollActionModal } from '../PayrollActionModal/PayrollActionModal';
 import { PayrollDetailsModal } from '../PayrollDetailsModal/PayrollDetailsModal';
+import { EditDraftModal } from '../EditDraftModal/EditDraftModal';
 
 // Generate avatar URL using UI Avatars
 const getAvatarUrl = (name, background = '0D8ABC', color = 'fff') => {
@@ -52,6 +53,7 @@ function ManagementTable() {
     const [activeModal, setActiveModal] = useState(null);
     const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
     const [detailsId, setDetailsId] = useState(null);
+    const [editRow, setEditRow] = useState(null);
     const handlePayAction = (row) => {
         setSelectedEmployeeId(row._id);
         setActiveModal("singlePay");
@@ -78,11 +80,6 @@ function ManagementTable() {
             },
         },
         {
-            header: "Department",
-            accessor: "employee.department",
-            render: (row) => row.employee?.department
-        },
-        {
             header: "Period",
             accessor: "month",
             render: (row) => {
@@ -97,11 +94,11 @@ function ManagementTable() {
             accessor: "baseSalary",
             render: (row) => `$${row.baseSalary?.toLocaleString()}`
         },
-        // { 
-        //   header: "Deductions", 
-        //   accessor: "deductions",
-        //   render: (row) => `$${row.deductions?.toLocaleString()}`
-        // },
+        {
+            header: "Deductions",
+            accessor: "deductions",
+            render: (row) => `$${row.deductions?.toLocaleString()}`
+        },
         {
             header: "Net Salary",
             accessor: "netSalary",
@@ -129,39 +126,78 @@ function ManagementTable() {
         {
             header: "Action",
             accessor: "action",
-            render: (row) => (
-                <div className="relative">
-                    <button
-                        onClick={() => setOpenMenuId(openMenuId === row._id ? null : row._id)}
-                        className="p-2 text-slate-400 hover:text-slate-200"
-                    >
-                        <EditIcon />
-                    </button>
-                    <RowActionMenu
-                        isOpen={openMenuId === row._id}
-                        onClose={() => setOpenMenuId(null)}
-                        actions={[
-                            {
-                                label: "See Details",
-                                icon: Eye,
-                                onClick: () => setDetailsId(row._id)
-                            },
-                            {
-                                label: "Process Payment",
-                                icon: CreditCard,
-                                variant: "success",
-                                onClick: () => handlePayAction(row),
-                            },
-                            // {
-                            //   label: "Delete",
-                            //   variant: "danger",
-                            //   icon: Trash2,
-                            //   onClick: () => console.log("Delete", row._id),
-                            // },
-                        ]}
-                    />
-                </div>
-            ),
+            render: (row) => {
+                const getStatusActions = (status) => {
+                    const baseActions = [
+                        {
+                            label: "See Details",
+                            icon: Eye,
+                            onClick: () => setDetailsId(row._id),
+                        },
+                    ];
+
+                    switch (status) {
+                        case "Draft":
+                            return [
+                                ...baseActions,
+                                {
+                                    label: "Edit",
+                                    icon: EditIcon,
+                                    variant: "danger",
+                                    onClick: () => setEditRow(row), // ← بنبعت الـ row كامل
+                                },
+                            ];
+
+
+
+                        case "Paid":
+                            return [
+                                ...baseActions,
+                                {
+                                    label: "Download Payslip",
+                                    icon: Download, // من lucide-react
+                                    variant: "success",
+                                    onClick: () => {
+                                        // handle download
+                                        console.log("Download Payslip", row._id);
+                                    },
+                                },
+                            ];
+
+                        case "Pending":
+                            return [
+                                ...baseActions,
+                                {
+                                    label: "Process Payment",
+                                    icon: CreditCard,
+                                    variant: "success",
+                                    onClick: () => handlePayAction(row),
+                                },
+                            ];
+
+                        default:
+                            return baseActions;
+                    }
+                };
+
+                return (
+                    <div className="relative">
+                        <button
+                            onClick={() =>
+                                setOpenMenuId(openMenuId === row._id ? null : row._id)
+                            }
+                            className="p-2 text-slate-400 hover:text-slate-200"
+                        >
+                            <EditIcon />
+                        </button>
+                        <RowActionMenu
+                            isOpen={openMenuId === row._id}
+                            onClose={() => setOpenMenuId(null)}
+                            actions={getStatusActions(row.status)}
+                        />
+                    </div>
+                );
+            },
         },
     ];
     const dispatch = useDispatch();
@@ -175,6 +211,12 @@ function ManagementTable() {
         const [year, month] = managementSelectedMonth.split("-");
         return { month: parseInt(month), year: parseInt(year) };
     };
+    useEffect(() => {
+        if (editRow) {
+            const updatedRow = payrollList.find((r) => r._id === editRow._id);
+            if (updatedRow) setEditRow(updatedRow);
+        }
+    }, [payrollList]);
 
     useEffect(() => {
         const { month, year } = getMonthYear();
@@ -239,7 +281,7 @@ function ManagementTable() {
                 <DataTable columns={columns} data={payrollList || []} />
             )}
 
-        
+
             <Pagination
                 pagination={pagination}
                 handlePageChange={handlePageChange}
@@ -264,6 +306,15 @@ function ManagementTable() {
                     onClose={() => setDetailsId(null)}
                 />
             )}
+
+            {
+                editRow && (
+                    <EditDraftModal
+                        payrollRow={editRow}
+                        onClose={() => setEditRow(null)}
+                    />
+                )
+            }
         </BaseCard>
 
     );

@@ -138,10 +138,10 @@ const attendanceSlice = createSlice({
       })
       .addCase(fetchMonthlyAttendance.fulfilled, (state, action) => {
         state.loading = false;
-        const statsRoot = action.payload.data?.monthlyAttendenceStats?.[0];
+        const statsRoot = action.payload.data;
         if (statsRoot) {
           state.chartData = statsRoot.monthlyStats || [];
-          const overall = statsRoot.overallStats?.[0];
+          const overall = statsRoot.overallStats;
           state.totals = {
             onTime: overall?.totalOnTime || 0,
             late: overall?.totalLate || 0,
