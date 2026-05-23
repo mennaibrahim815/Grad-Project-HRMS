@@ -138,9 +138,15 @@ router.get(
     getPayrollDetails
 );
 router.get(
-    "/employee/:id",
+    "/employees/me",
     verifyToken,
-    allowedTo("HR", "MANAGER", "EMPLOYEE"),
+    allowedTo("HR", "EMPLOYEE"),
+    getEmployeePayrollHistory
+);
+router.get(
+    "/employees/:id",
+    verifyToken,
+    allowedTo("HR"),
     getEmployeePayrollHistory
 );
 router.patch(

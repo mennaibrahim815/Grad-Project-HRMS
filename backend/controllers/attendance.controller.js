@@ -9,6 +9,7 @@ import utc from "dayjs/plugin/utc.js";
 import timezone from "dayjs/plugin/timezone.js";
 import mongoose from "mongoose";
 import { buildNameSearchQuery } from "../utils/searchHelper.js";
+import { months } from "../utils/monthsArray.js";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -58,11 +59,12 @@ export const getAllAttandence = asyncWraper(async (req, res, next) => {
                 {
                     $project: {
                         _id: 1,
-                        employeeId: 1,
                         date: 1,
                         checkIn: 1,
                         status: 1,
+                        delayMinutes: 1,
                         employee: {
+                            employeeId: "$employeeDetails._id",
                             firstName: "$employeeDetails.general.firstName",
                             lastName: "$employeeDetails.general.lastName",
                             email: "$employeeDetails.general.email",
@@ -148,11 +150,12 @@ const fetchAttendanceHistoryLogic = async (
                     {
                         $project: {
                             _id: 1,
-                            employeeId: 1,
                             date: 1,
                             checkIn: 1,
                             status: 1,
+                            delayMinutes: 1,
                             employee: {
+                                employeeId: "$employeeDetails._id",
                                 firstName: "$employeeDetails.general.firstName",
                                 lastName: "$employeeDetails.general.lastName",
                                 email: "$employeeDetails.general.email",
@@ -359,11 +362,12 @@ export const searchAttendance = asyncWraper(async (req, res, next) => {
                 {
                     $project: {
                         _id: 1,
-                        employeeId: 1,
                         date: 1,
                         checkIn: 1,
                         status: 1,
+                        delayMinutes: 1,
                         employee: {
+                            employeeId: "$employeeDetails._id",
                             firstName: "$employeeDetails.general.firstName",
                             lastName: "$employeeDetails.general.lastName",
                             email: "$employeeDetails.general.email",
@@ -518,21 +522,6 @@ export const getSixMonthsAttendanceStats = asyncWraper(
             .format("YYYY-MM-DD");
         console.log(endDate);
 
-        const months = [
-            "",
-            "January",
-            "February",
-            "March",
-            "April",
-            "May",
-            "June",
-            "July",
-            "August",
-            "September",
-            "October",
-            "November",
-            "December",
-        ];
         const matchStage = {
             date: {
                 $gte: startDate,
