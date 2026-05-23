@@ -228,6 +228,15 @@ const VerifyCode = () => {
               We protect your account using end-to-end encrypted verification
               codes sent directly to your professional email.
             </p>
+            <div className="flex gap-1.5 z-10">
+            <div className="h-1.5 w-2 bg-gray-700 rounded-full"></div>
+            <div className="h-1.5 w-2 bg-gray-700 rounded-full"></div>
+            <motion.div
+              animate={{ width: [8, 24, 8] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+            ></motion.div>
+          </div>
           </div>
         </motion.div>
       </div>

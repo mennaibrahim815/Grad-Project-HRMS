@@ -35,11 +35,11 @@ const Sidebar = () => {
   const menuItems = userRole === "HR" ? hrMenuItems : employeeMenuItems;
 
   return (
-    <motion.aside
-      animate={{ width: isCollapsed ? 80 : 175 }}
-      className="h-screen bg-[#0b161d] text-gray-400 flex flex-col border-r border-gray-900 sticky top-0 overflow-hidden z-50"
-    >
-      {/* Logo */}
+<motion.aside
+  animate={{ width: isCollapsed ? 80 : 175 }}
+  className="fixed h-screen bg-[#0b161d] text-gray-400 flex flex-col border-r border-gray-900  top-0 overflow-hidden z-50"
+>
+     {/* Logo */}
       <NavLink
         to={userRole === "HR" ? "/dashboard" : "/my-dashboard"}
         className={`h-20 flex items-center px-6 mb-4 ${
@@ -58,7 +58,7 @@ const Sidebar = () => {
       </NavLink>
 
       {/* Menu */}
-      <div className="flex-1 px-3 space-y-2 overflow-y-auto">
+      <div className="flex-1 px-3 space-y-2 overflow-hidden">
         <p className="text-[10px] text-gray-600 font-black uppercase mb-4 ml-3 tracking-widest">
           {/* {isCollapsed ? "•••" : "Main Menu"} */}
         </p>
@@ -98,20 +98,7 @@ const Sidebar = () => {
         ))}
       </div>
 
-      {/* Logout */}
-      <div className="p-3 border-t border-gray-900/50">
-        <button
-          onClick={() => dispatch(logoutUser())}
-          className={`w-full flex items-center gap-4 p-3.5 rounded-xl hover:bg-red-500/10 hover:text-red-500 ${
-            isCollapsed ? "justify-center" : ""
-          }`}
-        >
-          <i className="fas fa-sign-out-alt text-lg"></i>
-          {!isCollapsed && (
-            <span className="text-sm font-bold">Logout</span>
-          )}
-        </button>
-      </div>
+
     </motion.aside>
   );
 };

@@ -81,6 +81,18 @@ const Login = () => {
       </AnimatePresence>
 
       <div className="min-h-screen flex bg-[#0f172a] text-white font-sans overflow-hidden relative">
+        {/* Navigation Button - Go to Hiring Page */}
+<Link
+  to="/job" // 👈 لو عايزة تغيّري باث صفحة الهايرينج عدلي هنا
+  className="absolute top-6 left-6 flex items-center gap-3 px-4 py-2 rounded-lg bg-[#1e293b]/80 backdrop-blur-md border border-white/1 text-white text-sm font-medium shadow-md hover:bg-[#273449] hover:shadow-blue-500/20 hover:border-none transition-all"
+>
+  {/* small badge like the UI */}
+  <span className="w-6 h-6 flex items-center justify-center rounded-full rgba(59,130,246,0.15) text-xs font-bold">
+    <i className="font-bold text-xl pb-1">←</i>
+  </span>
+
+  Go to Hiring
+</Link>
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -223,6 +235,15 @@ const Login = () => {
               Manage attendance, leave, employee data, and payroll all in one
               simple and reliable app.
             </p>
+            <div className="flex gap-1.5 z-10">
+                        <motion.div
+                          animate={{ width: [8, 24, 8] }}
+                          transition={{ repeat: Infinity, duration: 2 }}
+                          className="h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+                        ></motion.div>
+                        <div className="h-1.5 w-2 bg-gray-700 rounded-full"></div>
+                        <div className="h-1.5 w-2 bg-gray-700 rounded-full"></div>
+                      </div>
           </div>
         </motion.div>
       </div>

@@ -153,6 +153,25 @@ const ResetPassword = () => {
         <div className="w-full h-full rounded-[2.5rem] bg-cover bg-center flex flex-col justify-end p-12 relative overflow-hidden shadow-2xl" style={{ backgroundImage: `linear-gradient(to bottom, transparent, #000000dd), url(${loginSide})` }}>
            <h2 className="text-4xl font-bold mb-4 z-10 leading-tight">Secure Your Account</h2>
            <p className="text-gray-300 z-10 max-w-sm mb-6 font-light">Your new password should be unique and strong to protect your sensitive data.</p>
+           <div className="flex gap-1.5 z-10">
+            {/* <div className="h-1.5 w-2 bg-gray-700 rounded-full"></div> */}
+            <motion.div
+              animate={{ width: [8, 24, 8] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+            ></motion.div>
+            <motion.div
+              animate={{ width: [8, 24, 8] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+            ></motion.div>
+            {/* <div className="h-1.5 w-2 bg-gray-700 rounded-full"></div> */}
+            <motion.div
+              animate={{ width: [8, 24, 8] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+            ></motion.div>
+          </div>
         </div>
       </div>
 

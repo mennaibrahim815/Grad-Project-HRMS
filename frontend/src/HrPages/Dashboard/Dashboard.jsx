@@ -10,22 +10,20 @@ import EmployeeStatus from "../../HrComponents/DashboardComponents/EmployeeStatu
 import JobApplicants from "../../HrComponents/DashboardComponents/JobApplicants";
 import TaskSummary from "../../HrComponents/DashboardComponents/TaskSummary";
 
-// src/pages/Dashboard/Dashboard.jsx
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   const dashboardRef = useRef(null);
 
-  const { selectedDate, analytics, loading, error } = useSelector(
+  const { selectedDate, analytics, loading } = useSelector(
     (state) => state.dashboard,
   );
 
   useEffect(() => {
-    dispatch(fetchDashboardAnalytics(selectedDate));
+    // بنبعت التاريخ كاوبجكت فيه dateString زي ما السلايس متوقعة
+    dispatch(fetchDashboardAnalytics({ dateString: selectedDate }));
   }, [selectedDate, dispatch]);
 
-  // 💡 التعديل هنا: شيلنا شرط الـ if (error) اللي كان بيلغي الصفحة
-  // وسيبنا بس اللودر في حالة إن الداتا لسه بتحمل لأول مرة خالص
   if (loading && !analytics) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -40,28 +38,27 @@ const Dashboard = () => {
       className="max-w-[1650px] mx-auto p-4 bg-transparent space-y-3"
     >
       <DashboardHeader printRef={dashboardRef} />
-
       <div className="grid grid-cols-12 gap-3">
         <div className="col-span-12 lg:col-span-8 space-y-3">
           <StatsCards stats={analytics} />
-
           <AttendanceReport
             title={"Attendance report"}
-            desc={"Real-time employee attendance report"}
             data={analytics?.attendanceReport}
+            desc={"Real-time employee attendance report"}
             filter={"Daily"}
           />
-
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
             <EmployeeStatus
               data={analytics?.employeeStatus}
               title="Employee status"
-              pieStripes="Part-time" 
             />
-            <JobApplicants applicants={analytics?.recentApplicants} />
+
+            <JobApplicants
+              applicants={analytics?.recentApplicants}
+              pagination={analytics?.applicantsPagination}
+            />
           </div>
         </div>
-
         <div className="col-span-12 lg:col-span-4">
           <TaskSummary
             data={analytics?.projects}
