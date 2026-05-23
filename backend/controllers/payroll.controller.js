@@ -333,10 +333,7 @@ export const getEmployeesPayroll = asyncWraper(async (req, res, next) => {
     }
     if (status) {
         searchQuery.status = status;
-    } else {
-        searchQuery.status = { $in: ["Pending", "Paid"] };
     }
-
     const limitNumber = Number(limit) || 10;
     const pageNumber = Number(page) || 1;
     const skip = (pageNumber - 1) * limitNumber;
@@ -454,13 +451,11 @@ export const getPayrollDetails = asyncWraper(async (req, res, next) => {
     });
 });
 
-
 const fetchPayrollHistoryLogic = async (req, res, next, targetEmployeeId) => {
     const { month, year, status, limit, page } = req.query;
     const limitNumber = Number(limit) || 10;
     const pageNumber = Number(page) || 1;
     const skip = (pageNumber - 1) * limitNumber;
-
 
     const searchQuery = { employeeId: targetEmployeeId };
 

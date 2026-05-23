@@ -4,12 +4,12 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "../../../services/axios";
 
-import DataTable from "../../../Components/table/DataTable";
-import TableControls from "../../../Components/table/TableControls";
-import Pagination from "../../../Components/table/Pagination";
+import DataTable from "../../../components/table/DataTable";
+import TableControls from "../../../components/table/TableControls";
+import Pagination from "../../../components/table/Pagination";
 import EditIcon from "@mui/icons-material/Edit";
-import RowActionMenu from "../../../Components/UI/RowActionMenu";
-import BaseCard from "../../../Components/UI/Card";
+import RowActionMenu from "../../../components/UI/RowActionMenu";
+import BaseCard from "../../../components/UI/Card";
 import { Eye, Trash2 } from "lucide-react";
 
 const AttendanceBadge = ({ status }) => {

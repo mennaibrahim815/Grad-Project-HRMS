@@ -1,7 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import icon from "../../assets/icons/Icon.svg";
 import { logoutUser } from "../../store/HrSlices/auth/loginSlice";
 
@@ -112,7 +112,7 @@ const Sidebar = () => {
                   isCollapsed ? "justify-center" : ""
                 ].join(" ")}
               >
-                {/* 👇 المحتوى اللي اتمسح */}
+              
                 <i className={`${item.icon} text-lg`}></i>
                 {!isCollapsed && (
                   <>
@@ -147,25 +147,43 @@ const Sidebar = () => {
               </NavLink>
             )}
 
-            {/* Dropdown العادي لما مش Collapsed */}
-            {item.children && openDropdown === item.name && !isCollapsed && (
-              <div className="ml-4 mt-1 space-y-1 border-l border-slate-700/50 pl-3">
-                {item.children.map((child) => (
-                  <NavLink
-                    key={child.name}
-                    to={child.path}
-                    className={({ isActive }) => [
-                      "flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all",
-                      isActive
-                        ? "bg-[#182731] text-white"
-                        : "text-gray-400 hover:bg-[#142129] hover:text-white"
-                    ].join(" ")}
+         
+            {item.children && !isCollapsed && (
+              <AnimatePresence>
+                {openDropdown === item.name && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0, y: -10 }}
+                    animate={{ opacity: 1, height: "auto", y: 0 }}
+                    exit={{ opacity: 0, height: 0, y: -10 }}
+                    transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                    className="overflow-hidden"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                    {child.name}
-                  </NavLink>
-                ))}
-              </div>
+                    <div className="ml-4 mt-1 space-y-1 border-l border-slate-700/50 pl-3">
+                      {item.children.map((child, index) => (
+                        <motion.div
+                          key={child.name}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.07, duration: 0.2 }}
+                        >
+                          <NavLink
+                            to={child.path}
+                            className={({ isActive }) => [
+                              "flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all",
+                              isActive
+                                ? "bg-[#182731] text-white"
+                                : "text-gray-400 hover:bg-[#142129] hover:text-white"
+                            ].join(" ")}
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                            {child.name}
+                          </NavLink>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             )}
           </div>
         ))}

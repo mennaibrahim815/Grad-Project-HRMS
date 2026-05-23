@@ -111,13 +111,15 @@ function monthLabel(month, year) {
 export function PayrollActionModal({ action, onClose, targetId }) {
     const dispatch = useDispatch();
 
-    const { managementSelectedMonth, managementSelectedYear, actionState } = useSelector(
+
+    const { managementSelectedMonth, actionState } = useSelector(
         (state) => state.payroll
     );
 
     // managementSelectedMonth stored as "YYYY-MM"
-    const month = parseInt(managementSelectedMonth.split("-")[1], 10);
-    const year = managementSelectedYear;
+    const [yearStr, monthStr] = managementSelectedMonth.split("-");
+    const month = parseInt(monthStr, 10);
+    const year = parseInt(yearStr, 10);
 
     const config = ACTION_CONFIGS[action];
 
@@ -144,14 +146,14 @@ export function PayrollActionModal({ action, onClose, targetId }) {
     const { Icon } = config;
     const handleConfirm = () => {
         if (action === "singlePay") {
-          
+
             dispatch(config.thunk({
                 id: targetId,
                 month,
                 year
             }));
         } else {
-           
+
             dispatch(config.thunk({ month, year }));
         }
     };
@@ -231,8 +233,8 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                     <>
                         <div
                             className={`flex gap-3 px-5 py-4 border-y ${result.ok
-                                    ? "bg-[#00331E] border-[#00522F]"
-                                    : "bg-[#34141F] border-[#6B0A2B]"
+                                ? "bg-[#00331E] border-[#00522F]"
+                                : "bg-[#34141F] border-[#6B0A2B]"
                                 }`}
                         >
                             <div
