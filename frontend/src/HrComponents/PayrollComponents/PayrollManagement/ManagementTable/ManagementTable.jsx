@@ -54,9 +54,24 @@ function ManagementTable() {
     const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
     const [detailsId, setDetailsId] = useState(null);
     const [editRow, setEditRow] = useState(null);
+    const [editFormValues, setEditFormValues] = useState({});
     const handlePayAction = (row) => {
         setSelectedEmployeeId(row._id);
         setActiveModal("singlePay");
+    };
+
+    const handleOpenEdit = (row) => {
+        setEditRow(row);
+        if (!editFormValues[row._id]) {
+            setEditFormValues(prev => ({
+                ...prev,
+                [row._id]: {
+                    manualAdditions: row.manualAdditions ?? 0,
+                    manualDeductions: row.manualDeductions ?? 0,
+                    adjustmentReason: row.adjustmentReason ?? "",
+                }
+            }));
+        }
     };
     const columns = [
         {
@@ -144,7 +159,7 @@ function ManagementTable() {
                                     label: "Edit",
                                     icon: EditIcon,
                                     variant: "danger",
-                                    onClick: () => setEditRow(row), // ← بنبعت الـ row كامل
+                                    onClick: () => handleOpenEdit(row)
                                 },
                             ];
 
@@ -307,14 +322,19 @@ function ManagementTable() {
                 />
             )}
 
-            {
-                editRow && (
-                    <EditDraftModal
-                        payrollRow={editRow}
-                        onClose={() => setEditRow(null)}
-                    />
-                )
-            }
+            {editRow && (
+                <EditDraftModal
+                    payrollRow={editRow}
+                    formValues={editFormValues[editRow._id]}         
+                    onFormChange={(values) =>                         
+                        setEditFormValues(prev => ({
+                            ...prev,
+                            [editRow._id]: values
+                        }))
+                    }
+                    onClose={() => setEditRow(null)}
+                />
+            )}
         </BaseCard>
 
     );
