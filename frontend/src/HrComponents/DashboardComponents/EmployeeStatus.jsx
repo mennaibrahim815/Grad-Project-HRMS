@@ -61,7 +61,7 @@ const EmployeeStatus = ({ pieStripes, title }) => {
     {
       name: "Part Time",
       value: raw.partTimePercentage || 0,
-      color: "#f59e0b",
+      color: "#4b5563",
     },
     {
       name: "Internship",

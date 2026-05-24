@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import Modal from '../../../Components/UI/Modal/Modal';
-import ModalHeader from '../../../Components/UI/Modal/ModalHeader';
+import Modal from '../../../components/UI/Modal/Modal';
+import ModalHeader from '../../../components/UI/Modal/ModalHeader';
 import AddEmployeeSteps from './AddEmployeeSteps';
 import GeneralStep from './steps/GeneralStep';
 import ExperianceStep from './steps/ExperianceStep';
 import EmployeeStep from './steps/EmployeeStep';
-import Button from '../../../Components/UI/Button';
+import Button from '../../../components/UI/Button';
 import api from "../../../services/axios";
 import { motion, AnimatePresence } from "framer-motion";
 

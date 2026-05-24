@@ -6,7 +6,7 @@ export const fetchAllLeaves = createAsyncThunk(
   "leaves/fetchAll",
   async (_, { rejectWithValue }) => {
     try {
-      // ✅ Pending بس في الكارد + limit صغير
+
       const response = await axios.get("/leaves?limit=5&page=1");
       return response.data;
     } catch (err) {
@@ -67,11 +67,11 @@ const leaveSlice = createSlice({
         state.error = null;
       })
       .addCase(fetchAllLeaves.fulfilled, (state, action) => {
-      state.loading = false;
-      // ✅ الداتا جوه action.payload.data
-      state.list = action.payload.data || [];
+        state.loading = false;
+        // ✅ الداتا جوه action.payload.data
+        state.list = action.payload.data || [];
       })
-    
+
       // البحث
       .addCase(searchLeaves.pending, (state) => {
         state.searchLoading = true;
@@ -84,45 +84,27 @@ const leaveSlice = createSlice({
         state.searchLoading = false;
         state.error = action.payload;
       })
-      
-//       .addCase(updateLeaveStatus.fulfilled, (state, action) => {
-//        state.error = null; // مهم جدًا
 
-//       const { id, status } = action.payload;
 
-//   const leave = state.list.find((l) => l.id === id);
-//   if (leave) {
-//     leave.status = status;
-//   }
+      .addCase(updateLeaveStatus.pending, (state) => {
+        state.error = null; // امسحي أي error قديم
+      })
+      .addCase(updateLeaveStatus.fulfilled, (state, action) => {
+        state.error = null; // تأكيد مسح الخطأ
+        const { id, status } = action.payload;
 
-//   const searchLeave = state.searchResults.find((l) => l.id === id);
-//   if (searchLeave) {
-//     searchLeave.status = status;
-//   }
-// })
-// .addCase(updateLeaveStatus.rejected, (state, action) => {
-//   state.error = action.payload;
-// });
-    .addCase(updateLeaveStatus.pending, (state) => {
-  state.error = null; // امسحي أي error قديم
-})
-.addCase(updateLeaveStatus.fulfilled, (state, action) => {
-  state.error = null; // تأكيد مسح الخطأ
-  const { id, status } = action.payload;
+        state.list = state.list.map((leave) =>
+          leave._id === id ? { ...leave, status } : leave
+        );
 
-  const leave = state.list.find((l) => l.id === id);
-  if (leave) {
-    leave.status = status;
-  }
-
-  const searchLeave = state.searchResults.find((l) => l.id === id);
-  if (searchLeave) {
-    searchLeave.status = status;
-  }
-})
-.addCase(updateLeaveStatus.rejected, (state, action) => {
-  state.error = action.payload;
-});
+        const searchLeave = state.searchResults.find((l) => l.id === id);
+        if (searchLeave) {
+          searchLeave.status = status;
+        }
+      })
+      .addCase(updateLeaveStatus.rejected, (state, action) => {
+        state.error = action.payload;
+      });
   },
 });
 

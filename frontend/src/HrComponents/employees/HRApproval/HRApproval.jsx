@@ -6,7 +6,7 @@ import {
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import BaseCard from "../../../Components/UI/Card";
+import BaseCard from "../../../components/UI/Card";
 
 function HRApproval() {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ function HRApproval() {
           <h1 className="text-white text-xl font-semibold tracking-tight">
             Leave application
           </h1>
-          <button className="w-10 h-10 rounded-xl bg-slate-700/60 hover:bg-slate-600/60 flex items-center justify-center transition-all duration-200 hover:scale-105" onClick={() => navigate("/leave")}>
+          <button className="w-10 h-10 rounded-xl bg-slate-700/60 hover:bg-slate-600/60 flex items-center justify-center transition-all duration-200 hover:scale-105" onClick={() => navigate("/leave-requests")}>
             <svg
               className="w-4 h-4 text-white"
               fill="none"
@@ -51,16 +51,16 @@ function HRApproval() {
 
         {/* Leave Requests List */}
         {list.map((request) => (
-  <div key={request._id} className="flex items-center justify-between group"> {/* ✅ _id */}
+  <div key={request._id} className="flex items-center justify-between group"> 
     <div className="flex items-center gap-3">
       <img
-        src={request.employee?.avatar} // ✅ nested
+        src={request.employee?.avatar}
         alt={request.employee?.firstName}
         className="w-11 h-11 rounded-full object-cover ring-2 ring-slate-600/50 mb-3"
       />
       <div>
         <p className="text-white text-sm font-medium leading-tight">
-          {request.employee?.firstName} {request.employee?.lastName} {/* ✅ */}
+          {request.employee?.firstName} {request.employee?.lastName} 
         </p>
         <p className="text-slate-400 text-xs mt-0.5">{request.reason}</p>
       </div>
@@ -78,13 +78,13 @@ function HRApproval() {
       ) : (
         <>
           <button
-            onClick={() => handleAccept(request._id)} // ✅ _id
+            onClick={() => handleAccept(request._id)}
             className="px-4 py-2 text-xs font-medium text-white bg-[#0095ff] hover:bg-[#0052cc] rounded-full transition-all"
           >
             Accept
           </button>
           <button
-            onClick={() => handleDecline(request._id)} // ✅ _id
+            onClick={() => handleDecline(request._id)} 
             className="px-4 py-2 text-xs font-medium text-slate-300 bg-slate-700/70 hover:bg-slate-600/70 rounded-full transition-all"
           >
             Decline

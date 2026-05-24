@@ -347,11 +347,6 @@ const SplashPage = () => {
         </div>
       </section>
 
-
-
-
-
-
       {/* 3. قسم عن المنصة (About) */}
       <section
         id="about"
@@ -374,8 +369,6 @@ const SplashPage = () => {
             </p>
           </div>
         </div>
-
-
 
         <div className="space-y-4">
           {/* Item 1: Platform */}
@@ -410,96 +403,49 @@ const SplashPage = () => {
         </div>
       </section>
 
+      <footer className="px-6 pb-24">
+        <div className="relative overflow-hidden max-w-7xl mx-auto bg-[#0d141c] border border-white/5 rounded-[2.5rem] p-10 md:p-16 flex flex-col lg:flex-row items-center justify-between gap-12">
+          {/* تأثير الإضاءة الزرقاء في الركن العلوي الأيمن (Glow Effect) */}
+          <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[80%] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none"></div>
 
-
-
-
-      {/* 4. الفوتر / دعوة للعمل */}
-      {/* <footer className="px-6 pb-24">
-        <div className="max-w-7xl mx-auto p-16 rounded-[3rem] bg-gradient-to-br from-blue-600/10 to-transparent border border-white/5 flex flex-col md:flex-row justify-between items-center gap-10">
-          <div className="max-w-xl">
-            <h2 className="text-4xl font-bold mb-6">
+          {/* الجزء الأيسر: العنوان، الوصف والزر */}
+          <div className="relative z-10 flex-1 text-center lg:text-left">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight max-w-xl">
               Ready to transform your HR operations?
             </h2>
-            <p className="text-gray-400">
+            <p className="text-gray-400 text-sm md:text-base max-w-md leading-relaxed mb-10 mx-auto lg:mx-0">
               Experience a complete HRMS platform designed for both HR and
-              employees.
+              employees, combining AI-powered recruitment, real-time attendance
+              tracking, and automated payroll in one seamless system.
             </p>
+
+            {/* الزر بتدرج لوني وتوهج (Gradient Button) */}
+            <button
+              onClick={() => navigate("/login")}
+              className="px-10 py-4 bg-gradient-to-r from-[#00a3ff] to-[#006dfa] hover:brightness-110 text-white rounded-xl font-bold text-lg shadow-[0_15px_35px_rgba(0,163,255,0.3)] transition-all active:scale-95"
+            >
+              Get Started
+            </button>
           </div>
-          <button
-            onClick={() => navigate("/login")}
-            className="px-12 py-5 bg-blue-600 hover:bg-blue-500 rounded-2xl font-bold text-lg transition-all shadow-2xl shadow-blue-600/30 whitespace-nowrap"
-          >
-            Get Started
-          </button>
+
+          {/* الجزء الأيمن: الكروت التقنية (The technical boxes) */}
+          <div className="relative z-10 flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
+            <div className="w-full sm:w-60 h-32 bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center p-8 text-center transition-all hover:bg-white/[0.05]">
+              <span className="text-[10px] text-gray-500 font-mono tracking-[0.25em] uppercase leading-relaxed">
+                AI-Powered Recruitment
+              </span>
+            </div>
+
+            <div className="w-full sm:w-60 h-32 bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center p-8 text-center transition-all hover:bg-white/[0.05]">
+              <span className="text-[10px] text-gray-500 font-mono tracking-[0.25em] uppercase leading-relaxed">
+                RFID Attendance Tracking
+              </span>
+            </div>
+          </div>
         </div>
-      </footer> */}
-
-
-      <footer className="px-6 pb-24">
-  <div className="relative overflow-hidden max-w-7xl mx-auto bg-[#0d141c] border border-white/5 rounded-[2.5rem] p-10 md:p-16 flex flex-col lg:flex-row items-center justify-between gap-12">
-    
-    {/* تأثير الإضاءة الزرقاء في الركن العلوي الأيمن (Glow Effect) */}
-    <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[80%] bg-blue-500/10 blur-[120px] rounded-full pointer-events-none"></div>
-
-    {/* الجزء الأيسر: العنوان، الوصف والزر */}
-    <div className="relative z-10 flex-1 text-center lg:text-left">
-      <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight max-w-xl">
-        Ready to transform your HR operations?
-      </h2>
-      <p className="text-gray-400 text-sm md:text-base max-w-md leading-relaxed mb-10 mx-auto lg:mx-0">
-        Experience a complete HRMS platform designed for both HR and employees,
-        combining AI-powered recruitment, real-time attendance tracking, and
-        automated payroll in one seamless system.
-      </p>
-      
-      {/* الزر بتدرج لوني وتوهج (Gradient Button) */}
-      <button
-        onClick={() => navigate("/login")}
-        className="px-10 py-4 bg-gradient-to-r from-[#00a3ff] to-[#006dfa] hover:brightness-110 text-white rounded-xl font-bold text-lg shadow-[0_15px_35px_rgba(0,163,255,0.3)] transition-all active:scale-95"
-      >
-        Get Started
-      </button>
-    </div>
-
-    {/* الجزء الأيمن: الكروت التقنية (The technical boxes) */}
-    <div className="relative z-10 flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
-      <div className="w-full sm:w-60 h-32 bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center p-8 text-center transition-all hover:bg-white/[0.05]">
-        <span className="text-[10px] text-gray-500 font-mono tracking-[0.25em] uppercase leading-relaxed">
-          AI-Powered Recruitment
-        </span>
-      </div>
-      
-      <div className="w-full sm:w-60 h-32 bg-white/[0.03] border border-white/5 rounded-2xl flex items-center justify-center p-8 text-center transition-all hover:bg-white/[0.05]">
-        <span className="text-[10px] text-gray-500 font-mono tracking-[0.25em] uppercase leading-relaxed">
-          RFID Attendance Tracking
-        </span>
-      </div>
-    </div>
-
-  </div>
-</footer>
+      </footer>
     </div>
   );
 };
-
-// مكونات فرعية لتنظيم الكود
-// const FeatureCard = ({ title, desc, icon, tag }) => (
-//   <div className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:border-blue-500/30 transition-all group">
-//     <div className="w-14 h-14 rounded-2xl bg-white/5 flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-//       {icon}
-//     </div>
-//     <h3 className="text-2xl font-bold mb-4">{title}</h3>
-//     <p className="text-gray-400 leading-relaxed mb-10">{desc}</p>
-//     <div className="flex items-center justify-between pt-6 border-t border-white/5">
-//       <span className="text-[10px] font-black tracking-[0.2em] text-gray-500">
-//         {tag}
-//       </span>
-//       <Globe size={16} className="text-gray-700" />
-//     </div>
-//   </div>
-// );
-
-
 
 export default SplashPage;

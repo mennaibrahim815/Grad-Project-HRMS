@@ -1,8 +1,8 @@
 import { useState } from "react";
 import AddEmployeeModal from "../AddEmployee/AddEmployeeModal";
-import SuccessCard from "../AddEmployee/SuccessCard";
+import SuccessCard from "../../../components/UI/SuccessCard";
 import { motion, AnimatePresence } from "framer-motion";
-import ReusableCalendar from "../../../Components/UI/ReusableCalendar";
+import ReusableCalendar from "../../../components/UI/ReusableCalendar";
 import { useSelector, useDispatch } from "react-redux";
 import { setSelectedDate } from "../../../store/HrSlices/attendance/attendanceSlice";
 
@@ -73,7 +73,11 @@ const EmployeeHeader = () => {
                 damping: 18,
               }}
             >
-              <SuccessCard onDone={() => setIsSuccess(false)} />
+              <SuccessCard
+                onDone={() => setIsSuccess(false)}
+                description="Employee data has been successfully added to the system. You can return to the employee list to see the latest data."
+             
+              />
             </motion.div>
           </motion.div>
         )}

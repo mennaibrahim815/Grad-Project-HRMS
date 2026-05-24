@@ -1,28 +1,31 @@
-# 🚀 React Starter Template
+# Staffly - Smart HRMS (Graduation Project)
 
-**React Starter** هو مشروع Template جاهز للعمل على React + Vite، مع تنظيم **احترافي ومقنن** لكل شيء في المشروع.  
-مصمم ليكون نقطة انطلاق سريعة لأي مشروع React مع Tailwind CSS، React Router، إدارة الحالة، الفورمات، والأيقونات.
+Staffly is an enterprise-grade Human Resource Management System (HRMS) designed for software companies. It automates core HR operations including recruitment, real-time IoT attendance tracking, complex payroll calculations, and project management.
 
----
+This repository is a **Monorepo** containing all the services, clients, and hardware logic required to run the system.
 
-## 💡 المميزات
+##  Repository Structure
 
-- **هيكلية Project منظمة** حسب أفضل ممارسات المشاريع الكبيرة
-- **Tailwind CSS** جاهز للتعديل
-- **React Router v6** جاهز مع صفحات Login  / About / Home
-- **Navbar و Footer** جاهزين وقابلين لإعادة الاستخدام
-- **Auth Flow** جاهز كـ Feature مع Pages + Components + Store + Services
-- **Axios** للتعامل مع الـ API
-- **Zustand** لإدارة الحالة
-- **Formik + React Hook Form + Yup** للفورمات والتحقق
-- **React Icons** جاهزة للأيقونات
-- **Error Page** جاهزة لأي route خاطئ
+Since this is a collaborative graduation project, the codebase is divided into specific domains:
 
----
+* `/backend` - The core Node.js/Express API, payroll engine, and MongoDB aggregations.
+* `/frontend` - The React web dashboard for HR administrators.
+* `/hardware` - C++ scripts for the ESP32 microcontroller and RFID reader integration.
+* `/ai_service` - Python scripts for CV parsing and candidate ranking (ATS).
 
-## 🏗️ الهيكلية (Structure)
+##  Tech Stack
+* **Backend:** Node.js, Express.js, MongoDB (Mongoose), Zod.
+* **Frontend:** React, Vite, Tailwind CSS, Zustand.
+* **AI/ML:** Python, ONNX.
+* **IoT:** ESP32, RFID modules, C++.
 
+##  Team & Contributions
 
+**Note for Reviewers and Recruiters:**
+As the **Team Leader and Lead Backend/AI Engineer**, my primary contributions including the System Architecture, Backend Logic, AI Integration, and IoT bridging are located exclusively in the `/backend` and `/ai_service` directories on the `Youssef` branch. 
 
+The `/frontend` directory is maintained by the UI/UX and frontend team members.
 
+##  Getting Started
 
+To run this project locally, you will need to start the backend server and the frontend client separately. 
