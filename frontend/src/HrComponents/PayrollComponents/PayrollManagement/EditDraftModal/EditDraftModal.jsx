@@ -12,24 +12,40 @@ import {
     FileText,
 } from "lucide-react";
 
-export function EditDraftModal({ payrollRow, onClose }) {
+export function EditDraftModal({ payrollRow, formValues, onFormChange, onClose }) {
     const dispatch = useDispatch();
     const { managementSelectedMonth, actionState } = useSelector((s) => s.payroll);
 
     const [yearStr, monthStr] = managementSelectedMonth.split("-");
     const month = parseInt(monthStr, 10);
     const year = parseInt(yearStr, 10);
+    const [manualAdditions, setManualAdditions] = useState(formValues?.manualAdditions ?? 0);
+    const [manualDeductions, setManualDeductions] = useState(formValues?.manualDeductions ?? 0);
+    const [adjustmentReason, setAdjustmentReason] = useState(formValues?.adjustmentReason ?? "");
+    const handleAdditionsChange = (val) => {
+        setManualAdditions(val);
+        onFormChange({ manualAdditions: val, manualDeductions, adjustmentReason });
+    };
 
-    
-    const [manualAdditions, setManualAdditions] = useState(
-        payrollRow?.manualAdditions ?? 0
-    );
-    const [manualDeductions, setManualDeductions] = useState(
-        payrollRow?.manualDeductions ?? 0
-    );
-    const [adjustmentReason, setAdjustmentReason] = useState(
-        payrollRow?.adjustmentReason ?? ""
-    );
+    const handleDeductionsChange = (val) => {
+        setManualDeductions(val);
+        onFormChange({ manualAdditions, manualDeductions: val, adjustmentReason });
+    };
+
+    const handleReasonChange = (val) => {
+        setAdjustmentReason(val);
+        onFormChange({ manualAdditions, manualDeductions, adjustmentReason: val });
+    };
+
+    // const [manualAdditions, setManualAdditions] = useState(
+    //     payrollRow?.manualAdditions ?? 0
+    // );
+    // const [manualDeductions, setManualDeductions] = useState(
+    //     payrollRow?.manualDeductions ?? 0
+    // );
+    // const [adjustmentReason, setAdjustmentReason] = useState(
+    //     payrollRow?.adjustmentReason ?? ""
+    // );
 
     const isLoading = actionState.loading;
     const result = actionState.result;
@@ -46,6 +62,13 @@ export function EditDraftModal({ payrollRow, onClose }) {
                 setManualAdditions(updated.manualAdditions ?? 0);
                 setManualDeductions(updated.manualDeductions ?? 0);
                 setAdjustmentReason(updated.adjustmentReason ?? "");
+
+                
+                onFormChange({
+                    manualAdditions: updated.manualAdditions ?? 0,
+                    manualDeductions: updated.manualDeductions ?? 0,
+                    adjustmentReason: updated.adjustmentReason ?? "",
+                });
             }
             dispatch(fetchAllPayrolls({ month, year }));
         }
@@ -102,7 +125,7 @@ export function EditDraftModal({ payrollRow, onClose }) {
                                     type="number"
                                     min={0}
                                     value={manualAdditions}
-                                    onChange={(e) => setManualAdditions(e.target.value)}
+                                    onChange={(e) => handleAdditionsChange(e.target.value)}
                                     className="w-full bg-[#1B1E22] border border-[#383D47] rounded-xl
                                                pl-9 pr-4 py-2.5 text-sm text-[#FCFCFD]
                                                focus:outline-none focus:border-[#4BFFB2]/60
@@ -126,7 +149,7 @@ export function EditDraftModal({ payrollRow, onClose }) {
                                     type="number"
                                     min={0}
                                     value={manualDeductions}
-                                    onChange={(e) => setManualDeductions(e.target.value)}
+                                    onChange={(e) => handleDeductionsChange(e.target.value)}
                                     className="w-full bg-[#1B1E22] border border-[#383D47] rounded-xl
                                                pl-9 pr-4 py-2.5 text-sm text-[#FCFCFD]
                                                focus:outline-none focus:border-[#EC3A76]/60
@@ -143,7 +166,7 @@ export function EditDraftModal({ payrollRow, onClose }) {
                             </label>
                             <textarea
                                 value={adjustmentReason}
-                                onChange={(e) => setAdjustmentReason(e.target.value)}
+                                onChange={(e) => handleReasonChange(e.target.value)}
                                 rows={3}
                                 placeholder="Explain the reason for this adjustment..."
                                 className="w-full bg-[#1B1E22] border border-[#383D47] rounded-xl
@@ -189,8 +212,8 @@ export function EditDraftModal({ payrollRow, onClose }) {
             {phase === "result" && result && (
                 <>
                     <div className={`flex gap-3 px-6 py-5 border-y ${result.ok
-                            ? "bg-[#00331E] border-[#00522F]"
-                            : "bg-[#34141F] border-[#6B0A2B]"
+                        ? "bg-[#00331E] border-[#00522F]"
+                        : "bg-[#34141F] border-[#6B0A2B]"
                         }`}>
                         <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${result.ok ? "bg-[#00522F]" : "bg-[#6B0A2B]"
                             }`}>
