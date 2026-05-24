@@ -12,6 +12,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { PayrollActionModal } from '../PayrollActionModal/PayrollActionModal';
 import { PayrollDetailsModal } from '../PayrollDetailsModal/PayrollDetailsModal';
 import { EditDraftModal } from '../EditDraftModal/EditDraftModal';
+import { generatePayslip } from "../../../../services/Generatepayslip";
 
 // Generate avatar URL using UI Avatars
 const getAvatarUrl = (name, background = '0D8ABC', color = 'fff') => {
@@ -173,10 +174,10 @@ function ManagementTable() {
                                     label: "Download Payslip",
                                     icon: Download, // من lucide-react
                                     variant: "success",
-                                    onClick: () => {
+                            
                                         // handle download
-                                        console.log("Download Payslip", row._id);
-                                    },
+                                    onClick: () => generatePayslip(row),
+                                
                                 },
                             ];
 

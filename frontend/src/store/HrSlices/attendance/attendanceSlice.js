@@ -74,9 +74,24 @@ export const fetchAttendanceByEmployee = createAsyncThunk(
     }
   },
 );
+// Fetch Attendance Stats
+export const fetchAttendanceStats = createAsyncThunk(
+  "attendance/fetchAttendanceStats",
+  async ({ month, year }, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`/attendance/stats/monthly`, {
+        params: { month, year }
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Failed to fetch payroll summary");
+    }
+  }
+);
 
 const initialState = {
   attendanceList: [],
+  analytics: null,
   pagination: {
     totalRecords: 0,
     totalPages: 1,
@@ -92,6 +107,7 @@ const initialState = {
   selectedMonth: new Date().toISOString().slice(0, 7),
   selectedDate: new Date().toISOString().split("T")[0],
   loading: false,
+  statsLoading: false,
   error: null,
 };
 
@@ -182,7 +198,20 @@ const attendanceSlice = createSlice({
       .addCase(fetchAttendanceByEmployee.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      // Attendance stats
+      .addCase(fetchAttendanceStats.pending, (state) => {
+        state.statsLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchAttendanceStats.fulfilled, (state, action) => {
+        state.statsLoading = false;
+        state.analytics = action.payload;
+      })
+      .addCase(fetchAttendanceStats.rejected, (state, action) => {
+        state.statsLoading= false;
+        state.error = action.payload;
+      })
   },
 });
 

@@ -85,6 +85,7 @@ const EmployeesTable = () => {
               src={row.general?.avatar?.startsWith('http') ? row.general.avatar : getAvatarUrl(fullName)}
               alt={fullName}
               className="w-10 h-10 rounded-full object-cover"
+              style={{ imageRendering: "auto" }}
             />
             <div>
               <p className="text-sm font-medium text-slate-100">{fullName}</p>

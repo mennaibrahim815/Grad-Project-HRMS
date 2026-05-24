@@ -11,20 +11,18 @@ import HeroSection from "../../HrComponents/HiringComponents/apply-job/HeroSecti
 import SearchBar from "../../HrComponents/HiringComponents/apply-job/SearchBar";
 import FilterBar from "../../HrComponents/HiringComponents/apply-job/FilterBar";
 import JobGrid from "../../HrComponents/HiringComponents/apply-job/Jobgrid";
-
 // ── Variants ──────────────────────────────────────────────────────────────────
 
-// الـ container بتاع الصفحة - بيتحكم في الـ stagger بين الـ sections
+
 const pageVariants = {
     hidden: {},
     visible: {
         transition: {
-            staggerChildren: 0.15, // delay بين كل section والتاني
+            staggerChildren: 0.15,
         },
     },
 };
 
-// كل section بيجي من تحت مع fade
 const sectionVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
@@ -34,7 +32,7 @@ const sectionVariants = {
     },
 };
 
-// الـ navbar بيجي من فوق
+
 const navVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: {

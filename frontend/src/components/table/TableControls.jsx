@@ -24,7 +24,8 @@ const TableControls = ({
   filterValue,
   setFilterValue,
   filterOptions,
-  setCurrentPage
+  setCurrentPage,
+  extraRight  
 }) => {
   return (
     <div className="p-4 md:p-6 border-b border-slate-700/50">
@@ -45,8 +46,12 @@ const TableControls = ({
           ))}
         </div>
 
-        {/* 🔹 Search + Icon */}
+        {/* 🔹 Search + extraRight */}
         <div className="flex items-center gap-3">
+
+          {/* Calendar أو أي حاجة تانية لو اتبعتلها */}
+          {extraRight && extraRight}
+
           <div className="relative flex-1 md:flex-none">
             <input
               type="text"
@@ -58,18 +63,12 @@ const TableControls = ({
               }}
               className="w-full md:w-64 pl-10 pr-4 py-2.5 bg-slate-700/50 border border-slate-600/50 rounded-xl text-slate-200 placeholder-slate-400 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/30 transition-all"
             />
-
             <div className="absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none">
               <SearchIcon />
             </div>
           </div>
 
-          {/* زرار شكل بس
-          <button className="p-2.5 bg-slate-700/50 border border-slate-600/50 rounded-xl text-slate-300 hover:bg-slate-600/50 transition-all">
-            <FilterIcon />
-          </button> */}
         </div>
-
       </div>
     </div>
   )
