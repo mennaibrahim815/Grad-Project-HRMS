@@ -7,6 +7,7 @@ import { httpResponseText } from "../utils/httpResponseText.js";
 import mongoose from "mongoose";
 import { buildNameSearchQuery } from "../utils/searchHelper.js";
 import { months } from "../utils/monthsArray.js";
+import { sendNotification } from "../utils/sendNotification.js";
 
 export const getAllLeaves = asyncWraper(async (req, res, next) => {
     const { date, status, page, limit } = req.query;
