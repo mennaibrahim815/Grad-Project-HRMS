@@ -299,7 +299,7 @@ export const checkIn = asyncWraper(async (req, res, next) => {
         },
     };
     const io = req.app.get("io");
-    io.emit("new_checkin", socketData);
+    io.to("HR_Room").to(user._id.toString()).emit("new_checkin", socketData);
     res.status(200).json({
         status: httpResponseText.SUCCESS,
         data: {

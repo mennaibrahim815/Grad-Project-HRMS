@@ -232,6 +232,15 @@ export const createLeave = asyncWraper(async (req, res, next) => {
         attachment,
         duration,
     });
+    const io = req.app.get("io");
+    await sendNotification(io, {
+        targetRoom: "HR_Room",
+        sender: req.currentUser.userId,
+        title: "New Leave Request",
+        message: `A new ${leave.type} leave request has been submitted by ${user.general.firstName} ${user.general.lastName}.`,
+        type: "Leave",
+        relatedId: leave._id,
+    });
     res.status(201).json({ status: httpResponseText.SUCCESS, data: leave });
 });
 
@@ -440,6 +449,7 @@ export const getLeaveById = asyncWraper(async (req, res, next) => {
         return next(error);
     }
     const leaveData = leave[0];
+
     res.status(200).json({ status: httpResponseText.SUCCESS, data: leaveData });
 });
 
@@ -618,6 +628,16 @@ export const updateLeave = asyncWraper(async (req, res, next) => {
         { new: true, runValidators: true }
     );
 
+    const io = req.app.get("io");
+    await sendNotification(io, {
+        targetRoom: "HR_Room",
+        sender: req.currentUser.userId,
+        title: "Leave Request Updated ",
+        message: `Employee ${user.general.firstName} ${user.general.lastName} has updated their pending ${newType} leave request.`,
+        type: "Leave",
+        relatedId: updatedLeave._id,
+    });
+
     res.status(200).json({ status: "success", data: updatedLeave });
 });
 
@@ -665,9 +685,8 @@ export const updateLeaveStatus = asyncWraper(async (req, res, next) => {
         leave.status = "Approved";
         leave.hrId = hrId;
         await leave.save();
-
-        res.status(200).json({ status: "success", data: leave });
     }
+
     if (status === "Rejected") {
         if (rejectReason) {
             leave.rejectReason = rejectReason;
@@ -675,8 +694,33 @@ export const updateLeaveStatus = asyncWraper(async (req, res, next) => {
         leave.status = "Rejected";
         leave.hrId = hrId;
         await leave.save();
-        res.status(200).json({ status: "success", data: leave });
     }
+
+    let notificationTitle = "";
+    let notificationMessage = "";
+
+    if (status === "Approved") {
+        notificationTitle = "Leave Approved ";
+        notificationMessage = `Your ${leave.type} leave request from ${dayjs(leave.startDate).format("YYYY-MM-DD")} to ${dayjs(leave.endDate).format("YYYY-MM-DD")} has been approved.`;
+    } else {
+        notificationTitle = "Leave Rejected ";
+        notificationMessage = `Your ${leave.type} leave request has been rejected.`;
+        if (rejectReason) {
+            notificationMessage += ` Reason: ${rejectReason}`;
+        }
+    }
+
+    const io = req.app.get("io");
+    await sendNotification(io, {
+        recipient: leave.employeeId,
+        sender: req.currentUser.userId,
+        title: notificationTitle,
+        message: notificationMessage,
+        type: "Leave",
+        relatedId: leave._id,
+    });
+
+    res.status(200).json({ status: "success", data: leave });
 });
 
 export const deleteLeave = asyncWraper(async (req, res, next) => {
@@ -702,7 +746,11 @@ export const deleteLeave = asyncWraper(async (req, res, next) => {
         );
         return next(error);
     }
-    await Leave.findByIdAndDelete(id);
+
+    await Promise.all([
+        Leave.findByIdAndDelete(id),
+        Notification.deleteOne({ relatedId: id }),
+    ]);
 
     res.status(200).json({
         status: httpResponseText.SUCCESS,

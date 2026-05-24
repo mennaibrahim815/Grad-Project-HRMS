@@ -5,7 +5,7 @@ import { httpResponseText } from "../utils/httpResponseText.js";
 
 // تعديل الـ Client عشان يكلم Groq بدل OpenAI
 const groq = new OpenAI({
-    apiKey: process.env.GROQ_API_KEY, // تأكد إنك حاطط المفتاح في الـ .env بالاسم ده
+    apiKey: process.env.GROQ_API_KEY,
     baseURL: "https://api.groq.com/openai/v1",
 });
 

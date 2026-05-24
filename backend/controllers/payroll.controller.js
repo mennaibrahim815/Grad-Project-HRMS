@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import { buildNameSearchQuery } from "../utils/searchHelper.js";
 import { months } from "../utils/monthsArray.js";
 import mongoose from "mongoose";
+import { sendNotification } from "../utils/sendNotification.js";
 
 export const generatePayrollDraft = asyncWraper(async (req, res, next) => {
     let { month, year } = req.body;
@@ -550,12 +551,14 @@ export const payingOnemonthtoEmployees = asyncWraper(async (req, res, next) => {
             )
         );
     }
-    const result = await Payroll.updateMany(
-        { month, year, status: "Pending" },
-        { $set: { status: "Paid", paidBy: req.currentUser.userId } }
-    );
 
-    if (result.matchedCount === 0) {
+    const pendingPayrolls = await Payroll.find({
+        month,
+        year,
+        status: "Pending",
+    });
+
+    if (pendingPayrolls.length === 0) {
         const error = appErrors.create(
             404,
             "No pending payrolls found for employees in the specified period",
@@ -563,6 +566,26 @@ export const payingOnemonthtoEmployees = asyncWraper(async (req, res, next) => {
         );
         return next(error);
     }
+
+    const result = await Payroll.updateMany(
+        { month, year, status: "Pending" },
+        { $set: { status: "Paid", paidBy: req.currentUser.userId } }
+    );
+
+    const io = req.app.get("io");
+
+    const notificationsPromises = pendingPayrolls.map((payroll) => {
+        return sendNotification(io, {
+            recipient: payroll.employeeId,
+            sender: req.currentUser.userId,
+            title: "Salary Paid ",
+            message: `Your salary for ${month}/${year} has been successfully paid.`,
+            type: "Payroll",
+            relatedId: payroll._id,
+        });
+    });
+    await Promise.all(notificationsPromises);
+
     res.status(200).json({
         status: httpResponseText.SUCCESS,
         message: `Payroll for ${month}/${year} paid successfully`,
@@ -574,6 +597,7 @@ export const payingOnemonthtoEmployees = asyncWraper(async (req, res, next) => {
 
 export const payingOnemonthtoEmployee = asyncWraper(async (req, res, next) => {
     const payrollId = req.params.id;
+
     const payment = await Payroll.findOneAndUpdate(
         { _id: payrollId, status: "Pending" },
         { $set: { status: "Paid", paidBy: req.currentUser.userId } },
@@ -587,6 +611,15 @@ export const payingOnemonthtoEmployee = asyncWraper(async (req, res, next) => {
         );
         return next(error);
     }
+    const io = req.app.get("io");
+    await sendNotification(io, {
+        recipient: payment.employeeId,
+        sender: req.currentUser.userId,
+        title: "Salary Paid ",
+        message: `Your salary for ${payment.month}/${payment.year} has been successfully paid.`,
+        type: "Payroll",
+        relatedId: payment._id,
+    });
     res.status(200).json({
         status: httpResponseText.SUCCESS,
         message: `The employee's salary for ${payment.month}/${payment.year} was successfully paid.`,
@@ -594,19 +627,36 @@ export const payingOnemonthtoEmployee = asyncWraper(async (req, res, next) => {
 });
 
 export const payAllPending = asyncWraper(async (req, res, next) => {
+    const pendingPayrolls = await Payroll.find({
+        status: "Pending",
+    });
+
+    if (pendingPayrolls.length === 0) {
+        const error = appErrors.create(
+            404,
+            "No pending payrolls found for employees in the specified period",
+            httpResponseText.FAIL
+        );
+        return next(error);
+    }
     const result = await Payroll.updateMany(
         { status: "Pending" },
         { $set: { status: "Paid", paidBy: req.currentUser.userId } }
     );
 
-    if (result.matchedCount === 0) {
-        const error = appErrors.create(
-            404,
-            "No pending payrolls found for employees",
-            httpResponseText.FAIL
-        );
-        return next(error);
-    }
+    const io = req.app.get("io");
+
+    const notificationsPromises = pendingPayrolls.map((payroll) => {
+        return sendNotification(io, {
+            recipient: payroll.employeeId,
+            sender: req.currentUser.userId,
+            title: "Salary Paid ",
+            message: `Your salary for ${payroll.month}/${payroll.year} has been successfully paid.`,
+            type: "Payroll",
+            relatedId: payroll._id,
+        });
+    });
+    await Promise.all(notificationsPromises);
     res.status(200).json({
         status: httpResponseText.SUCCESS,
         message: `All pending salaries have been paid Successfully`,
@@ -842,6 +892,7 @@ export const getYearlyPayrollChart = asyncWraper(async (req, res, next) => {
         },
     });
 });
+
 export const searchPayroll = asyncWraper(async (req, res, next) => {
     const { page, limit, month, year, employeeName } = req.query;
 
@@ -994,6 +1045,30 @@ export const editPayrollDraft = asyncWraper(async (req, res, next) => {
     payroll.netSalary = finalNetSalary < 0 ? 0 : finalNetSalary;
 
     await payroll.save();
+
+    let customMessage = `Your salary draft for ${payroll.month}/${payroll.year} has been updated.`;
+
+    // if (manualAdditions > 0 && manualDeductions > 0) {
+    //     customMessage = `Your ${payroll.month}/${payroll.year} salary draft has been updated: A bonus of ${manualAdditions} and a deduction of ${manualDeductions} have been applied.`;
+    // } else if (manualAdditions > 0) {
+    //     customMessage = `Good news! A bonus of ${manualAdditions} has been added to your ${payroll.month}/${payroll.year} salary.`;
+    // } else if (manualDeductions > 0) {
+    //     customMessage = `A deduction of ${manualDeductions} has been applied to your ${payroll.month}/${payroll.year} salary.`;
+    // }
+
+    // if (adjustmentReason) {
+    //     customMessage += ` Reason: ${adjustmentReason}`;
+    // }
+
+    // const io = req.app.get("io");
+    // await sendNotification(io, {
+    //     recipient: payroll.employeeId,
+    //     sender: req.currentUser.userId,
+    //     title: "Salary Draft Updated ",
+    //     message: customMessage,
+    //     type: "Payroll",
+    //     relatedId: payroll._id,
+    // });
 
     res.status(200).json({
         status: httpResponseText.SUCCESS,

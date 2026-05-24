@@ -16,6 +16,15 @@ export const createRequest = asyncWraper(async (req, res, next) => {
         priority,
         attachments: attachment || null,
     });
+    const io = req.app.get("io");
+    await sendNotification(io, {
+        targetRoom: "HR_Room",
+        sender: newRequest.employeeId,
+        title: "New Request",
+        message: `A new ${newRequest.type} request has been submitted by ${req.currentUser.general.firstName} ${req.currentUser.general.lastName}.`,
+        type: "Request",
+        relatedId: newRequest._id,
+    });
 
     res.status(201).json({
         status: httpResponseText.SUCCESS,
@@ -195,6 +204,16 @@ export const replyToRequest = asyncWraper(async (req, res, next) => {
         },
         { new: true, runValidators: true }
     ).populate("handledBy", "general.firstName general.lastName");
+
+    const io = req.app.get("io");
+    await sendNotification(io, {
+        recipient: updatedRequest.employeeId,
+        sender: hrId,
+        title: "Request Update",
+        message: `Your ${updatedRequest.type} request has been ${status} by ${req.currentUser.general.firstName} ${req.currentUser.general.lastName}.`,
+        type: "Request",
+        relatedId: updatedRequest._id,
+    });
 
     res.status(200).json({
         status: httpResponseText.SUCCESS,

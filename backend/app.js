@@ -1,5 +1,3 @@
-
-
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -31,7 +29,8 @@ import jobRouter from "./routes/jobs.routes.js";
 import applicantRouter from "./routes/applicants.routes.js";
 import scheduleresetDefaultLeaves from "./jobs/resetDefaultLeaves.js";
 import dashboardRouter from "./routes/dashboard.routes.js";
-import chatbot from "./routes/chatbot.routes.js";
+import chatbotRouter from "./routes/chatbot.routes.js";
+import notificationRouter from "./routes/notification.routes.js";
 import { socketAuthMiddleware } from "./guards/socketAuth.middleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -76,7 +75,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
-const io = new Server(server, {
+export const io = new Server(server, {
     cors: corsOptions,
 });
 
@@ -86,6 +85,12 @@ io.use(socketAuthMiddleware);
 
 io.on("connection", (socket) => {
     console.log("client connected via socket io: " + socket.id);
+
+    socket.join(user.userId);
+
+    if (user.role === "HR") {
+        socket.join("HR_Room");
+    }
     socket.on("disconnect", () => {
         console.log("client disconnected via socket io: " + socket.id);
     });
@@ -108,7 +113,8 @@ app.use("/api/payroll", payrollRouter);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/dashboard", dashboardRouter);
-app.use("/api/chatbot", chatbot);
+app.use("/api/chatbot", chatbotRouter);
+app.use("/api/notifications", notificationRouter);
 
 app.all(/(.*)/, (req, res, next) => {
     const error = appErrors.create(404, "the route is not handeld", "Fail");
