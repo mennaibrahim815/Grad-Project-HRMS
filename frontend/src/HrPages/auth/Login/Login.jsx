@@ -83,7 +83,7 @@ const Login = () => {
       <div className="min-h-screen flex bg-[#0f172a] text-white font-sans overflow-hidden relative">
         {/* Navigation Button - Go to Hiring Page */}
 <Link
-  to="/job" // 👈 لو عايزة تغيّري باث صفحة الهايرينج عدلي هنا
+  to="/apply-job" // 👈 لو عايزة تغيّري باث صفحة الهايرينج عدلي هنا
   className="absolute top-6 left-6 flex items-center gap-3 px-4 py-2 rounded-lg bg-[#1e293b]/80 backdrop-blur-md border border-white/1 text-white text-sm font-medium shadow-md hover:bg-[#273449] hover:shadow-blue-500/20 hover:border-none transition-all"
 >
   {/* small badge like the UI */}

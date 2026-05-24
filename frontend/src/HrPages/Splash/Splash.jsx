@@ -140,7 +140,7 @@ const SplashPage = () => {
         </p>
 
         <button
-          onClick={() => navigate("/job")}
+          onClick={() => navigate("/apply-job")}
           className="bg-blue-600 hover:bg-blue-500 text-white px-10 py-4 rounded-xl font-bold flex items-center gap-3 transition-all shadow-xl shadow-blue-600/30 active:scale-95"
         >
           Explore Job Board (Apply Now) <ArrowRight size={20} />
