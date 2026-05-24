@@ -89,7 +89,7 @@ const LeaveStatsHeader = ({ onStatsUpdated }) => {
       {/* العنوان والكاليندر */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 text-left">
         <div>
-          <div className="text-white text-2xl font-bold tracking-tight">Leave Requests</div>
+          <div className="text-white text-2xl font-bold tracking-tight mt-10">Leave Requests</div>
           <p className="text-slate-500 text-xs mt-1">Manage and track employee leave logs and analytics</p>
         </div>
         

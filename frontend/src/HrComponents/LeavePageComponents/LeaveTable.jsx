@@ -1,5 +1,4 @@
 
-
 // import React, { useState } from "react";
 // import { useNavigate } from "react-router-dom";
 // import DataTable from "../../components/table/DataTable";
@@ -8,9 +7,8 @@
 // import EditIcon from "@mui/icons-material/Edit";
 // import RowActionMenu from "../../components/UI/RowActionMenu";
 // import BaseCard from "../../components/UI/Card";
-// import { Eye, Trash2, CheckCircle, XCircle, AlertCircle } from "lucide-react";
+// import { Eye, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 
-// // مكون شارة الحالة (Badge)
 // const LeaveStatusBadge = ({ status }) => {
 //   const styles = {
 //     Approved: "bg-emerald-500/15 text-emerald-400 border-emerald-400/40",
@@ -28,7 +26,6 @@
 // const LeaveTable = ({ 
 //   leaves, 
 //   onStatusUpdate, 
-//   onDelete,
 //   searchName,      
 //   setSearchName,   
 //   searchDate,      
@@ -43,17 +40,28 @@
 //   const navigate = useNavigate();
 //   const [openMenuId, setOpenMenuId] = useState(null);
   
-//   // State لإدارة Modal التأكيد
-//   const [confirmModal, setConfirmModal] = useState({ show: false, id: null, status: "" });
+//   // State مُحدث لإدارة سبب الرفض
+//   const [confirmModal, setConfirmModal] = useState({ 
+//     show: false, 
+//     id: null, 
+//     status: "",
+//     rejectReason: "" 
+//   });
 
 //   const handleOpenConfirm = (id, status) => {
-//     setConfirmModal({ show: true, id, status });
-//     setOpenMenuId(null); // قفل المنيو الصغير
+//     setConfirmModal({ show: true, id, status, rejectReason: "" });
+//     setOpenMenuId(null);
 //   };
 
 //   const handleConfirmAction = () => {
-//     onStatusUpdate(confirmModal.id, confirmModal.status);
-//     setConfirmModal({ show: false, id: null, status: "" });
+//     // التحقق من وجود سبب في حالة الرفض
+//     if (confirmModal.status === "Rejected" && !confirmModal.rejectReason.trim()) {
+//       alert("Please provide a reason for rejection");
+//       return;
+//     }
+    
+//     onStatusUpdate(confirmModal.id, confirmModal.status, confirmModal.rejectReason);
+//     setConfirmModal({ show: false, id: null, status: "", rejectReason: "" });
 //   };
 
 //   const columns = [
@@ -79,10 +87,18 @@
 //     },
 //     { header: "Type", render: (row) => row.type || "Annual" },
 //     { 
+//       header: "Start Date", 
+//       render: (row) => row.startDate ? new Date(row.startDate).toLocaleDateString() : "N/A"
+//     },
+//     { 
+//       header: "End Date", 
+//       render: (row) => row.endDate ? new Date(row.endDate).toLocaleDateString() : "N/A"
+//     },
+//     { 
 //       header: "Duration", 
 //       render: (row) => (
-//         <span className="text-xs text-slate-300">
-//           {row.duration || 0} Days ({row.startDate ? new Date(row.startDate).toLocaleDateString() : "N/A"})
+//         <span className="font-semibold text-[#0095ff] font-mono">
+//           {row.duration || 0} {row.duration === 1 ? "Day" : "Days"}
 //         </span>
 //       )
 //     },
@@ -91,7 +107,7 @@
 //       header: "Action",
 //       render: (row) => {
 //         const rowId = row._id || row.id;
-//         const isProcessed = row.status !== "Pending"; // هل تم اتخاذ قرار مسبق؟
+//         const isProcessed = row.status !== "Pending";
 
 //         return (
 //           <div className="relative">
@@ -104,19 +120,30 @@
 //               actions={[
 //                 { label: "See Details", icon: Eye, onClick: () => navigate(`/leave-details/${rowId}`) },
 //                 { 
-//                     label: "Approve", 
-//                     icon: CheckCircle, 
-//                     disabled: isProcessed, // تعطيل الزرار لو مش Pending
-//                     onClick: () => handleOpenConfirm(rowId, "Approved") 
+//                   label: "Approve", 
+//                   icon: CheckCircle, 
+//                   disabled: isProcessed, 
+//                   onClick: () => {
+//                    if (isProcessed) {
+//                       alert("This request has already been processed and its status cannot be changed.");
+//                       return;
+//                       } 
+//                       handleOpenConfirm(rowId, "Approved")
+//                     }
 //                 },
 //                 { 
-//                     label: "Reject", 
-//                     icon: XCircle, 
-//                     variant: "danger", 
-//                     disabled: isProcessed, // تعطيل الزرار لو مش Pending
-//                     onClick: () => handleOpenConfirm(rowId, "Rejected") 
+//                   label: "Reject", 
+//                   icon: XCircle, 
+//                   variant: "danger", 
+//                   disabled: isProcessed, 
+//                 onClick: () => {
+//                    if (isProcessed) {
+//                       alert("This request has already been processed and its status cannot be changed.");
+//                       return;
+//                       } 
+//                         handleOpenConfirm(rowId, "Rejected")
+//                     }
 //                 },
-//                 // { label: "Delete", variant: "danger", icon: Trash2, onClick: () => { onDelete(rowId); setOpenMenuId(null); } },
 //               ]}
 //             />
 //           </div>
@@ -136,16 +163,6 @@
 //         setCurrentPage={onPageChange}
 //       />
 
-//       {/* حقل اختيار التاريخ */}
-//       {/* <div className="px-6 pb-4 flex justify-start">
-//         <input 
-//           type="date" 
-//           value={searchDate} 
-//           onChange={(e) => { setSearchDate(e.target.value); onPageChange(1); }}
-//           className="bg-slate-800 text-white p-2 rounded-lg border border-slate-700 text-sm outline-none focus:border-cyan-500/50"
-//         />
-//       </div> */}
-
 //       <DataTable columns={columns} data={leaves} loading={loading} />
 
 //       <Pagination
@@ -153,24 +170,39 @@
 //         handlePageChange={onPageChange}
 //         handleRecordsPerPageChange={onLimitChange}
 //         currentDataLength={leaves.length}
+//         entityName="leaves"
 //       />
 
-//       {/* نافذة التأكيد المنبثقة (Confirm Modal) */}
 //       {confirmModal.show && (
-//         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm">
-//           <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-sm w-full shadow-2xl animate-in fade-in zoom-in duration-200">
+//         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+//           <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full shadow-2xl animate-in fade-in zoom-in duration-200">
 //             <div className="flex items-center gap-4 mb-4 text-cyan-400">
 //               <AlertCircle size={32} />
 //               <h3 className="text-xl font-bold text-white">Confirm Action</h3>
 //             </div>
-//             <p className="text-slate-400 mb-6">
+//             <p className="text-slate-400 mb-4">
 //               Are you sure you want to <span className={confirmModal.status === "Approved" ? "text-emerald-400" : "text-red-400"}>
 //                 {confirmModal.status.toLowerCase()}
-//               </span> this leave request? This action cannot be undone.
+//               </span> this leave request?
 //             </p>
+
+//             {confirmModal.status === "Rejected" && (
+//               <div className="mb-4 animate-in fade-in slide-in-from-top-2">
+//                 <label className="block text-sm font-medium text-slate-300 mb-2">
+//                   Rejection Reason <span className="text-red-500">*</span>
+//                 </label>
+//                 <textarea
+//                   className="w-full bg-slate-800 border border-slate-700 rounded-xl p-3 text-sm text-white outline-none focus:border-red-500/50 min-h-[100px] resize-none"
+//                   placeholder="Explain why this request is being rejected..."
+//                   value={confirmModal.rejectReason}
+//                   onChange={(e) => setConfirmModal({...confirmModal, rejectReason: e.target.value})}
+//                 />
+//               </div>
+//             )}
+
 //             <div className="flex justify-end gap-3">
 //               <button 
-//                 onClick={() => setConfirmModal({ show: false, id: null, status: "" })}
+//                 onClick={() => setConfirmModal({ show: false, id: null, status: "", rejectReason: "" })}
 //                 className="px-4 py-2 text-sm font-medium text-slate-300 hover:bg-slate-800 rounded-lg transition-colors"
 //               >
 //                 Cancel
@@ -234,7 +266,7 @@ const LeaveTable = ({
   const navigate = useNavigate();
   const [openMenuId, setOpenMenuId] = useState(null);
   
-  // State مُحدث لإدارة سبب الرفض
+  // الـ State الخاص بطلب تأكيد الإجراء الإعتيادي
   const [confirmModal, setConfirmModal] = useState({ 
     show: false, 
     id: null, 
@@ -242,13 +274,30 @@ const LeaveTable = ({
     rejectReason: "" 
   });
 
-  const handleOpenConfirm = (id, status) => {
-    setConfirmModal({ show: true, id, status, rejectReason: "" });
+  // الـ State الجديد المخصص لنافذة منع التعديل (الخيار الثاني)
+  const [alertModal, setAlertModal] = useState({
+    show: false,
+    message: ""
+  });
+
+  // تحديث دالة فتح التأكيد لفحص حالة الطلب الحالية أولاً
+  const handleOpenConfirm = (id, targetStatus, currentStatus) => {
     setOpenMenuId(null);
+
+    // إذا كان الطلب مقبولاً أو مرفوضاً بالفعل، نمنع الأكشن ونظهر نافذة التحذير المخصصة
+    if (currentStatus !== "Pending") {
+      setAlertModal({
+        show: true,
+        message: `This leave request has already been ${currentStatus.toLowerCase()}. You cannot change its status anymore.`
+      });
+      return;
+    }
+
+    // إذا كان معلقاً (Pending)، نفتح فورم التأكيد الطبيعي
+    setConfirmModal({ show: true, id, status: targetStatus, rejectReason: "" });
   };
 
   const handleConfirmAction = () => {
-    // التحقق من وجود سبب في حالة الرفض
     if (confirmModal.status === "Rejected" && !confirmModal.rejectReason.trim()) {
       alert("Please provide a reason for rejection");
       return;
@@ -280,11 +329,20 @@ const LeaveTable = ({
       }
     },
     { header: "Type", render: (row) => row.type || "Annual" },
+    {
+      header: "Start Date", 
+      render: (row) => row.startDate ? new Date(row.startDate).toISOString().split('T')[0] : "N/A"
+    },
+    { 
+      header: "End Date", 
+      render: (row) => row.endDate ? new Date(row.endDate).toISOString().split('T')[0] : "N/A"
+    },
+    
     { 
       header: "Duration", 
       render: (row) => (
-        <span className="text-xs text-slate-300">
-          {row.duration || 0} Days ({row.startDate ? new Date(row.startDate).toLocaleDateString() : "N/A"})
+        <span className="font-semibold text-[#0095ff] font-mono">
+          {row.duration || 0} {row.duration === 1 ? "Day" : "Days"}
         </span>
       )
     },
@@ -309,14 +367,14 @@ const LeaveTable = ({
                   label: "Approve", 
                   icon: CheckCircle, 
                   disabled: isProcessed, 
-                  onClick: () => handleOpenConfirm(rowId, "Approved") 
+                  onClick: () => handleOpenConfirm(rowId, "Approved", row.status)
                 },
                 { 
                   label: "Reject", 
                   icon: XCircle, 
                   variant: "danger", 
                   disabled: isProcessed, 
-                  onClick: () => handleOpenConfirm(rowId, "Rejected") 
+                  onClick: () => handleOpenConfirm(rowId, "Rejected", row.status)
                 },
               ]}
             />
@@ -347,6 +405,7 @@ const LeaveTable = ({
         entityName="leaves"
       />
 
+      {/* 1. مودال تأكيد الإجراء للإجازات الـ Pending */}
       {confirmModal.show && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
           <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full shadow-2xl animate-in fade-in zoom-in duration-200">
@@ -388,6 +447,29 @@ const LeaveTable = ({
                 }`}
               >
                 Confirm {confirmModal.status}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 2. النافذة التحذيرية المخصصة (Form) للإجازات المقبولة/المرفوضة مسبقاً */}
+      {alertModal.show && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4">
+          <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl max-w-md w-full shadow-2xl text-center animate-in fade-in zoom-in duration-200">
+            <div className="mx-auto flex items-center justify-center w-12 h-12 rounded-full bg-red-500/10 text-red-500 mb-4">
+              <XCircle size={28} />
+            </div>
+            <h3 className="text-lg font-bold text-white mb-2">Action Not Allowed</h3>
+            <p className="text-sm text-slate-400 mb-6 leading-relaxed">
+              {alertModal.message}
+            </p>
+            <div className="flex justify-center">
+              <button 
+                onClick={() => setAlertModal({ show: false, message: "" })}
+                className="px-5 py-2.5 text-sm font-medium text-white bg-slate-800 hover:bg-slate-700 active:bg-slate-700/80 rounded-xl transition-colors border border-slate-700 w-full sm:w-auto shadow-md"
+              >
+                Understood
               </button>
             </div>
           </div>
