@@ -82,7 +82,6 @@ const VerifyCode = () => {
     dispatch(resendCode(email)).then((res) => {
       if (!res.error) {
         setTimer(60);
-        alert("Verification code has been resent!");
       }
     });
   };
@@ -109,8 +108,13 @@ const VerifyCode = () => {
         )}
       </AnimatePresence>
 
-      <div className="min-h-screen flex bg-[#0f172a] text-white font-sans overflow-hidden relative">
-        <motion.div
+<div className="min-h-screen flex bg-[#0f172a] text-white font-sans overflow-hidden relative z-0">
+  
+  {/* الإضاءة البيضاء المتمركزة في النص */}
+  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[70%] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.15)_0%,rgba(255,255,255,0.05)_5%,transparent_70%)] blur-[100px] -z-10 pointer-events-none"></div>
+
+  {/* باقي المحتوى بتاعك يتحط هنا */}
+  <div className="relative w-full z-10 flex">        <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
@@ -231,14 +235,15 @@ const VerifyCode = () => {
             <div className="flex gap-1.5 z-10">
             <div className="h-1.5 w-2 bg-gray-700 rounded-full"></div>
             <div className="h-1.5 w-2 bg-gray-700 rounded-full"></div>
-            <motion.div
+            {/* <motion.div
               animate={{ width: [8, 24, 8] }}
               transition={{ repeat: Infinity, duration: 2 }}
               className="h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"
-            ></motion.div>
+            ></motion.div> */}
           </div>
           </div>
         </motion.div>
+      </div>
       </div>
     </>
   );
