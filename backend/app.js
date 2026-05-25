@@ -86,9 +86,12 @@ io.use(socketAuthMiddleware);
 io.on("connection", (socket) => {
     console.log("client connected via socket io: " + socket.id);
 
-    socket.join(user.userId);
+    socket.join(socket.currentUser.userId);
 
-    if (user.role === "HR") {
+    if (
+        socket.currentUser.role === "HR" ||
+        socket.currentUser.role === "MANAGER"
+    ) {
         socket.join("HR_Room");
     }
     socket.on("disconnect", () => {
