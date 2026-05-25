@@ -33,6 +33,15 @@ import { getAllLeavesQuerySchema } from "../validators/leave.validation.js";
 
 const router = Router();
 
+router.get("/my-balance", verifyToken, getLeaveBalances);
+
+router.get(
+    "/balance/:id",
+    verifyToken,
+    allowedTo("HR", "MANAGER"),
+    getLeaveBalances
+);
+
 router
     .route("/")
     .get(
@@ -143,15 +152,6 @@ router.get(
     validate(validateYearQuery),
     validate(validateIdParams),
     getYearlyLeaveChart
-);
-
-router.get("/my-balance", verifyToken, getLeaveBalances);
-
-router.get(
-    "/balance/:id",
-    verifyToken,
-    allowedTo("HR", "MANAGER"),
-    getLeaveBalances
 );
 
 export default router;
