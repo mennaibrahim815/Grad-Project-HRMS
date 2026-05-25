@@ -7,6 +7,7 @@ import {
     deleteLeave,
     getAllLeaves,
     getEmployeeLeavesById,
+    getLeaveBalances,
     getLeaveById,
     getMonthlyLeaveStats,
     getMyLeaves,
@@ -142,6 +143,15 @@ router.get(
     validate(validateYearQuery),
     validate(validateIdParams),
     getYearlyLeaveChart
+);
+
+router.get("/my-balance", verifyToken, getLeaveBalances);
+
+router.get(
+    "/balance/:id",
+    verifyToken,
+    allowedTo("HR", "MANAGER"),
+    getLeaveBalances
 );
 
 export default router;

@@ -1037,3 +1037,24 @@ export const getYearlyLeaveChart = asyncWraper(async (req, res, next) => {
         },
     });
 });
+
+export const getLeaveBalances = asyncWraper(async (req, res, next) => {
+    let targetId = req.currentUser.userId;
+
+    if (req.params.id) {
+        targetId = req.params.id;
+    }
+
+    const user = await User.findById(targetId).select("employee.leaveBalance");
+
+    if (!user) {
+        return next(
+            appErrors.create(404, "User not found", httpResponseText.FAIL)
+        );
+    }
+
+    res.status(200).json({
+        status: httpResponseText.SUCCESS,
+        data: user.employee.leaveBalance,
+    });
+});
