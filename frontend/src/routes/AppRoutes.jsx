@@ -25,6 +25,7 @@ import Attendance from "../HrPages/Attendance/Attendance";
 import Performance from "../HrPages/Performance/Performance";
 import LeaveRequests from "../HrPages/Leave/LeaveRequests/LeaveRequests";
 import LeaveDetails from "../HrPages/Leave/LeaveDetails/LeaveDetails";
+import Requests from "../HrPages/Requests/Requests";
 import EmployeeDashboard from "../EmployeePages/EmployeeDashboard/EmployeeDashboard";
 import Settings from "../HrPages/sett/Settings";
 
@@ -59,6 +60,7 @@ export const router = createBrowserRouter(
         { path: "/leave-details/:id", element: <LeaveDetails /> },
 
         { path: "/performance", element: <Performance /> },
+        { path: "/Requests", element: <Requests /> },
       ],
     },
 

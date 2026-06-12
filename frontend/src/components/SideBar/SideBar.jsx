@@ -38,6 +38,7 @@ const Sidebar = () => {
     },
     { name: "Attendance", icon: "fas fa-calendar-check", path: "/attendance" },
     { name: "Leave", icon: "fas fa-envelope-open-text", path: "/leave-requests" },
+    { name: "Requests", icon: "fas fa-file-alt", path: "/requests" },
     { name: "Performance", icon: "fas fa-chart-line", path: "/performance" },
   ];
 
