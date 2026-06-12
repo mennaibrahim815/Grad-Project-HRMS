@@ -46,15 +46,18 @@ export const replyRequestSchema = z.object({
     body: z
         .object({
             status: StatusEnum,
-            text: z.string().trim(),
+            text: z.string().trim().optional(),
             hrAttachment: z.string().optional(),
         })
         .refine(
-            (data) =>
-                data.status !== "Pending" || data.text || data.hrAttachment,
+            (data) => {
+                if (data.status !== "Pending") {
+                    return !!(data.text || data.hrAttachment);
+                }
+                return true; 
+            },
             {
-                message:
-                    "You must provide a status update or a response message.",
+                message: "You must provide a reason (text or attachment) when changing the status.",
             }
         ),
 });
