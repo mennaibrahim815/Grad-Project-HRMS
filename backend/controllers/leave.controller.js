@@ -8,6 +8,7 @@ import mongoose from "mongoose";
 import { buildNameSearchQuery } from "../utils/searchHelper.js";
 import { months } from "../utils/monthsArray.js";
 import { sendNotification } from "../utils/sendNotification.js";
+import notificationModel from "../models/notification.model.js";
 
 export const getAllLeaves = asyncWraper(async (req, res, next) => {
     const { date, status, page, limit } = req.query;
@@ -750,7 +751,7 @@ export const deleteLeave = asyncWraper(async (req, res, next) => {
 
     await Promise.all([
         Leave.findByIdAndDelete(id),
-        Notification.deleteOne({ relatedId: id }),
+        notificationModel.deleteOne({ relatedId: id }),
     ]);
 
     res.status(200).json({
