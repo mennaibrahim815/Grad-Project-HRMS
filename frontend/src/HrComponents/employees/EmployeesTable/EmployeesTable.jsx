@@ -15,9 +15,9 @@ import { Eye, Trash2 } from "lucide-react";
 const AttendanceBadge = ({ status }) => {
   const styles = {
     "Full-time": "bg-emerald-500/15 text-emerald-400 border-emerald-400/40",
-    "Part-time": "bg-sky-500/15 text-sky-400 border-sky-400/40",
+    "Part-time": 'bg-[#0293FA]/15 text-[#0293FA] border-[#0293FA]/40',
     "Contract": "bg-slate-500/20 text-slate-400 border-slate-400/40",
-    "Internship": "bg-slate-800 text-cyan-400 border-cyan-400/20"
+    "Internship": 'bg-slate-800 text-[#B0B4B4] border-[#B0B4B4]/20'
   };
 
   return (
@@ -29,6 +29,8 @@ const AttendanceBadge = ({ status }) => {
 };
 const getAvatarUrl = (name, background = "0D8ABC", color = "fff") =>
   `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${background}&color=${color}&size=80&bold=true&rounded=true`;
+
+
 
 const EmployeesTable = () => {
   const dispatch = useDispatch();

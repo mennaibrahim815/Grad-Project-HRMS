@@ -1,15 +1,16 @@
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import BaseCard from "../../../../components/UI/Card";
 
 const getAvatarUrl = (name) =>
     `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0D8ABC&color=fff&size=80&bold=true&rounded=true`;
 
 const StatusBadge = ({ status }) => {
     const styles = {
-        Applied:      "bg-slate-800 text-cyan-400 border-cyan-400/20",
-        Interviewing: "bg-sky-500/15 text-sky-400 border-sky-400/40",
+        Applied:      'bg-slate-800 text-[#B0B4B4] border-[#B0B4B4]/20',
+        Interviewing:  'bg-[#0293FA]/15 text-[#0293FA] border-[#0293FA]/40',
         Hired:        "bg-emerald-500/15 text-emerald-400 border-emerald-400/40",
-        Rejected:     "bg-red-500/20 text-red-400 border-red-400/20",
+        Rejected:     "bg-[#EC3A76]/20 text-[#EC3A76] border-[#EC3A76]/20",
     };
 
     return (
@@ -26,7 +27,7 @@ const JobApplicantsTable = () => {
     const { jobApplicants, jobApplicantsLoading } = useSelector((state) => state.hiring);
 
     return (
-        <div className="bg-white/3 border border-white/8 rounded-2xl p-6">
+         <BaseCard padding="p-6">
 
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
@@ -128,7 +129,7 @@ const JobApplicantsTable = () => {
                     </table>
                 </div>
             )}
-        </div>
+        </BaseCard>
     );
 };
 
