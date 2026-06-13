@@ -31,12 +31,7 @@ router
 
 router
     .route("/search")
-    .get(
-        verifyToken,
-        allowedTo(userRoles.HR),
-        validate(searchJobsSchema),
-        searchJobs
-    );
+    .get(verifyToken, validate(searchJobsSchema), searchJobs);
 
 router
     .route("/:id")

@@ -13,7 +13,6 @@ const jobSchema = new mongoose.Schema(
         },
         department: {
             type: String,
-            enum: ["UI Design", "Marketing", "Social Media"],
             required: true,
         },
         experienceLevel: {

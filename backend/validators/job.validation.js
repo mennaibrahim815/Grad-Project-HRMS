@@ -13,7 +13,7 @@ export const validateJobSchema = z.object({
             required_error: "Job description is required",
         }),
 
-        department: z.enum(["UI Design", "Marketing", "Social Media"], {
+        department: z.string({
             required_error: "Department is required",
         }),
 
