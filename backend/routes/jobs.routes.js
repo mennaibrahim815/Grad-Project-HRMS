@@ -29,9 +29,7 @@ router
         createJob
     );
 
-router
-    .route("/search")
-    .get(verifyToken, validate(searchJobsSchema), searchJobs);
+router.route("/search").get(validate(searchJobsSchema), searchJobs);
 
 router
     .route("/:id")
