@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { validateUserSchema } from "./users.validation.js";
 
 export const validateApplicantSchema = z.object({
     params: z.object({
@@ -44,24 +45,23 @@ export const validateApplicantSchema = z.object({
 });
 
 export const validateUpdateApplicantSchema = z.object({
-    body: z.object({
-        personalInfo: validateApplicantSchema.shape.body.shape.personalInfo
-            .partial()
-            .optional(),
-        professionalInfo:
-            validateApplicantSchema.shape.body.shape.professionalInfo
-                .partial()
-                .optional(),
-        documents: validateApplicantSchema.shape.body.shape.documents
-            .partial()
-            .optional(),
-        additionalQuestions:
-            validateApplicantSchema.shape.body.shape.additionalQuestions
-                .partial()
-                .optional(),
-        status: validateApplicantSchema.shape.body.shape.status.optional(),
-        rejectionReason: z.string().optional(),
+    body: z
+        .object({
+            status: z.enum(["Applied", "Interviewing", "Rejected"], {
+                required_error:
+                    "Valid status is required (Hired is not allowed here)",
+            }),
+            rejectionReason: z.string().optional(),
+        })
+        .strict(), // strict عشان يمنع أي حقول تانية
+});
+
+// 2. دي للتعيين (بتاخد نفس الـ Body بتاع الـ Register بالظبط)
+export const validateOnboardApplicantSchema = z.object({
+    params: z.object({
+        id: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid Applicant ID"),
     }),
+    body: validateUserSchema.shape.body, // بناخد نفس شكل فورم التسجيل
 });
 
 export const validateQueryParamsSchema = z.object({

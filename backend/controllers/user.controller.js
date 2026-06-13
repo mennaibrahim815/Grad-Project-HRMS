@@ -191,7 +191,10 @@ export const searchEmployees = asyncWraper(async (req, res, next) => {
                 "general.firstName": 1,
                 "general.lastName": 1,
                 "general.avatar": 1,
+                "general.email": 1,
                 "employee.jobTitle": 1,
+                "employee.department": 1,
+                "employee.jobType": 1,
             },
         },
     ]);

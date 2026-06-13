@@ -4,7 +4,6 @@ const router = express.Router();
 import { setFilesToBody } from "../Middleware/setFilesToBody.js";
 import upload from "../Middleware/multerConfig.js";
 import { processUploadedFile } from "../Middleware/processUploads.js";
-
 import { validate } from "../Middleware/validate.Middelware.js";
 import { verifyToken } from "../guards/verifyToken.js";
 import { allowedTo } from "../guards/allowedTo.js";
@@ -15,6 +14,7 @@ import {
     validateUpdateApplicantSchema,
     validateQueryParamsSchema,
     searchApplicantsSchema,
+    validateOnboardApplicantSchema,
 } from "../validators/applicant.validation.js";
 
 import {
@@ -26,21 +26,13 @@ import {
     deleteApplicant,
     getHiringStatistics,
     searchApplicants,
+    onboardApplicant,
 } from "../controllers/applicant.controller.js";
 
-router
-    .route("/")
-    .get(
-        verifyToken,
-        allowedTo(userRoles.HR),
-        validate(validateQueryParamsSchema),
-        getAllApplicantsWithFilters
-    );
-
+// 1. مسارات الإحصائيات والبحث (محددة)
 router
     .route("/hiring-statistics")
     .get(verifyToken, allowedTo(userRoles.HR), getHiringStatistics);
-
 router
     .route("/search")
     .get(
@@ -51,25 +43,45 @@ router
     );
 
 router
-    .route("/apply/:jobId")
+    .route("/:id/onboard")
     .post(
         verifyToken,
-        allowedTo(userRoles.HR),
-        upload.fields([{ name: "documents[resume]", maxCount: 1 },
-            {name:"personalInfo[avatar]", maxCount: 1}
-        ]),
+        allowedTo("HR", "MANAGER"),
+        upload.fields([{ name: "general[avatar]", maxCount: 1 }]),
         processUploadedFile,
-        setFilesToBody({
-            "documents[resume]": "documents.resume",
-            "personalInfo[avatar]": "personalInfo.avatar"
-        }),
-        validate(validateApplicantSchema),
-        createApplicant
+        setFilesToBody({ "general[avatar]": "general.avatar" }),
+        validate(validateOnboardApplicantSchema),
+        onboardApplicant
     );
+
+// 3. مسارات التقديم (محددة بالـ jobId)
+router.route("/apply/:jobId").post(
+    upload.fields([
+        { name: "documents[resume]", maxCount: 1 },
+        { name: "personalInfo[avatar]", maxCount: 1 },
+    ]),
+    processUploadedFile,
+    setFilesToBody({
+        "documents[resume]": "documents.resume",
+        "personalInfo[avatar]": "personalInfo.avatar",
+    }),
+    validate(validateApplicantSchema),
+    createApplicant
+);
 
 router
     .route("/job/:jobId")
     .get(verifyToken, allowedTo(userRoles.HR), getApplicantsByJobId);
+
+// 4. المسارات العامة (يجب أن تكون في الآخر)
+router
+    .route("/")
+    .get(
+        verifyToken,
+        allowedTo(userRoles.HR),
+        validate(validateQueryParamsSchema),
+        getAllApplicantsWithFilters
+    );
 
 router
     .route("/:id")

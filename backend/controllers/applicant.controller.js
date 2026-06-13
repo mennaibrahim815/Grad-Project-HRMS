@@ -5,14 +5,16 @@ import { asyncWraper } from "../Middleware/asyncWraper.js";
 import appErrors from "../utils/errors.js";
 import * as ort from "onnxruntime-node";
 import path from "path";
+import crypto from "crypto";
+import bcrypt from "bcrypt";
+import User from "../models/user.model.js";
+import { sendEmail } from "../utils/sendEmail.js";
 import {
     calculateSkillsMatch,
     calculateEducationMatch,
 } from "../utils/atsFeatureExtractor.js";
+import { sendNotification } from "../utils/sendNotification.js";
 
-// =========================================================================
-// 1. جلب كل المتقدمين مع الفلترة والـ Pagination (مرتبين تنازلياً بالـ Score)
-// =========================================================================
 export const getAllApplicantsWithFilters = asyncWraper(
     async (req, res, next) => {
         const status = req.query.status;
@@ -31,9 +33,27 @@ export const getAllApplicantsWithFilters = asyncWraper(
                 $facet: {
                     metadata: [{ $count: "totalRecords" }],
                     data: [
-                        { $sort: { atsScore: -1, createdAt: -1 } }, // الترتيب بالـ Score أولاً ثم الأحدث
+                        { $sort: { atsScore: -1, createdAt: -1 } },
                         { $skip: skip },
                         { $limit: limit },
+                        // ==========================================
+                        // 🔗 1. ربط المتقدم بالوظيفة (Join)
+                        // ==========================================
+                        {
+                            $lookup: {
+                                from: "jobs", // اسم كوليكشن الوظائف في الداتابيز (بيكون جمع وسمول)
+                                localField: "jobId", // الـ ID اللي في المتقدم
+                                foreignField: "_id", // الـ ID اللي في الوظيفة
+                                as: "jobDetails", // اسم الحقل الجديد اللي هيرجع
+                            },
+                        },
+                        // 🔗 2. تحويل الـ Array اللي راجعة لـ Object واحد
+                        {
+                            $unwind: {
+                                path: "$jobDetails",
+                                preserveNullAndEmptyArrays: true, // عشان لو الوظيفة ممسوحة المتقدم ميختفيش
+                            },
+                        },
                         {
                             $project: {
                                 "personalInfo.firstName": 1,
@@ -43,8 +63,15 @@ export const getAllApplicantsWithFilters = asyncWraper(
                                 "personalInfo.experienceLevel": 1,
                                 "personalInfo.avatar": 1,
                                 status: 1,
-                                atsScore: 1, // إرجاع السكور للفرونت إند
+                                atsScore: 1,
                                 createdAt: 1,
+                                // ==========================================
+                                // 🎯 3. اختيار بيانات الوظيفة اللي هتتعرض للـ HR
+                                // ==========================================
+                                "jobDetails._id": 1,
+                                "jobDetails.title": 1,
+                                "jobDetails.department": 1,
+                                "jobDetails.jobType": 1,
                             },
                         },
                     ],
@@ -70,14 +97,16 @@ export const getAllApplicantsWithFilters = asyncWraper(
     }
 );
 
-// =========================================================================
-// 2. جلب بيانات متقدم معين بواسطة الـ ID مع جلب كافة التفاصيل
-// =========================================================================
 export const getApplicantById = asyncWraper(async (req, res, next) => {
     const applicantId = req.params.id;
 
-    // تم تعديلها لجلب الأبلكانت كاملاً وعرض الـ ml_insights المحفوظة بداخل الداتابيز
-    const applicant = await Applicant.findById(applicantId).select("-__v");
+    // تم إضافة populate لجلب بيانات الوظيفة
+    const applicant = await Applicant.findById(applicantId)
+        .select("-__v")
+        .populate({
+            path: "jobId",
+            select: "title department experienceLevel jobType workLocation", // الحقول اللي محتاجينها بس
+        });
 
     if (!applicant) {
         const error = appErrors.create(
@@ -94,16 +123,15 @@ export const getApplicantById = asyncWraper(async (req, res, next) => {
     });
 });
 
-// =========================================================================
-// 3. جلب المتقدمين الخاصين بوظيفة معينة (مرتبين تلقائياً من الأعلى سكور للأقل)
-// =========================================================================
 export const getApplicantsByJobId = asyncWraper(async (req, res, next) => {
     const jobId = req.params.jobId;
 
-    // الترتيب التلقائي بالـ atsScore تنازلياً (-1) لسهولة الفرز للـ HR
-    const applicants = await Applicant.find({ jobId }, { __v: false }).sort({
-        atsScore: -1,
-    });
+    const applicants = await Applicant.find({ jobId }, { __v: false })
+        .sort({ atsScore: -1 })
+        .populate({
+            path: "jobId",
+            select: "title department", // ببعت التايتل والقسم بس عشان حجم الريكوست ميكبرش
+        });
 
     if (applicants.length === 0) {
         const error = appErrors.create(
@@ -113,15 +141,12 @@ export const getApplicantsByJobId = asyncWraper(async (req, res, next) => {
         );
         return next(error);
     }
+
     res.json({
         status: httpResponseText.SUCCESS,
         data: { applicants },
     });
 });
-
-// =========================================================================
-// 4. إنشاء متقدم جديد وتطبيق نظام الفلترة الذكي (ONNX AI Scoring Engine)
-// =========================================================================
 export const createApplicant = asyncWraper(async (req, res, next) => {
     const jobId = req.params.jobId;
     const job = await Job.findById(jobId);
@@ -197,7 +222,7 @@ export const createApplicant = asyncWraper(async (req, res, next) => {
     if (io) {
         await sendNotification(io, {
             targetRoom: "HR_Room",
-            sender: req.currentUser?.userId || newApplicant._id, 
+            sender: req.currentUser?.userId || newApplicant._id,
             title: "New Job Application",
             message: `A new application has been submitted for ${job.title} with an ATS Score of ${atsScore}%.`,
             type: "Recruitment",
@@ -217,20 +242,9 @@ export const createApplicant = asyncWraper(async (req, res, next) => {
     });
 });
 
-
 export const updateApplicant = asyncWraper(async (req, res, next) => {
     const applicantID = req.params.id;
     const { status, rejectionReason } = req.body;
-
-    if (!status) {
-        return next(
-            appErrors.create(
-                400,
-                "Please provide a valid status to update",
-                httpResponseText.FAIL
-            )
-        );
-    }
 
     const applicant = await Applicant.findById(applicantID);
     if (!applicant) {
@@ -239,38 +253,19 @@ export const updateApplicant = asyncWraper(async (req, res, next) => {
         );
     }
 
-    if (applicant.status === status) {
-        return res.json({
-            status: httpResponseText.SUCCESS,
-            data: { applicant },
-        });
-    }
-
-
     if (applicant.status === "Hired") {
         return next(
             appErrors.create(
                 400,
-                "Candidate is already hired and registered as an employee. Status cannot be changed.",
+                "Cannot update an already hired applicant.",
                 httpResponseText.FAIL
             )
         );
     }
-
-    if (status === "Applied") {
-        return next(
-            appErrors.create(
-                400,
-                "Cannot revert status back to Applied.",
-                httpResponseText.FAIL
-            )
-        );
-    }
-
 
     applicant.status = status;
     if (status === "Rejected" && rejectionReason) {
-        applicant.rejectionReason = rejectionReason; 
+        applicant.rejectionReason = rejectionReason;
     }
     await applicant.save();
 
@@ -293,40 +288,9 @@ export const updateApplicant = asyncWraper(async (req, res, next) => {
                 subject: "Update on your application",
                 message: `Dear ${fullName},\n\nThank you for taking the time to apply. After careful consideration, we have decided to move forward with other candidates whose qualifications better match our current needs.${reasonText}\nWe wish you the best in your job search.\n\nBest Regards,\nHR Team`,
             });
-        } else if (status === "Hired") {
-            const existingUser = await User.findOne({
-                "general.email": userEmail,
-            });
-            if (!existingUser) {
-                const generatedPassword = crypto.randomBytes(4).toString("hex");
-                const hashedPassword = await bcrypt.hash(generatedPassword, 10);
-
-                const newUser = new User({
-                    general: {
-                        firstName: applicant.personalInfo.firstName,
-                        lastName: applicant.personalInfo.lastName,
-                        email: userEmail,
-                        phone: applicant.personalInfo.phone,
-                        gender: applicant.personalInfo.gender,
-                        department: applicant.personalInfo.department,
-                        avatar: applicant.personalInfo.avatar,
-                        password: hashedPassword,
-                    },
-                    experience: { skills: applicant.professionalInfo.skills },
-                    employee: { status: "Active", joinDate: new Date() },
-                });
-
-                await newUser.save();
-
-                await sendEmail({
-                    email: userEmail,
-                    subject: "Welcome to the Team - Your Account Details",
-                    message: `Dear ${fullName},\n\nCongratulations! You have been officially hired.\n\nHere are your login credentials:\nEmail: ${userEmail}\nTemporary Password: ${generatedPassword}\n\nPlease log in and change your password as soon as possible.\n\nBest Regards,\nHR Department`,
-                });
-            }
         }
-    } catch (emailOrDbError) {
-        console.error("Workflow Automation Error:", emailOrDbError);
+    } catch (error) {
+        console.error("Email Error:", error);
     }
 
     res.json({
@@ -336,6 +300,110 @@ export const updateApplicant = asyncWraper(async (req, res, next) => {
     });
 });
 
+export const onboardApplicant = asyncWraper(async (req, res, next) => {
+    console.log("REQ BODY IS:", JSON.stringify(req.body, null, 2));
+    const applicantId = req.params.id;
+    const { general, experience, employee } = req.body;
+
+    // 1. نتأكد إن المتقدم موجود
+    const applicant = await Applicant.findById(applicantId);
+    if (!applicant) {
+        if (general?.avatar) await deleteFromCloudinary(general.avatar);
+        return next(
+            appErrors.create(404, "Applicant Not Found", httpResponseText.FAIL)
+        );
+    }
+
+    if (applicant.status === "Hired") {
+        if (general?.avatar) await deleteFromCloudinary(general.avatar);
+        return next(
+            appErrors.create(
+                400,
+                "Applicant is already hired",
+                httpResponseText.FAIL
+            )
+        );
+    }
+
+    // 2. التحقق من وجود المستخدم (Email)
+    const oldUser = await User.findOne({ "general.email": general.email });
+    if (oldUser) {
+        if (general?.avatar) await deleteFromCloudinary(general.avatar);
+        return next(
+            appErrors.create(
+                400,
+                "User Email Already Exists",
+                httpResponseText.FAIL
+            )
+        );
+    }
+
+    // 3. التحقق من الـ RFID
+    if (general?.rfidTag) {
+        const oldRfid = await User.findOne({
+            "general.rfidTag": general.rfidTag,
+        });
+        if (oldRfid) {
+            if (general?.avatar) await deleteFromCloudinary(general.avatar);
+            return next(
+                appErrors.create(
+                    400,
+                    "RFID Tag is already assigned",
+                    httpResponseText.FAIL
+                )
+            );
+        }
+    }
+
+    try {
+        // 4. تجهيز كلمة السر والموظف الجديد
+        const generatedPassword = crypto.randomBytes(4).toString("hex");
+        const hashedPassword = await bcrypt.hash(generatedPassword, 10);
+        general.password = hashedPassword;
+
+        const newUser = new User({ general, experience, employee });
+        await newUser.save();
+
+        // 5. تحديث حالة المتقدم
+        applicant.status = "Hired";
+        await applicant.save();
+
+        // 6. إرسال الإيميل
+        try {
+            await sendEmail({
+                email: newUser.general.email,
+                subject: "Welcome to the Team - Your Account Details",
+                message: `Dear ${newUser.general.firstName} ${newUser.general.lastName},\n\nYour account has been successfully created in the company's HR system.\n\nHere are your login credentials:\nEmail: ${newUser.general.email}\nTemporary Password: ${generatedPassword}\n\nPlease log in and change your password as soon as possible.\n\nBest Regards,\nHR Department`,
+            });
+        } catch (emailError) {
+            // لو الإيميل فشل، نمسح اليوزر ونرجع الأبليكانت لحالته عشان الـ HR يعيد المحاولة
+            await User.findByIdAndDelete(newUser._id);
+            applicant.status = "Interviewing";
+            await applicant.save();
+            if (general?.avatar) await deleteFromCloudinary(general.avatar);
+
+            return next(
+                appErrors.create(
+                    500,
+                    "Failed to send welcome email. Onboarding aborted.",
+                    httpResponseText.FAIL
+                )
+            );
+        }
+
+        newUser.general.password = undefined;
+        newUser.__v = undefined;
+
+        res.status(201).json({
+            status: httpResponseText.SUCCESS,
+            message: "Employee onboarded successfully and welcome email sent.",
+            data: { newUser },
+        });
+    } catch (error) {
+        if (general?.avatar) await deleteFromCloudinary(general.avatar);
+        return next(error);
+    }
+});
 
 export const deleteApplicant = asyncWraper(async (req, res, next) => {
     const applicantID = req.params.id;
@@ -350,7 +418,6 @@ export const deleteApplicant = asyncWraper(async (req, res, next) => {
     }
     res.json({ status: httpResponseText.SUCCESS, data: null });
 });
-
 
 export const getHiringStatistics = asyncWraper(async (req, res, next) => {
     const stats = await Applicant.aggregate([
@@ -392,7 +459,6 @@ export const getHiringStatistics = asyncWraper(async (req, res, next) => {
         data: { stats: result },
     });
 });
-
 
 export const searchApplicants = asyncWraper(async (req, res, next) => {
     const { name } = req.query;

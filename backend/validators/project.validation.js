@@ -24,12 +24,27 @@ export const validateProjectSchema = z.object({
                 required_error: "Tag is required",
             }),
         }),
-
         assignment: z.object({
             assignedTo: z
                 .array(
-                    z.string().regex(/^[0-9a-fA-F]{24}$/, {
-                        message: "Invalid Team Member ID",
+                    z.object({
+                        _id: z.string().regex(/^[0-9a-fA-F]{24}$/, {
+                            message: "Invalid Team Member ID format",
+                        }),
+                        general: z.object({
+                            firstName: z.string({
+                                required_error: "First name is required",
+                            }),
+                            lastName: z.string({
+                                required_error: "Last name is required",
+                            }),
+                            avatar: z.string({
+                                required_error: "Avatar is required",
+                            }),
+                        }),
+                        employee: z.object({
+                            jobTitle: z.string().optional(),
+                        }),
                     })
                 )
                 .min(1, {
@@ -42,7 +57,6 @@ export const validateProjectSchema = z.object({
                 required_error: "Priority is required",
             }),
         }),
-
         documents: z
             .array(
                 z.object({
@@ -59,7 +73,48 @@ export const validateProjectSchema = z.object({
                     title: z.string({
                         required_error: "Task title is required",
                     }),
-                    done: z.boolean().default(false),
+                    assignment: z.object(
+                        {
+                            assignedTo: z.array(
+                                z.object({
+                                    _id: z
+                                        .string()
+                                        .regex(/^[0-9a-fA-F]{24}$/, {
+                                            message: "Invalid User ID format",
+                                        }),
+                                    general: z.object({
+                                        firstName: z.string({
+                                            required_error:
+                                                "First name is required",
+                                        }),
+                                        lastName: z.string({
+                                            required_error:
+                                                "Last name is required",
+                                        }),
+                                        avatar: z.string({
+                                            required_error:
+                                                "Avatar is required",
+                                        }),
+                                    }),
+                                    employee: z.object({
+                                        jobTitle: z.string({
+                                            required_error:
+                                                "Job title is required",
+                                        }),
+                                    }),
+                                })
+                            ),
+                            status: z
+                                .enum(["On-going", "Pending", "Completed"])
+                                .default("Pending")
+                                .optional(),
+                            priority: z
+                                .enum(["High", "Medium", "Low"])
+                                .default("Medium")
+                                .optional(),
+                        },
+                        { required_error: "Assignment data is required" }
+                    ),
                 })
             )
             .optional(),
@@ -69,24 +124,36 @@ export const validateProjectSchema = z.object({
 export const updateValidateProjectSchema = z.object({
     body: z
         .object({
-            general: validateProjectSchema.shape.body.shape.general.partial().optional(),
-            assignment:
-                validateProjectSchema.shape.body.shape.assignment.partial().optional,
-            documents: validateProjectSchema.shape.body.shape.documents.optional(),
+            general: validateProjectSchema.shape.body.shape.general
+                .partial()
+                .optional(),
+            assignment: validateProjectSchema.shape.body.shape.assignment
+                .partial()
+                .optional(),
+            documents:
+                validateProjectSchema.shape.body.shape.documents.optional(),
+            subTasks:
+                validateProjectSchema.shape.body.shape.subTasks.optional(),
         })
         .partial(),
 });
+
 export const validateProjectQueryParamsSchema = z.object({
     query: z.object({
         tag: z.enum(["UI Design", "Marketing", "Social Media"]).optional(),
         status: z.enum(["On-going", "Pending", "Completed"]).optional(),
         priority: z.enum(["High", "Medium", "Low"]).optional(),
-        deadline: z.coerce.date({ required_error: "Deadline is required" }).optional(),
+        deadline: z.coerce
+            .date({ required_error: "Deadline is required" })
+            .optional(),
         startDate: z.coerce.date().optional(),
-        createdBy: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid User ID").optional(),
+        createdBy: z
+            .string()
+            .regex(/^[0-9a-fA-F]{24}$/, "Invalid User ID")
+            .optional(),
         page: z.string().optional().default("1"),
         limit: z.string().optional().default("10"),
-    })
+    }),
 });
 
 export const searchProjectsSchema = z.object({

@@ -39,6 +39,7 @@ export const markAbsentEmployees = async () => {
         const employees = await User.find({
             "general.role": { $in: ["EMPLOYEE", "HR"] },
             "employee.status": "Active",
+            "employee.joiningDate": { $lte: today },
         });
 
         const attendandedEmployeeIds = await Attendance.find({

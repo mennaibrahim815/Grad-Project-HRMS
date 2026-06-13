@@ -7,6 +7,7 @@ import {
     deleteLeave,
     getAllLeaves,
     getEmployeeLeavesById,
+    getLeaveBalances,
     getLeaveById,
     getMonthlyLeaveStats,
     getMyLeaves,
@@ -31,6 +32,15 @@ import {
 import { getAllLeavesQuerySchema } from "../validators/leave.validation.js";
 
 const router = Router();
+
+router.get("/my-balance", verifyToken, getLeaveBalances);
+
+router.get(
+    "/balance/:id",
+    verifyToken,
+    allowedTo("HR", "MANAGER"),
+    getLeaveBalances
+);
 
 router
     .route("/")

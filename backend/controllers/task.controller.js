@@ -48,12 +48,12 @@ export const createTask = asyncWraper(async (req, res, next) => {
         );
         return next(error);
     }
-    const { title, done } = req.body;
+    const { title, assignment } = req.body;
 
     const newTask = new Task({
         projectId,
         title,
-        done
+        assignment
     });
 
     await newTask.save();

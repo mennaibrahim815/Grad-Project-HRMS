@@ -42,7 +42,8 @@ export const validateUserSchema = z.object({
                 })
                 .regex(/^[0-9a-fA-F]+$/, {
                     message: "Invalid RFID format (Hex only)",
-                }),
+                })
+                .optional(),
             phone: z
                 .string({
                     required_error: "phone number is required",
@@ -55,9 +56,11 @@ export const validateUserSchema = z.object({
                 required_error: "gender is required",
             }),
 
-            address: z.string({
-                required_error: "address is required",
-            }),
+            address: z
+                .string({
+                    required_error: "address is required",
+                })
+                .optional(),
 
             avatar: z.string().default("/uploads/default-avatar.png"),
         }),
@@ -81,29 +84,39 @@ export const validateUserSchema = z.object({
             .optional(),
 
         employee: z.object({
-            jobTitle: z.string({
-                required_error: "job title is required",
-            }),
+            jobTitle: z
+                .string({
+                    required_error: "job title is required",
+                })
+                .optional(),
 
-            department: z.string({
-                required_error: "department is required",
-            }),
+            department: z
+                .string({
+                    required_error: "department is required",
+                })
+                .optional(),
 
-            workLocation: z.string({
-                required_error: "work location is required",
-            }),
+            workLocation: z
+                .string({
+                    required_error: "work location is required",
+                })
+                .optional(),
 
             jobType: z.enum(["Full-time", "Part-time", "Internship"], {
                 required_error: "job type is required",
             }),
 
-            joiningDate: z.coerce.date({
-                required_error: "joining date is required",
-            }),
+            joiningDate: z.coerce
+                .date({
+                    required_error: "joining date is required",
+                })
+                .optional(),
 
-            baseSalary: z.coerce.number({
-                required_error: "base salary is required",
-            }),
+            baseSalary: z.coerce
+                .number({
+                    required_error: "base salary is required",
+                })
+                .optional(),
 
             status: z.enum(["Active", "Archived"]).default("Active"),
 
@@ -119,11 +132,16 @@ export const validateUserSchema = z.object({
 export const updateValidateUserSchema = z.object({
     body: z
         .object({
-            general: validateUserSchema.shape.body.shape.general.partial().optional(),
+            general: validateUserSchema.shape.body.shape.general
+                .partial()
+                .optional(),
 
-            employee: validateUserSchema.shape.body.shape.employee.partial().optional(),
+            employee: validateUserSchema.shape.body.shape.employee
+                .partial()
+                .optional(),
 
-            experience: validateUserSchema.shape.body.shape.experience.optional(),
+            experience:
+                validateUserSchema.shape.body.shape.experience.optional(),
         })
         .partial(),
 });

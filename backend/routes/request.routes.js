@@ -20,6 +20,10 @@ import {
     updateRequest,
     deleteRequest,
     replyToRequest,
+    getMonthlyRequestStats,
+    getYearlyRequestChart,
+    getMyRequests,
+    getEmployeeRequestsById,
 } from "../controllers/request.controller.js";
 import { processUploadedFile } from "../Middleware/processUploads.js";
 
@@ -28,10 +32,6 @@ const router = Router();
 router
     .route("/")
     .get(verifyToken, validate(getAllRequestsQuerySchema), getAllRequests);
-
-router
-    .route("/:id")
-    .get(verifyToken, validate(validateIdParams), getRequestById);
 
 router
     .route("/create")
@@ -45,8 +45,49 @@ router
         createRequest
     );
 
+router.get(
+    "/monthly-stats",
+    verifyToken,
+    allowedTo("HR", "MANAGER"),
+    getMonthlyRequestStats
+);
+router.get("/monthly-stats/me", verifyToken, getMonthlyRequestStats);
+router.get(
+    "/monthly-stats/:id",
+    verifyToken,
+    allowedTo("HR", "MANAGER"),
+    validate(validateIdParams),
+    getMonthlyRequestStats
+);
+
+router.get(
+    "/yearly-chart",
+    verifyToken,
+    allowedTo("HR", "MANAGER"),
+    getYearlyRequestChart
+);
+router.get("/yearly-chart/me", verifyToken, getYearlyRequestChart);
+router.get(
+    "/yearly-chart/:id",
+    verifyToken,
+    allowedTo("HR", "MANAGER"),
+    validate(validateIdParams),
+    getYearlyRequestChart
+);
+
+router.get("/history/me", verifyToken, getMyRequests);
+
+router.get(
+    "/history/:id",
+    verifyToken,
+    allowedTo("HR", "MANAGER"),
+    validate(validateIdParams),
+    getEmployeeRequestsById
+);
+
 router
     .route("/:id")
+    .get(verifyToken, validate(validateIdParams), getRequestById)
     .patch(
         verifyToken,
         allowedTo("EMPLOYEE"),
