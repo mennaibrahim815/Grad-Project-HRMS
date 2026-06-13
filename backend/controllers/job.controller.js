@@ -7,7 +7,7 @@ import appErrors from "../utils/errors.js";
 
 export const getAllJobs = asyncWraper(async (req, res, next) => {
     const { department, experienceLevel, jobType } = req.query;
-    
+
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
@@ -26,10 +26,10 @@ export const getAllJobs = asyncWraper(async (req, res, next) => {
                     { $sort: { createdAt: -1 } },
                     { $skip: skip },
                     { $limit: limit },
-                    { $project: { __v: 0 } }
-                ]
-            }
-        }
+                    { $project: { __v: 0 } },
+                ],
+            },
+        },
     ]);
 
     const totalRecords = result[0]?.metadata[0]?.totalRecords || 0;
@@ -37,14 +37,14 @@ export const getAllJobs = asyncWraper(async (req, res, next) => {
 
     res.status(200).json({
         status: httpResponseText.SUCCESS,
-        data: { 
+        data: {
             jobs,
             pagination: {
                 totalRecords,
                 currentPage: page,
                 totalPages: Math.ceil(totalRecords / (limit || 1)) || 0,
-                limit
-            }
+                limit,
+            },
         },
     });
 });
@@ -69,31 +69,26 @@ export const getJobById = asyncWraper(async (req, res, next) => {
     });
 });
 
+// 🚀 تم الإصلاح: استخدام Spread Operator لاستقبال كل الحقول بما فيها الـ ATS
 export const createJob = asyncWraper(async (req, res, next) => {
-    const { title, description, department, experienceLevel, jobType, workLocation } = req.body;
-
     const createdBy = req.currentUser.userId;
 
     const newJob = new Job({
-        title,
-        description,
-        department,
-        experienceLevel,
-        jobType,
-        workLocation,
+        ...req.body,
         createdBy,
     });
 
     newJob.__v = undefined;
 
     await newJob.save();
-    
+
     res.status(201).json({
         status: httpResponseText.SUCCESS,
         data: { newJob },
     });
 });
 
+// 🚀 تم الإصلاح: إضافة { safe: true } لحماية المصفوفات من التلف
 export const updateJob = asyncWraper(async (req, res, next) => {
     const JobID = req.params.id;
     if (Object.keys(req.body).length === 0) {
@@ -104,7 +99,9 @@ export const updateJob = asyncWraper(async (req, res, next) => {
         );
         return next(error);
     }
-    const updateData = flatten(req.body);
+
+    // safe: true بيمنع تفكيك الـ Arrays زي requiredSkills
+    const updateData = flatten(req.body, { safe: true });
 
     const updatedJob = await Job.findByIdAndUpdate(
         JobID,
@@ -141,12 +138,14 @@ export const deleteJob = asyncWraper(async (req, res, next) => {
     res.json({ status: httpResponseText.SUCCESS, data: null });
 });
 
-
+// 🚀 تم الإصلاح: إضافة حقول الـ ATS في الـ Project عشان تظهر في البحث
 export const searchJobs = asyncWraper(async (req, res, next) => {
     const { title } = req.query;
 
     if (!title) {
-        return res.status(200).json({ status: httpResponseText.SUCCESS, data: { results: [] } });
+        return res
+            .status(200)
+            .json({ status: httpResponseText.SUCCESS, data: { results: [] } });
     }
 
     const results = await Job.aggregate([
@@ -160,13 +159,16 @@ export const searchJobs = asyncWraper(async (req, res, next) => {
                 jobType: 1,
                 workLocation: 1,
                 status: 1,
-                createdAt: 1
-            }
-        }
+                requiredSkills: 1, // 👈 أضفنا ده
+                requiredExperienceYears: 1, // 👈 أضفنا ده
+                requiredEducationLevel: 1, // 👈 أضفنا ده
+                createdAt: 1,
+            },
+        },
     ]);
 
     res.status(200).json({
         status: httpResponseText.SUCCESS,
-        data: { results }
+        data: { results },
     });
 });

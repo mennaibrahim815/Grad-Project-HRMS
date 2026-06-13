@@ -16,7 +16,12 @@ export const validateApplicantSchema = z.object({
             avatar: z.string().optional(),
         }),
         professionalInfo: z.object({
-            educationLevel: z.enum(["High School", "Bachelor's", "Master's", "PhD"]),
+            educationLevel: z.enum([
+                "High School",
+                "Bachelor's",
+                "Master's",
+                "PhD",
+            ]),
             yearsOfExperience: z.string().optional(),
             currentJobTitle: z.string().optional(),
             currentCompany: z.string().optional(),
@@ -31,29 +36,41 @@ export const validateApplicantSchema = z.object({
             earliestStartDate: z.coerce.date(),
             workPreference: z.enum(["Remote", "On-site", "Hybrid"]),
         }),
-        status: z.enum(["Applied", "Interviewing", "Hired", "Rejected"]).optional(),
+        status: z
+            .enum(["Applied", "Interviewing", "Hired", "Rejected"])
+            .optional(),
+        rejectionReason: z.string().optional(),
     }),
 });
 
 export const validateUpdateApplicantSchema = z.object({
-    body:z.object({
-        personalInfo: validateApplicantSchema.shape.body.shape.personalInfo.partial().optional(),
-        professionalInfo: validateApplicantSchema.shape.body.shape.professionalInfo.partial().optional(),
-        documents: validateApplicantSchema.shape.body.shape.documents.partial().optional(),
-        additionalQuestions: validateApplicantSchema.shape.body.shape.additionalQuestions.partial().optional(),
+    body: z.object({
+        personalInfo: validateApplicantSchema.shape.body.shape.personalInfo
+            .partial()
+            .optional(),
+        professionalInfo:
+            validateApplicantSchema.shape.body.shape.professionalInfo
+                .partial()
+                .optional(),
+        documents: validateApplicantSchema.shape.body.shape.documents
+            .partial()
+            .optional(),
+        additionalQuestions:
+            validateApplicantSchema.shape.body.shape.additionalQuestions
+                .partial()
+                .optional(),
         status: validateApplicantSchema.shape.body.shape.status.optional(),
-    })
+        rejectionReason: z.string().optional(),
+    }),
 });
 
 export const validateQueryParamsSchema = z.object({
     query: z.object({
-        status: z.enum(["Applied", "Interviewing", "Hired", "Rejected"]).optional(),
-        page: z.string()
-            .optional()
-            .default("1"),
-        limit: z.string()
-            .optional()
-            .default("5"),
+        status: z
+            .enum(["Applied", "Interviewing", "Hired", "Rejected"])
+            .optional(),
+        page: z.string().optional().default("1"),
+        limit: z.string().optional().default("5"),
     }),
 });
 

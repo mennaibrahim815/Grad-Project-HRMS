@@ -10,47 +10,10 @@ import { sendEmail } from "../utils/sendEmail.js";
 import { deleteFromCloudinary } from "../utils/cloudinaryHelper.js";
 import { getCookieOptions } from "../utils/cookiesOptions.js";
 
-export const register = asyncWraper(async (req, res, next) => {
-    const { general, experience, employee } = req.body;
-
-    const oldUser = await User.findOne({ "general.email": general.email });
-    if (oldUser) {
-        if (general.avatar) await deleteFromCloudinary(general.avatar);
-        return next(
-            appErrors.create(400, "User Already Exists", httpResponseText.FAIL)
-        );
-    }
-
-    if (general?.rfidTag) {
-        const oldRfid = await User.findOne({
-            "general.rfidTag": general.rfidTag,
-        });
-        if (oldRfid) {
-            if (general.avatar) await deleteFromCloudinary(general.avatar);
-            return next(
-                appErrors.create(
-                    400,
-                    "RFID Tag is already assigned to another employee",
-                    httpResponseText.FAIL
-                )
-            );
-        }
-    }
-
-    try {
-        const generatedPassword = crypto.randomBytes(4).toString("hex");
-
-        const hashedPassword = await bcrypt.hash(generatedPassword, 10);
-        general.password = hashedPassword;
-
-        const newUser = new User({ general, experience, employee });
-        await newUser.save();
-
-        try {
-            await sendEmail({
-                email: newUser.general.email,
-                subject: "Welcome to the Team - Your Account Details",
-                message: `
+await sendEmail({
+    email: newUser.general.email,
+    subject: "Welcome to the Team - Your Account Details",
+    message: `
                     Dear ${newUser.general.firstName} ${newUser.general.lastName},
                     
                     Your account has been successfully created in the company's HR system.
@@ -64,32 +27,6 @@ export const register = asyncWraper(async (req, res, next) => {
                     Best Regards,
                     HR Department
                 `,
-            });
-        } catch (emailError) {
-            await User.findByIdAndDelete(newUser._id);
-            if (general.avatar) await deleteFromCloudinary(general.avatar);
-
-            return next(
-                appErrors.create(
-                    500,
-                    "Failed to send welcome email. Employee registration aborted.",
-                    httpResponseText.FAIL
-                )
-            );
-        }
-
-        newUser.general.password = undefined;
-        newUser.__v = undefined;
-
-        res.status(201).json({
-            status: httpResponseText.SUCCESS,
-            message: "Employee registered successfully and welcome email sent.",
-            data: { newUser },
-        });
-    } catch (error) {
-        if (general.avatar) await deleteFromCloudinary(general.avatar);
-        return next(error);
-    }
 });
 
 export const login = asyncWraper(async (req, res, next) => {

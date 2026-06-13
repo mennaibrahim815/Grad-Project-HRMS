@@ -30,6 +30,31 @@ export const validateJobSchema = z.object({
         }),
 
         status: z.enum(["Open", "Closed"]).default("Open").optional(),
+
+        // ==========================================
+        // 🚀 الحقول الجديدة الخاصة بنظام الـ ATS
+        // ==========================================
+        requiredSkills: z
+            .array(
+                z.string({
+                    invalid_type_error: "Each skill must be a string",
+                })
+            )
+            .min(1, "At least one required skill must be provided"),
+
+        requiredExperienceYears: z
+            .number({
+                required_error: "Required experience years is required",
+                invalid_type_error: "Experience years must be a number",
+            })
+            .min(0, "Experience years cannot be negative"),
+
+        requiredEducationLevel: z
+            .enum(["High School", "Bachelor's", "Master's", "PhD"], {
+                invalid_type_error: "Invalid education level",
+            })
+            .default("Bachelor's")
+            .optional(),
     }),
 });
 

@@ -51,7 +51,7 @@ const applicantSchema = new mongoose.Schema(
                 default: "/uploads/default-avatar.png",
             },
         },
-        
+
         professionalInfo: {
             yearsOfExperience: { type: String },
             currentJobTitle: { type: String },
@@ -91,6 +91,13 @@ const applicantSchema = new mongoose.Schema(
             type: String,
             enum: ["Applied", "Interviewing", "Hired", "Rejected"],
             default: "Applied",
+        },
+        rejectionReason: {
+            type: String,
+        },
+        atsScore: {
+            type: Number,
+            default: 0,
         },
     },
     modelConfig

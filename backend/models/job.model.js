@@ -36,11 +36,24 @@ const jobSchema = new mongoose.Schema(
             enum: ["Open", "Closed"],
             default: "Open",
         },
+        requiredSkills: {
+            type: [String], // مثال: ["React", "Node.js", "MongoDB"]
+            required: true,
+        },
+        requiredExperienceYears: {
+            type: Number,
+            required: true,
+        },
+        requiredEducationLevel: {
+            type: String,
+            enum: ["High School", "Bachelor's", "Master's", "PhD"],
+            default: "Bachelor's",
+        },
         createdBy: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-            required: true
-        }
+            required: true,
+        },
     },
     modelConfig
 );

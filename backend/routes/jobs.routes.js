@@ -28,8 +28,15 @@ router
         validate(validateJobSchema),
         createJob
     );
-    
-router.route("/search").get(verifyToken, allowedTo(userRoles.HR), validate(searchJobsSchema), searchJobs);
+
+router
+    .route("/search")
+    .get(
+        verifyToken,
+        allowedTo(userRoles.HR),
+        validate(searchJobsSchema),
+        searchJobs
+    );
 
 router
     .route("/:id")
