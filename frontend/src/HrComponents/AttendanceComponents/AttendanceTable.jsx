@@ -25,7 +25,7 @@ const getAvatarUrl = (name, background = "0D8ABC", color = "fff") =>
 const AttendanceBadge = ({ status }) => {
   const styles = {
     "On Time": "bg-emerald-500/15 text-emerald-400 border-emerald-400/40",
-    Late: "bg-sky-500/15 text-sky-400 border-sky-400/40",
+    Late: 'bg-[#0293FA]/15 text-[#0293FA] border-[#0293FA]/40',
     Absent: "bg-slate-500/20 text-slate-400 border-slate-400/40",
   };
 
@@ -197,40 +197,7 @@ const AttendanceTable = () => {
       accessor: "status",
       render: (row) => <AttendanceBadge status={row.status} />,
     },
-    {
-      header: "Action",
-      accessor: "action",
-      render: (row) => (
-        <div className="relative">
-          <button
-            onClick={() =>
-              setOpenMenuId(openMenuId === row._id ? null : row._id)
-            }
-            className="p-2 text-slate-400 hover:text-slate-200"
-          >
-            <EditIcon />
-          </button>
-          <RowActionMenu
-            isOpen={openMenuId === row._id}
-            onClose={() => setOpenMenuId(null)}
-            actions={[
-              {
-                label: "See Details",
-                icon: Eye,
-                onClick: () => navigate(`/employee/${row.employeeId}`),
-              },
-              {
-                label: "Delete",
-                variant: "danger",
-                icon: Trash2,
-                onClick: () => handleDelete(row.employeeId),
-              },
-
-            ]}
-          />
-        </div>
-      ),
-    },
+    
   ];
 
   const handlePageChange = (newPage) => {

@@ -13,33 +13,41 @@ const EmployeeHeader = () => {
   const { selectedDate: appliedDate } = useSelector(
     (state) => state.attendance,
   );
+
   const handleDateSave = (newDateValue) => {
     dispatch(setSelectedDate(newDateValue));
   };
 
   return (
     <>
-      <div className="flex justify-between items-center mb-10  bg-transparent p-4 rounded-2xl">
+      <div className="flex items-center justify-between mb-6 sm:mb-10 bg-transparent p-3 sm:p-4 rounded-2xl gap-2 sm:gap-5">
+
         {/* Title */}
-        <h1 className="text-2xl font-bold text-white tracking-tight">
+        <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight shrink-0">
           Employees
         </h1>
 
-        {/* Add Employee Button */}
-        <div className="flex items-center gap-3 relative">
-          {/* Calender button */}
-          <ReusableCalendar
-            mode="single"
-            value={appliedDate}
-            onSave={handleDateSave}
-          />
+        {/* Controls Container */}
+        <div className="flex items-center gap-2 sm:gap-3">
+
+          {/* Calendar */}
+          <div className="relative sm:w-auto">
+            <ReusableCalendar
+              mode="single"
+              value={appliedDate}
+              onSave={handleDateSave}
+            />
+          </div>
+
+          {/* Add Employee Button */}
           <button
             onClick={() => setIsModalOpen(true)}
-            className="bg-[#0095ff] hover:bg-[#0081dd] text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-bold shadow-lg transition-all active:scale-95 disabled:opacity-50"
+            className="bg-[#0095ff] hover:bg-[#0081dd] text-white rounded-full sm:rounded-xl flex items-center justify-center font-bold shadow-lg transition-all active:scale-95 disabled:opacity-50 shrink-0 w-9 h-9 sm:w-auto sm:h-auto sm:px-6 sm:py-2.5"
           >
             <i className="fas fa-plus text-sm"></i>
-            <span> Add Employee </span>
+            <span className="hidden sm:inline ml-1.5">Add Employee</span>
           </button>
+
         </div>
       </div>
 
@@ -76,7 +84,6 @@ const EmployeeHeader = () => {
               <SuccessCard
                 onDone={() => setIsSuccess(false)}
                 description="Employee data has been successfully added to the system. You can return to the employee list to see the latest data."
-             
               />
             </motion.div>
           </motion.div>

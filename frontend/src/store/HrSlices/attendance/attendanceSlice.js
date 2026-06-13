@@ -192,8 +192,9 @@ const attendanceSlice = createSlice({
       })
       .addCase(fetchAttendanceByEmployee.fulfilled, (state, action) => {
         state.loading = false;
-        state.attendanceList = action.payload.data.attendance || [];
-        state.pagination = action.payload.pagination || initialState.pagination;
+        const { attendance, pagination } = action.payload.data;
+        state.attendanceList = attendance || [];
+        state.pagination = pagination || initialState.pagination;
       })
       .addCase(fetchAttendanceByEmployee.rejected, (state, action) => {
         state.loading = false;
@@ -209,7 +210,7 @@ const attendanceSlice = createSlice({
         state.analytics = action.payload;
       })
       .addCase(fetchAttendanceStats.rejected, (state, action) => {
-        state.statsLoading= false;
+        state.statsLoading = false;
         state.error = action.payload;
       })
   },

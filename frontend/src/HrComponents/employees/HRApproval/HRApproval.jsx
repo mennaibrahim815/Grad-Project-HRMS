@@ -11,8 +11,7 @@ import BaseCard from "../../../components/UI/Card";
 function HRApproval() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  
-  // 📜 استدعاء updatingItem من الـ Store
+
   const { list, loading, updatingItem } = useSelector((state) => state.leaves);
 
   useEffect(() => {
@@ -55,44 +54,43 @@ function HRApproval() {
         {/* Leave Requests List */}
         <div className="flex flex-col gap-4">
           {list.map((request) => {
-            // 📜 شروط التحميل الخاصة بكل صف وبكل زرار
+
             const isAcceptLoading = updatingItem.id === request._id && updatingItem.status === "Approved";
             const isDeclineLoading = updatingItem.id === request._id && updatingItem.status === "Rejected";
-            const isRowLoading = updatingItem.id === request._id; // لو أي زرار في الصف بيحمل هنوقف الصف كله منعا للضغط المتكرر
+            const isRowLoading = updatingItem.id === request._id;
 
             return (
-              <div key={request._id} className="flex items-center justify-between group"> 
-                <div className="flex items-center gap-3">
+              <div key={request._id} className="flex items-center justify-between gap-2 group">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
                   <img
                     src={request.employee?.avatar}
                     alt={request.employee?.firstName}
-                    className="w-11 h-11 rounded-full object-cover ring-2 ring-slate-600/50"
+                    className="w-9 h-9 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-slate-600/50 shrink-0"
                   />
-                  <div>
-                    <p className="text-white text-sm font-medium leading-tight">
-                      {request.employee?.firstName} {request.employee?.lastName} 
+                  <div className="min-w-0">
+                    <p className="text-white text-xs sm:text-sm font-medium leading-tight truncate">
+                      {request.employee?.firstName} {request.employee?.lastName}
                     </p>
-                    <p className="text-slate-400 text-xs mt-0.5">{request.reason}</p>
+                    <p className="text-slate-400 text-[10px] sm:text-xs mt-0.5 truncate">{request.reason}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                   {request.status === "Approved" ? (
-                    <span className="px-4 py-2 text-xs font-medium text-emerald-400 bg-emerald-500/20 rounded-full">
+                    <span className="px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium text-emerald-400 bg-emerald-500/20 rounded-full">
                       Accepted
                     </span>
                   ) : request.status === "Rejected" ? (
-                    <span className="px-4 py-2 text-xs font-medium text-red-400 bg-red-500/20 rounded-full">
+                    <span className="px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium text-red-400 bg-red-500/20 rounded-full">
                       Declined
                     </span>
                   ) : (
                     <>
-                      {/* زرار Accept */}
                       <button
                         onClick={() => handleAccept(request._id)}
                         disabled={isRowLoading}
-                        className={`px-4 py-2 text-xs font-medium text-white rounded-full transition-all flex items-center justify-center min-w-[75px]
-                          ${isRowLoading ? "bg-gray-600 cursor-not-allowed opacity-60" : "bg-[#0095ff] hover:bg-[#0052cc]"}`}
+                        className={`px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium text-white rounded-full transition-all flex items-center justify-center min-w-[60px] sm:min-w-[75px]
+              ${isRowLoading ? "bg-gray-600 cursor-not-allowed opacity-60" : "bg-[#0095ff] hover:bg-[#0052cc]"}`}
                       >
                         {isAcceptLoading ? (
                           <i className="fas fa-spinner fa-spin text-xs text-white"></i>
@@ -101,12 +99,11 @@ function HRApproval() {
                         )}
                       </button>
 
-                      {/* زرار Decline */}
                       <button
-                        onClick={() => handleDecline(request._id)} 
+                        onClick={() => handleDecline(request._id)}
                         disabled={isRowLoading}
-                        className={`px-4 py-2 text-xs font-medium rounded-full transition-all flex items-center justify-center min-w-[75px]
-                          ${isRowLoading ? "bg-slate-800 text-gray-500 cursor-not-allowed" : "text-slate-300 bg-slate-700/70 hover:bg-slate-600/70"}`}
+                        className={`px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium rounded-full transition-all flex items-center justify-center min-w-[60px] sm:min-w-[75px]
+              ${isRowLoading ? "bg-slate-800 text-gray-500 cursor-not-allowed" : "text-slate-300 bg-slate-700/70 hover:bg-slate-600/70"}`}
                       >
                         {isDeclineLoading ? (
                           <i className="fas fa-spinner fa-spin text-xs text-white"></i>

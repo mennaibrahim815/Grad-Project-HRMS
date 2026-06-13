@@ -11,6 +11,7 @@ import {
     CheckCircle2,
     XCircle,
 } from "lucide-react";
+import BaseCard from "../../../../components/UI/Card";
 import {
     generateDraft,
     approvePayroll,
@@ -162,7 +163,10 @@ export function PayrollActionModal({ action, onClose, targetId }) {
             className="fixed inset-0 z-50 flex items-center justify-center bg-[#121417]/75 backdrop-blur-sm"
             onClick={(e) => e.target === e.currentTarget && onClose()}
         >
-            <div className="w-[400px] max-w-[calc(100vw-2rem)] rounded-2xl border border-[#383D47] bg-[#1B1E22] overflow-hidden">
+            <BaseCard
+                padding="p-0"
+                className="w-[400px] max-w-[calc(100vw-2rem)] overflow-hidden"
+            >
 
                 {/* ── Header ── */}
                 <div className="flex items-center justify-between px-5 py-4 border-b border-[#383D47]">
@@ -273,7 +277,7 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                         </div>
                     </>
                 )}
-            </div>
+            </BaseCard>
         </div>
     );
 }
