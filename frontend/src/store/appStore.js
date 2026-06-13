@@ -23,6 +23,10 @@ import leaveReducer from "./HrSlices/leaveSlice";
 import attendanceReducer from "./HrSlices/attendance/attendanceSlice";
 import payrollReducer from "./HrSlices/payroll/payrollSlice";
 
+// // Employee Side
+import empAttendanceReducer from "./EmployeeSlices/attendance/empAttendanceSlice";
+// import empPayrollReducer from "./EmployeeSlices/payroll/empPayrollSlice";
+
 export const store = configureStore({
   reducer: {
     // Authentication
@@ -50,6 +54,9 @@ export const store = configureStore({
     attendance: attendanceReducer,
     payroll:payrollReducer,
     careers: careersReducer,
+    // // Employee Side Features
+    empAttendance: empAttendanceReducer,
+    // empPayroll: empPayrollReducer,
     
   },
 });
