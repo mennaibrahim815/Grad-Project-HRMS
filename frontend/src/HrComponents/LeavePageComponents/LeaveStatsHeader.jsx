@@ -67,20 +67,20 @@ const LeaveStatsHeader = ({ onStatsUpdated }) => {
     {
       title: "Pending Requests",
       value: stats?.pendingCount || 0,
-      icon: <Clock className="text-yellow-500" size={20} />,
-      textColor: "text-yellow-400"
+      icon: <Clock className="text-[#F68018]" size={20} />,
+      textColor: "text-[#F89B49]"
     },
     {
       title: "Rejected Requests",
       value: stats?.rejectedCount || 0,
-      icon: <XCircle className="text-red-500" size={20} />,
-      textColor: "text-red-400"
+      icon: <XCircle className="text-[#DF165A]" size={20} />,
+      textColor: "text-[#EC3A76]"
     },
     {
       title: "Approved Days",
       value: stats?.totalApprovedDays || 0,
-      icon: <CalendarDays className="text-[#0095ff]" size={20} />,
-      textColor: "text-[#0095ff]"
+      icon: <CalendarDays className="text-[#0293FA]" size={20} />,
+      textColor: "text-[#35AAFD]"
     }
   ];
 

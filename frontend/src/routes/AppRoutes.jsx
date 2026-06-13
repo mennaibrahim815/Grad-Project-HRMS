@@ -27,6 +27,7 @@ import LeaveRequests from "../HrPages/Leave/LeaveRequests/LeaveRequests";
 import LeaveDetails from "../HrPages/Leave/LeaveDetails/LeaveDetails";
 import Requests from "../HrPages/Requests/Requests";
 import EmployeeDashboard from "../EmployeePages/EmployeeDashboard/EmployeeDashboard";
+import Myleaves  from "../EmployeePages/Myleaves/Myleaves";
 import Settings from "../HrPages/sett/Settings";
 
 export const router = createBrowserRouter(
@@ -71,7 +72,11 @@ export const router = createBrowserRouter(
           <EmployeeLayout />
         </ProtectedRoute>
       ),
-      children: [{ path: "/my-dashboard", element: <EmployeeDashboard /> }],
+      children: [
+        { path: "/my-dashboard", element: <EmployeeDashboard /> },
+        { path: "/my-leaves", element:<Myleaves/>},
+      ],
+
     },
 
     // --- 🟡 Shared ---
@@ -83,6 +88,7 @@ export const router = createBrowserRouter(
         { path: "/employee/:id", element: <EmployeeDetail /> },
         { path: "/hiring/:id", element: <HiringDetail /> },
         { path: "/hiring/jobs/:id", element: <JobDetailPage /> },
+      
       ],
     },
 

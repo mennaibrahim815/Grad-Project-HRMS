@@ -341,7 +341,7 @@ const LeaveTable = ({
     { 
       header: "Duration", 
       render: (row) => (
-        <span className="font-semibold text-[#0095ff] font-mono">
+        <span className="font-semibold text-[#35AAFD] font-mono">
           {row.duration || 0} {row.duration === 1 ? "Day" : "Days"}
         </span>
       )

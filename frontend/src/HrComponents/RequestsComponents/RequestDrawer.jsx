@@ -70,19 +70,19 @@ const RequestDrawer = ({ isOpen, req, onClose, onAction }) => {
     <div className="fixed inset-0 z-[9999] flex justify-end">
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
       
-      <div className="relative w-full max-w-md bg-[#0F171E] border-l border-slate-800/80 h-full p-6 shadow-2xl flex flex-col justify-between animate-[slideLeft_0.3s_ease-out] overflow-y-auto">
+      <div className="relative w-full max-w-md bg-[#0F171E] border-l border-[#383D47]/80 h-full p-6 shadow-2xl flex flex-col justify-between animate-[slideLeft_0.3s_ease-out] overflow-y-auto">
         
         <div className="space-y-6">
-          <div className="flex justify-between items-center pb-5 border-b border-slate-800">
+          <div className="flex justify-between items-center pb-5 border-b border-[#383D47]">
             <h3 className="text-lg font-bold text-white">Request Details</h3>
-            <button onClick={onClose} className="p-1.5 rounded-lg bg-slate-800/50 text-slate-400 hover:text-white border border-slate-700/30 transition-colors">
+            <button onClick={onClose} className="p-1.5 rounded-lg bg-[#1B1E22] text-slate-400 hover:text-white border border-[#383D47]/30 transition-colors">
               <XCircle size={18} />
             </button>
           </div>
 
           <div className="space-y-5 text-left">
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Employee</span>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#7E889A] block mb-1">Employee</span>
               <div className="text-base font-bold text-white">{fullName}</div>
               
               {/* تأمين الـ UI: السطر هيظهر بشكل نظيف جداً فقط لو القسم موجود ومبعوت من الباكيند */}
@@ -95,69 +95,69 @@ const RequestDrawer = ({ isOpen, req, onClose, onAction }) => {
             
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Request Type</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#7E889A] block mb-1">Request Type</span>
                 <div className="text-sm font-medium text-slate-300">{req.type}</div>
               </div>
               <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Creation Date</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#7E889A] block mb-1">Creation Date</span>
                 <div className="text-sm font-medium text-slate-300 font-mono">{formattedDate}</div>
               </div>
             </div>
 
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Title</span>
-              <div className="text-sm font-semibold text-yellow-400 bg-slate-800/30 p-3 rounded-xl border border-slate-800 font-mono">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#7E889A] block mb-1">Title</span>
+              <div className="text-sm font-semibold text-[#F89B49] bg-slate-800/30 p-3 rounded-xl border border-[#383D47] font-mono">
                 {req.title}
               </div>
             </div>
 
             <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Description / Reason</span>
-              <div className="text-sm text-slate-400 bg-slate-800/30 p-4 rounded-xl border border-slate-800 leading-relaxed max-h-40 overflow-y-auto font-sans">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#7E889A] block mb-1">Description / Reason</span>
+              <div className="text-sm text-slate-400 bg-slate-800/30 p-4 rounded-xl border border-[#383D47] leading-relaxed max-h-40 overflow-y-auto font-sans">
                 {req.description}
               </div>
             </div>
           </div>
 
           {showReplyForm && (
-            <form onSubmit={handleSubmitReply} className="border-t border-slate-800 pt-5 space-y-4 text-left animate-[fadeIn_0.2s_ease-out]">
+            <form onSubmit={handleSubmitReply} className="border-t border-[#383D47] pt-5 space-y-4 text-left animate-[fadeIn_0.2s_ease-out]">
               <div className="flex items-center gap-2 mb-2">
                 <span className={`w-2 h-2 rounded-full ${selectedAction === "Approved" ? "bg-emerald-500" : "bg-red-500"}`}></span>
-                <h4 className="text-sm font-bold text-white">Responding as: <span className={selectedAction === "Approved" ? "text-emerald-400" : "text-red-400"}>{selectedAction}</span></h4>
+                <h4 className="text-sm font-bold text-white">Responding as: <span className={selectedAction === "Approved" ? "text-[#00E583]" : "text-[#EC3A76]"}>{selectedAction}</span></h4>
               </div>
 
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">HR Response / Comment</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-[#7E889A] block mb-1">HR Response / Comment</label>
                 <textarea
                   rows="3"
                   value={hrComment}
                   onChange={(e) => setHrComment(e.target.value)}
                   placeholder="Write your response or reason here..."
-                  className="w-full bg-[#0B131A] border border-slate-800 rounded-xl p-3 text-xs text-slate-300 focus:outline-none focus:border-slate-700 placeholder:text-slate-600 resize-none"
+                  className="w-full bg-[#0B131A] border border-[#383D47] rounded-xl p-3 text-xs text-slate-300 focus:outline-none focus:border-[#383D47] placeholder:text-slate-600 resize-none"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">By HR (Your Name) *</label>
+                <label className="text-[10px] font-bold uppercase tracking-wider text-[#7E889A] block mb-1">By HR (Your Name) *</label>
                 <input
                   type="text"
                   required
                   value={hrName}
                   onChange={(e) => setHrName(e.target.value)}
                   placeholder="Enter your name"
-                  className="w-full bg-[#0B131A] border border-slate-800 rounded-xl p-3 text-xs text-slate-300 focus:outline-none focus:border-slate-700 placeholder:text-slate-600 font-mono"
+                  className="w-full bg-[#0B131A] border border-[#383D47] rounded-xl p-3 text-xs text-slate-300 focus:outline-none focus:border-[#383D47] placeholder:text-slate-600 font-mono"
                 />
               </div>
 
               <div>
-                <label className="text-[10px] font-bold uppercase tracking-wider text-slate-500 block mb-1">Attachment (Optional)</label>
-                <div className="relative flex items-center justify-center w-full border border-dashed border-slate-800 hover:border-slate-700 rounded-xl p-3 bg-[#0B131A]/50 transition-colors cursor-pointer group">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-[#7E889A] block mb-1">Attachment (Optional)</label>
+                <div className="relative flex items-center justify-center w-full border border-dashed border-[#383D47] hover:border-[#383D47] rounded-xl p-3 bg-[#0B131A]/50 transition-colors cursor-pointer group">
                   <input
                     type="file"
                     onChange={(e) => setAttachedFile(e.target.files[0])}
                     className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                   />
-                  <div className="flex items-center gap-2 text-xs text-slate-500 group-hover:text-slate-400">
+                  <div className="flex items-center gap-2 text-xs text-[#7E889A] group-hover:text-slate-400">
                     <Upload size={14} />
                     <span className="truncate max-w-[200px]">
                       {attachedFile ? attachedFile.name : "Upload document/letter"}
@@ -170,7 +170,7 @@ const RequestDrawer = ({ isOpen, req, onClose, onAction }) => {
                 <button
                   type="submit"
                   className={`flex-1 text-white text-xs font-bold py-2.5 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-md ${
-                    selectedAction === "Approved" ? "bg-emerald-600 hover:bg-emerald-500" : "bg-red-600 hover:bg-red-500"
+                    selectedAction === "Approved" ? "bg-[#00E583] hover:bg-[#4BFFB2]" : "bg-red-600 hover:bg-red-500"
                   }`}
                 >
                   <Send size={12} /> Confirm Submit
@@ -178,7 +178,7 @@ const RequestDrawer = ({ isOpen, req, onClose, onAction }) => {
                 <button
                   type="button"
                   onClick={handleCancelReply}
-                  className="px-4 bg-transparent border border-slate-800 text-slate-400 hover:text-white hover:border-slate-600 text-xs font-bold py-2.5 rounded-xl transition-colors"
+                  className="px-4 bg-transparent border border-[#383D47] text-slate-400 hover:text-white hover:border-slate-600 text-xs font-bold py-2.5 rounded-xl transition-colors"
                 >
                   Cancel
                 </button>
@@ -190,26 +190,26 @@ const RequestDrawer = ({ isOpen, req, onClose, onAction }) => {
         {!showReplyForm && (
           <div className="mt-8">
             {req.status === "Pending" ? (
-              <div className="pt-5 border-t border-slate-800 flex gap-4">
+              <div className="pt-5 border-t border-[#383D47] flex gap-4">
                 <button
                   onClick={() => handleInitialAction("Approved")}
-                  className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 text-sm transition-colors shadow-lg"
+                  className="flex-1 bg-[#00E583] hover:bg-[#4BFFB2] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 text-sm transition-colors shadow-lg"
                 >
                   <Check size={16} /> Approve
                 </button>
                 <button
                   onClick={() => handleInitialAction("Rejected")}
-                  className="flex-1 bg-transparent hover:bg-red-950/20 text-red-400 border border-red-900/50 hover:border-red-500 font-bold py-3 rounded-xl flex items-center justify-center gap-2 text-sm transition-colors"
+                  className="flex-1 bg-transparent hover:bg-[#DF165A]/10 text-[#EC3A76] border border-red-900/50 hover:border-red-500 font-bold py-3 rounded-xl flex items-center justify-center gap-2 text-sm transition-colors"
                 >
                   <X size={16} /> Reject
                 </button>
               </div>
             ) : (
-              <div className="pt-5 border-t border-slate-800 text-center">
+              <div className="pt-5 border-t border-[#383D47] text-center">
                 <div className={`inline-flex items-center justify-center gap-2 w-full py-3 rounded-xl font-bold font-mono text-sm border ${
                   req.status === "Approved" 
-                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
-                    : "bg-red-500/10 text-red-400 border-red-500/20"
+                    ? "bg-emerald-500/10 text-[#00E583] border-emerald-500/20" 
+                    : "bg-red-500/10 text-[#EC3A76] border-red-500/20"
                 }`}>
                   {req.status === "Approved" ? <Check size={16} /> : <X size={16} />}
                   This request has been {req.status}

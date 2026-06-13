@@ -20,14 +20,14 @@ const RequestCard = ({ req, onClick }) => {
       padding="p-6"
       // تأكدي من وجود onClick هنا مباشرة على الكارد الأب
       onClick={onClick} 
-      className="hover:border-slate-700/80 transition-all duration-300 cursor-pointer group flex flex-col justify-between min-h-[190px] border border-slate-800/40 bg-[#0F1722]/30"
+      className="hover:border-[#7E889A]/60 transition-all duration-300 cursor-pointer group flex flex-col justify-between min-h-[190px] border border-[#383D47]/40 bg-[#1B1E22]/30"
     >
       <div>
         <div className="flex justify-between items-start mb-4">
-          <span className="px-2.5 py-1 text-[10px] font-bold uppercase rounded-md bg-yellow-500/10 text-yellow-500 border border-yellow-500/20">
+          <span className="px-2.5 py-1 text-[10px] font-bold uppercase rounded-md bg-[#F89B49]/10 text-[#F89B49] border border-[#F89B49]/20">
             {req.type || "General Request"}
           </span>
-          <span className="text-xs text-slate-500 font-mono flex items-center gap-1">
+          <span className="text-xs text-[#7E889A] font-mono flex items-center gap-1">
             <Calendar size={12} /> {formattedDate}
           </span>
         </div>
@@ -36,11 +36,11 @@ const RequestCard = ({ req, onClick }) => {
           {avatarUrl ? (
             <img src={avatarUrl} alt={fullName} className="w-8 h-8 rounded-full object-cover border border-slate-700" />
           ) : (
-            <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-[11px] text-slate-400 font-bold border border-slate-700/50">
+            <div className="w-8 h-8 rounded-full bg-[#1B1E22] flex items-center justify-center text-[11px] text-slate-400 font-bold border border-slate-700/50">
               {firstName[0]}
             </div>
           )}
-          <h4 className="text-white font-bold text-base group-hover:text-yellow-400 transition-colors">
+          <h4 className="text-white font-bold text-base group-hover:text-[#F89B49] transition-colors">
             {fullName}
           </h4>
         </div>
@@ -57,10 +57,10 @@ const RequestCard = ({ req, onClick }) => {
           e.stopPropagation(); // يمنع تضارب الضغطات
           onClick();
         }}
-        className="mt-4 pt-3 border-t border-slate-800/60 flex justify-between items-center text-xs cursor-pointer select-none"
+        className="mt-4 pt-3 border-t border-[#383D47]/60 flex justify-between items-center text-xs cursor-pointer select-none"
       >
-        <span className="text-slate-500">
-          Priority: <strong className={`font-mono ${req.priority === "High" ? "text-red-400 font-bold" : "text-slate-300"}`}>{req.priority || "Normal"}</strong>
+        <span className="text-[#7E889A]">
+          Priority: <strong className={`font-mono ${req.priority === "High" ? "text-[#EC3A76] font-bold" : "text-slate-300"}`}>{req.priority || "Normal"}</strong>
         </span>
         <span className="text-slate-400 group-hover:text-white transition-colors flex items-center gap-1">
           View Details <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
