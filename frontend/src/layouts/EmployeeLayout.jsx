@@ -12,7 +12,7 @@ const EmployeeLayout = () => {
         <Navbar />
 
         {/* p-4 md:p-8 ليكون المحتوى واسع ومريح للموظف */}
-        <main className="flex-1 p-4  md:p-8 pt-24 overflow-y-auto scrollbar-hide">
+        <main className="flex-1 p-4 p4 md:p-8 pt-24 overflow-y-auto scrollbar-hide">
           <Outlet />
         </main>
       </div>
