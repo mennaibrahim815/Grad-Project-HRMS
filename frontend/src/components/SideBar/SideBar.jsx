@@ -45,7 +45,7 @@ const Sidebar = () => {
   const employeeMenuItems = [
     { name: "Dashboard", icon: "fas fa-th-large", path: "/my-dashboard" },
     { name: "My Profile", icon: "fas fa-user-circle", path: "/profile" },
-    { name: "Attendance", icon: "fas fa-calendar-alt", path: "/attendance" },
+    { name: "Attendance", icon: "fas fa-calendar-alt", path: "/my-attendance" },
     { name: "My Leaves", icon: "fas fa-plane", path: "/my-leaves" },
     { name: "My Requests", icon: "fas fa-file-alt", path: "/my-requests" },
     { name: "Tasks", icon: "fas fa-check-circle", path: "/tasks", badge: 3 },

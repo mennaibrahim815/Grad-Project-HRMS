@@ -28,6 +28,7 @@ import LeaveDetails from "../HrPages/Leave/LeaveDetails/LeaveDetails";
 import Requests from "../HrPages/Requests/Requests";
 import EmployeeDashboard from "../EmployeePages/EmployeeDashboard/EmployeeDashboard";
 import Myleaves  from "../EmployeePages/Myleaves/Myleaves";
+import MyAttendance from "../EmployeePages/MyAttendance/MyAttendance";
 import Settings from "../HrPages/sett/Settings";
 
 export const router = createBrowserRouter(
@@ -75,6 +76,7 @@ export const router = createBrowserRouter(
       children: [
         { path: "/my-dashboard", element: <EmployeeDashboard /> },
         { path: "/my-leaves", element:<Myleaves/>},
+        { path: "/my-attendance", element:<MyAttendance/>},
       ],
 
     },
