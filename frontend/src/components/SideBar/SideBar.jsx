@@ -42,6 +42,9 @@ const Sidebar = () => {
     { name: "Performance", icon: "fas fa-chart-line", path: "/performance" },
   ];
 
+    if (userRole === "MANAGER") {
+    hrMenuItems.push({ name: "Manage HRs", icon: "fas fa-user-shield", path: "/manage-hrs" });
+  }
   const employeeMenuItems = [
     { name: "Dashboard", icon: "fas fa-th-large", path: "/my-dashboard" },
     { name: "My Profile", icon: "fas fa-user-circle", path: "/profile" },
@@ -52,7 +55,7 @@ const Sidebar = () => {
     { name: "Notifications", icon: "fas fa-bell", path: "/notifications" },
   ];
 
-  const menuItems = userRole === "HR" ? hrMenuItems : employeeMenuItems;
+  const menuItems = userRole === "HR" || userRole === "MANAGER" ? hrMenuItems : employeeMenuItems;
 
   const handleMouseEnter = (e, itemName) => {
     if (!isCollapsed) return;

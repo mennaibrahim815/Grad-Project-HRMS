@@ -6,7 +6,7 @@ import ReusableCalendar from "../../../components/UI/ReusableCalendar";
 import { useSelector, useDispatch } from "react-redux";
 import { setSelectedDate } from "../../../store/HrSlices/attendance/attendanceSlice";
 
-const EmployeeHeader = () => {
+const EmployeeHeader = ({title, addButtonNAme}) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -24,7 +24,7 @@ const EmployeeHeader = () => {
 
         {/* Title */}
         <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight shrink-0">
-          Employees
+          {title}
         </h1>
 
         {/* Controls Container */}
@@ -45,7 +45,7 @@ const EmployeeHeader = () => {
             className="bg-[#0095ff] hover:bg-[#0081dd] text-white rounded-full sm:rounded-xl flex items-center justify-center font-bold shadow-lg transition-all active:scale-95 disabled:opacity-50 shrink-0 w-9 h-9 sm:w-auto sm:h-auto sm:px-6 sm:py-2.5"
           >
             <i className="fas fa-plus text-sm"></i>
-            <span className="hidden sm:inline ml-1.5">Add Employee</span>
+            <span className="hidden sm:inline ml-1.5">{addButtonNAme}</span>
           </button>
 
         </div>

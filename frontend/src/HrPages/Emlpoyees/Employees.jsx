@@ -39,7 +39,7 @@ if (loading ) {
   return (
     <div className="max-w-[1650px] mx-auto p-4 bg-transparent">
       <div className="space-y-3">
-        <EmployeeHeader />
+        <EmployeeHeader title={"Employee"} addButtonNAme={"Add New Employee"}  />
 
         <AttendanceReport
           title="Performance report"
