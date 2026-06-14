@@ -4,8 +4,10 @@ import {
     createTask,
     updateTask,
     deleteTask,
-    getAllTasks,
-    getTasksByProjectId,
+    getTasks,
+    getMyAndTeamTasks,
+    getTaskStatistics,
+    searchTasks,
 } from "../controllers/task.controller.js";
 import { verifyToken } from "../guards/verifyToken.js";
 import { validate } from "../Middleware/validate.Middelware.js";
@@ -19,14 +21,19 @@ import upload from "../Middleware/multerConfig.js";
 import { processUploadedFile2 } from "../Middleware/processUploads2.js";
 import { setFilesToBody2 } from "../Middleware/setFilesToBody2.js";
 
-router.route("/").get(verifyToken, getAllTasks);
+router.route("/task-stats").get(verifyToken, allowedTo("EMPLOYEE", "HR"), getTaskStatistics);
+router.route("/search").get(verifyToken, allowedTo("HR", "EMPLOYEE"), searchTasks);
+router.route("/my-tasks").get(verifyToken, allowedTo("EMPLOYEE"), getMyAndTeamTasks);
+
+router.route("/").get(verifyToken, allowedTo("HR"), getTasks);
+router.route("/task/:id").get(verifyToken, allowedTo("HR"), getTasks);
 
 router
     .route("/:projectId")
-    .get(verifyToken, getTasksByProjectId)
+
     .post(
         verifyToken,
-        allowedTo("HR", "MANAGER"),
+        allowedTo("HR"),
         upload.any(),
         processUploadedFile2,
         setFilesToBody2(),
@@ -38,10 +45,13 @@ router
     .route("/:id")
     .patch(
         verifyToken,
-        allowedTo("HR", "MANAGER"),
+        allowedTo("HR", "EMPLOYEE"),
+        upload.any(),
+        processUploadedFile2,
+        setFilesToBody2(),
         validate(validateUpdateTaskSchema),
         updateTask
     )
-    .delete(verifyToken, allowedTo("HR", "MANAGER"), deleteTask);
+    .delete(verifyToken, allowedTo("HR"), deleteTask);
 
 export default router;

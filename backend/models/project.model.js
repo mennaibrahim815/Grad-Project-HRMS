@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { modelConfig } from "../utils/modelConfig.js";
+
 const projectSchema = new mongoose.Schema(
     {
         general: {
@@ -35,37 +36,34 @@ const projectSchema = new mongoose.Schema(
                 required: [true, "Tag is required"],
             },
         },
-
-        assignment: {
-            assignedTo: [
-                {
-                    _id: {
-                        type: mongoose.Schema.Types.ObjectId,
-                        ref: "User",
-                        required: true,
-                    },
-                    general: {
-                        firstName: { type: String, required: true },
-                        lastName: { type: String, required: true },
-                        avatar: { type: String, required: true },
-                    },
-                    employee: {
-                        jobTitle: { type: String },
-                    },
+        
+        assignedTo: [
+            {
+                _id: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "User",
+                    required: true,
                 },
-            ],
-            status: {
-                type: String,
-                enum: ["On-going", "Pending", "Completed"],
-                default: "On-going",
+                general: {
+                    firstName: { type: String, required: true },
+                    lastName: { type: String, required: true },
+                    avatar: { type: String, required: true },
+                },
+                employee: {
+                    jobTitle: { type: String },
+                },
             },
-            priority: {
-                type: String,
-                enum: ["High", "Medium", "Low"],
-                required: [true, "Priority is required"],
-            },
+        ],
+        status: {
+            type: String,
+            enum: ["On-going", "Pending", "Completed"],
+            default: "Pending",
         },
-
+        priority: {
+            type: String,
+            enum: ["High", "Medium", "Low"],
+            required: [true, "Priority is required"],
+        },
         documents: {
             type: [
                 {

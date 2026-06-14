@@ -19,11 +19,11 @@ export const getAllProjects = asyncWraper(async (req, res, next) => {
     }
 
     if (status) {
-        matchCondition["assignment.status"] = status;
+        matchCondition["status"] = status;
     }
 
     if (priority) {
-        matchCondition["assignment.priority"] = priority;
+        matchCondition["priority"] = priority;
     }
 
     if (startDate) {
@@ -35,7 +35,7 @@ export const getAllProjects = asyncWraper(async (req, res, next) => {
     }
 
     if (createdBy) {
-        matchCondition.createdBy = createdBy;
+        matchCondition["general.createdBy"] = createdBy;
     }
 
     const result = await Project.aggregate([
@@ -111,8 +111,8 @@ export const getProjectById = asyncWraper(async (req, res, next) => {
 });
 
 export const createProject = asyncWraper(async (req, res, next) => {
-    console.log(req.body);
-    const { general, assignment, documents, subTasks } = req.body;
+    const { general, assignedTo, status, priority, documents, subTasks } = req.body;
+    
     const oldProject = await Project.findOne({ "general.name": general.name });
     if (oldProject) {
         const error = appErrors.create(
@@ -122,9 +122,17 @@ export const createProject = asyncWraper(async (req, res, next) => {
         );
         return next(error);
     }
+    
     general.createdBy = req.currentUser.userId;
 
-    const newProject = new Project({ general, assignment, documents });
+    const newProject = new Project({ 
+        general, 
+        assignedTo, 
+        status, 
+        priority, 
+        documents 
+    });
+    
     await newProject.save();
 
     if (subTasks && subTasks.length > 0) {
@@ -160,6 +168,7 @@ export const updateProject = asyncWraper(async (req, res, next) => {
         { $set: updateData },
         { returnDocument: "after", runValidators: true }
     );
+    
     if (!updatedProject) {
         const error = appErrors.create(
             404,
@@ -168,6 +177,7 @@ export const updateProject = asyncWraper(async (req, res, next) => {
         );
         return next(error);
     }
+    
     res.json({
         status: httpResponseText.SUCCESS,
         data: { project: updatedProject },
@@ -197,7 +207,7 @@ export const getProjectStats = asyncWraper(async (req, res, next) => {
                 ongoing: {
                     $sum: {
                         $cond: [
-                            { $eq: ["$assignment.status", "On-going"] },
+                            { $eq: ["$status", "On-going"] },
                             1,
                             0,
                         ],
@@ -206,7 +216,7 @@ export const getProjectStats = asyncWraper(async (req, res, next) => {
                 pending: {
                     $sum: {
                         $cond: [
-                            { $eq: ["$assignment.status", "Pending"] },
+                            { $eq: ["$status", "Pending"] },
                             1,
                             0,
                         ],
@@ -215,7 +225,7 @@ export const getProjectStats = asyncWraper(async (req, res, next) => {
                 completed: {
                     $sum: {
                         $cond: [
-                            { $eq: ["$assignment.status", "Completed"] },
+                            { $eq: ["$status", "Completed"] },
                             1,
                             0,
                         ],
@@ -256,7 +266,7 @@ export const searchProjects = asyncWraper(async (req, res, next) => {
                 _id: 1,
                 "general.name": 1,
                 "general.avatar": 1,
-                "assignment.status": 1,
+                status: 1, 
             },
         },
     ]);

@@ -352,11 +352,12 @@ export const getProjectSummary = asyncWraper(async (req, res, next) => {
     const skip = (page - 1) * limit;
 
     const result = await Project.aggregate([
-        { $match: { "assignment.status": filterStatus } },
+        { $match: { status: filterStatus } },
+        
         {
             $lookup: {
                 from: "users",
-                localField: "assignment.assignedTo",
+                localField: "assignedTo._id",
                 foreignField: "_id",
                 pipeline: [
                     {
@@ -367,7 +368,7 @@ export const getProjectSummary = asyncWraper(async (req, res, next) => {
                         },
                     },
                 ],
-                as: "assignedTo",
+                as: "assignedToUsers",
             },
         },
         {
@@ -386,7 +387,7 @@ export const getProjectSummary = asyncWraper(async (req, res, next) => {
                         $filter: {
                             input: "$allTasks",
                             as: "t",
-                            cond: { $eq: ["$$t.done", true] },
+                            cond: { $eq: ["$$t.status", "Completed"] },
                         },
                     },
                 },
@@ -398,7 +399,7 @@ export const getProjectSummary = asyncWraper(async (req, res, next) => {
                 name: "$general.name",
                 description: "$general.description",
                 deadline: "$general.deadline",
-                assignedTo: 1,
+                assignedTo: "$assignedToUsers",
                 documentsCount: { $size: { $ifNull: ["$documents", []] } },
                 projectProgress: {
                     $cond: [
@@ -407,12 +408,7 @@ export const getProjectSummary = asyncWraper(async (req, res, next) => {
                             $round: [
                                 {
                                     $multiply: [
-                                        {
-                                            $divide: [
-                                                "$completedTasks",
-                                                "$totalTasks",
-                                            ],
-                                        },
+                                        { $divide: ["$completedTasks", "$totalTasks"] },
                                         100,
                                     ],
                                 },

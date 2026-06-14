@@ -24,39 +24,39 @@ export const validateProjectSchema = z.object({
                 required_error: "Tag is required",
             }),
         }),
-        assignment: z.object({
-            assignedTo: z
-                .array(
-                    z.object({
-                        _id: z.string().regex(/^[0-9a-fA-F]{24}$/, {
-                            message: "Invalid Team Member ID format",
+        
+        assignedTo: z
+            .array(
+                z.object({
+                    _id: z.string().regex(/^[0-9a-fA-F]{24}$/, {
+                        message: "Invalid Team Member ID format",
+                    }),
+                    general: z.object({
+                        firstName: z.string({
+                            required_error: "First name is required",
                         }),
-                        general: z.object({
-                            firstName: z.string({
-                                required_error: "First name is required",
-                            }),
-                            lastName: z.string({
-                                required_error: "Last name is required",
-                            }),
-                            avatar: z.string({
-                                required_error: "Avatar is required",
-                            }),
+                        lastName: z.string({
+                            required_error: "Last name is required",
                         }),
-                        employee: z.object({
-                            jobTitle: z.string().optional(),
+                        avatar: z.string({
+                            required_error: "Avatar is required",
                         }),
-                    })
-                )
-                .min(1, {
-                    message: "At least one team member must be assigned",
-                }),
-            status: z
-                .enum(["On-going", "Pending", "Completed"])
-                .default("On-going"),
-            priority: z.enum(["High", "Medium", "Low"], {
-                required_error: "Priority is required",
+                    }),
+                    employee: z.object({
+                        jobTitle: z.string().optional(),
+                    }),
+                })
+            )
+            .min(1, {
+                message: "At least one team member must be assigned",
             }),
+        status: z
+            .enum(["On-going", "Pending", "Completed"])
+            .default("Pending"),
+        priority: z.enum(["High", "Medium", "Low"], {
+            required_error: "Priority is required",
         }),
+
         documents: z
             .array(
                 z.object({
@@ -73,48 +73,44 @@ export const validateProjectSchema = z.object({
                     title: z.string({
                         required_error: "Task title is required",
                     }),
-                    assignment: z.object(
-                        {
-                            assignedTo: z.array(
-                                z.object({
-                                    _id: z
-                                        .string()
-                                        .regex(/^[0-9a-fA-F]{24}$/, {
-                                            message: "Invalid User ID format",
-                                        }),
-                                    general: z.object({
-                                        firstName: z.string({
-                                            required_error:
-                                                "First name is required",
-                                        }),
-                                        lastName: z.string({
-                                            required_error:
-                                                "Last name is required",
-                                        }),
-                                        avatar: z.string({
-                                            required_error:
-                                                "Avatar is required",
-                                        }),
-                                    }),
-                                    employee: z.object({
-                                        jobTitle: z.string({
-                                            required_error:
-                                                "Job title is required",
-                                        }),
-                                    }),
-                                })
-                            ),
-                            status: z
-                                .enum(["On-going", "Pending", "Completed"])
-                                .default("Pending")
-                                .optional(),
-                            priority: z
-                                .enum(["High", "Medium", "Low"])
-                                .default("Medium")
-                                .optional(),
-                        },
-                        { required_error: "Assignment data is required" }
+                    deadline: z
+                        .string({
+                            required_error: "SubTask deadline is required",
+                        })
+                        .regex(/^\d{4}-\d{1,2}-\d{1,2}$/, {
+                            message: "Invalid date format. Expected YYYY-MM-DD",
+                        }),
+                    assignedTo: z.array(
+                        z.object({
+                            _id: z.string().regex(/^[0-9a-fA-F]{24}$/, {
+                                message: "Invalid User ID format",
+                            }),
+                            general: z.object({
+                                firstName: z.string({
+                                    required_error: "First name is required",
+                                }),
+                                lastName: z.string({
+                                    required_error: "Last name is required",
+                                }),
+                                avatar: z.string({
+                                    required_error: "Avatar is required",
+                                }),
+                            }),
+                            employee: z.object({
+                                jobTitle: z.string({
+                                    required_error: "Job title is required",
+                                }),
+                            }),
+                        })
                     ),
+                    status: z
+                        .enum(["On-going", "Pending", "Completed"])
+                        .default("Pending")
+                        .optional(),
+                    priority: z
+                        .enum(["High", "Medium", "Low"])
+                        .default("Medium")
+                        .optional(),
                 })
             )
             .optional(),
@@ -127,8 +123,11 @@ export const updateValidateProjectSchema = z.object({
             general: validateProjectSchema.shape.body.shape.general
                 .partial()
                 .optional(),
-            assignment: validateProjectSchema.shape.body.shape.assignment
-                .partial()
+            assignedTo: validateProjectSchema.shape.body.shape.assignedTo
+                .optional(),
+            status: validateProjectSchema.shape.body.shape.status
+                .optional(),
+            priority: validateProjectSchema.shape.body.shape.priority
                 .optional(),
             documents:
                 validateProjectSchema.shape.body.shape.documents.optional(),
