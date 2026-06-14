@@ -46,6 +46,7 @@ const Sidebar = () => {
     { name: "Dashboard", icon: "fas fa-th-large", path: "/my-dashboard" },
     { name: "My Profile", icon: "fas fa-user-circle", path: "/profile" },
     { name: "Attendance", icon: "fas fa-calendar-alt", path: "/my-attendance" },
+    { name: "Payroll", icon: "fas fa-wallet", path: "/my-payroll" },
     { name: "My Leaves", icon: "fas fa-plane", path: "/my-leaves" },
     { name: "My Requests", icon: "fas fa-file-alt", path: "/my-requests" },
     { name: "Tasks", icon: "fas fa-check-circle", path: "/tasks", badge: 3 },

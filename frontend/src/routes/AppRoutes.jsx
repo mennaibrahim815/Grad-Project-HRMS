@@ -29,6 +29,7 @@ import Requests from "../HrPages/Requests/Requests";
 import EmployeeDashboard from "../EmployeePages/EmployeeDashboard/EmployeeDashboard";
 import Myleaves  from "../EmployeePages/Myleaves/Myleaves";
 import MyAttendance from "../EmployeePages/MyAttendance/MyAttendance";
+import Myparoll from "../EmployeePages/MyPayroll/Mypayroll"
 import Settings from "../HrPages/sett/Settings";
 
 export const router = createBrowserRouter(
@@ -77,6 +78,7 @@ export const router = createBrowserRouter(
         { path: "/my-dashboard", element: <EmployeeDashboard /> },
         { path: "/my-leaves", element:<Myleaves/>},
         { path: "/my-attendance", element:<MyAttendance/>},
+        { path: "/my-payroll", element:<Myparoll/>},
       ],
 
     },

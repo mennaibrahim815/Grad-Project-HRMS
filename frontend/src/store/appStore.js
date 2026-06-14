@@ -25,7 +25,7 @@ import payrollReducer from "./HrSlices/payroll/payrollSlice";
 
 // // Employee Side
 import empAttendanceReducer from "./EmployeeSlices/attendance/empAttendanceSlice";
-// import empPayrollReducer from "./EmployeeSlices/payroll/empPayrollSlice";
+import empPayrollReducer from "./EmployeeSlices/payroll/empPayrollSlice";
 
 export const store = configureStore({
   reducer: {
@@ -56,7 +56,7 @@ export const store = configureStore({
     careers: careersReducer,
     // // Employee Side Features
     empAttendance: empAttendanceReducer,
-    // empPayroll: empPayrollReducer,
+    empPayroll: empPayrollReducer,
     
   },
 });
