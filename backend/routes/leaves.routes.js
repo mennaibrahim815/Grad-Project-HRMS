@@ -46,7 +46,7 @@ router
     .route("/")
     .get(
         verifyToken,
-        allowedTo("HR"),
+        allowedTo("HR", "MANAGER"),
         validate(getAllLeavesQuerySchema),
         getAllLeaves
     );
@@ -54,11 +54,11 @@ router.get("/search", validate(dailySearchSchema), searchLeave);
 
 router
     .route("/employee/me")
-    .get(verifyToken, allowedTo("HR", "EMPLOYEE"), getMyLeaves);
+    .get(verifyToken, allowedTo("HR", "EMPLOYEE", "MANAGER"), getMyLeaves);
 
 router
     .route("/employee/:id")
-    .get(verifyToken, allowedTo("HR"), getEmployeeLeavesById);
+    .get(verifyToken, allowedTo("HR", "MANAGER"), getEmployeeLeavesById);
 
 router.route("/:id").get(verifyToken, validate(validateIdParams), getLeaveById);
 
@@ -66,7 +66,7 @@ router
     .route("/create")
     .post(
         verifyToken,
-        allowedTo("EMPLOYEE"),
+        allowedTo("EMPLOYEE", "MANAGER"),
         upload.fields([{ name: "attachment", maxCount: 1 }]),
         setFilesToBody({ attachment: "attachment" }),
         validate(validateLeaveSchema),
@@ -77,7 +77,7 @@ router
     .route("/:id")
     .patch(
         verifyToken,
-        allowedTo("EMPLOYEE"),
+        allowedTo("EMPLOYEE", "MANAGER"),
         upload.fields([{ name: "attachment", maxCount: 1 }]),
         setFilesToBody({ attachment: "attachment" }),
         validate(validateIdParams),
@@ -89,7 +89,7 @@ router
     .route("/:id/status")
     .patch(
         verifyToken,
-        allowedTo("HR"),
+        allowedTo("HR", "MANAGER"),
         validate(validateIdParams),
         validate(validateLeaveStatusSchema),
         updateLeaveStatus
@@ -99,7 +99,7 @@ router
     .route("/:id")
     .delete(
         verifyToken,
-        allowedTo("EMPLOYEE"),
+        allowedTo("EMPLOYEE", "MANAGER"),
         validate(validateIdParams),
         deleteLeave
     );
@@ -107,7 +107,7 @@ router
 router.get(
     "/stats/monthly/me",
     verifyToken,
-    allowedTo("HR", "EMPLOYEE"),
+    allowedTo("HR", "EMPLOYEE", "MANAGER"),
     validate(monthYearQuerySchema),
     getMonthlyLeaveStats
 );
@@ -123,7 +123,7 @@ router.get(
 router.get(
     "/stats/monthly/:id",
     verifyToken,
-    allowedTo("HR"),
+    allowedTo("HR", "MANAGER"),
     validate(monthYearQuerySchema),
     validate(validateIdParams),
     getMonthlyLeaveStats
@@ -132,7 +132,7 @@ router.get(
 router.get(
     "/stats/yearly/me",
     verifyToken,
-    allowedTo("HR", "EMPLOYEE"),
+    allowedTo("HR", "EMPLOYEE", "MANAGER"),
     validate(validateYearQuery),
     getYearlyLeaveChart
 );
@@ -148,7 +148,7 @@ router.get(
 router.get(
     "/stats/yearly/:id",
     verifyToken,
-    allowedTo("HR"),
+    allowedTo("HR", "MANAGER"),
     validate(validateYearQuery),
     validate(validateIdParams),
     getYearlyLeaveChart

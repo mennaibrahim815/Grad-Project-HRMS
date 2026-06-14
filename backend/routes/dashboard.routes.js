@@ -27,7 +27,7 @@ router
     .route("/summary")
     .get(
         verifyToken,
-        allowedTo(userRoles.HR),
+        allowedTo(userRoles.HR, userRoles.MANAGER),
         validate(validateDashboardStatisticsSchema),
         getDashboardStatistics
     );
@@ -36,7 +36,7 @@ router
     .route("/recent-applicants")
     .get(
         verifyToken,
-        allowedTo(userRoles.HR),
+        allowedTo(userRoles.HR, userRoles.MANAGER),
         validate(validateApplicantStatisticsSchema),
         getApplicantsByStatus
     );
@@ -45,7 +45,7 @@ router
     .route("/employee-status")
     .get(
         verifyToken,
-        allowedTo(userRoles.HR),
+        allowedTo(userRoles.HR, userRoles.MANAGER),
         validate(validateEmployeeStatusSchema),
         getEmployeeStatus
     );
@@ -54,7 +54,7 @@ router
     .route("/project-overview")
     .get(
         verifyToken,
-        allowedTo(userRoles.HR),
+        allowedTo(userRoles.HR, userRoles.MANAGER),
         validate(validateProjectSummarySchema),
         getProjectSummary
     );
@@ -63,7 +63,7 @@ router
     .route("/stats/weekly")
     .get(
         verifyToken,
-        allowedTo("HR"),
+        allowedTo(userRoles.HR, userRoles.MANAGER),
         validate(weeklyStatsSchema),
         getWeeklyAttendanceStats
     );

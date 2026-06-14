@@ -21,7 +21,7 @@ import { setFilesToBody } from "../Middleware/setFilesToBody.js";
 
 const router = Router();
 
-router.route("/").get(verifyToken, allowedTo("HR"), getAllUsers);
+router.route("/").get(verifyToken, allowedTo("HR", "MANAGER"), getAllUsers);
 
 router
     .route("/search")

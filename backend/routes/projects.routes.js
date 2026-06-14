@@ -27,7 +27,12 @@ import { processUploadedFile2 } from "../Middleware/processUploads2.js";
 
 router
     .route("/")
-    .get(verifyToken, allowedTo("HR"), validate(validateProjectQueryParamsSchema), getAllProjects)
+    .get(
+        verifyToken,
+        allowedTo("HR", "MANAGER"),
+        validate(validateProjectQueryParamsSchema),
+        getAllProjects
+    )
     .post(
         verifyToken,
         allowedTo("HR", "MANAGER"),
@@ -41,16 +46,23 @@ router
         //     documents: "documents",
         // }),
         upload.any(),
-        processUploadedFile2, 
+        processUploadedFile2,
         setFilesToBody2(),
 
         validate(validateProjectSchema),
         createProject
     );
-    
+
 router.route("/stats").get(verifyToken, getProjectStats);
-    
-router.route("/search").get(verifyToken,allowedTo("HR"), validate(searchProjectsSchema), searchProjects);
+
+router
+    .route("/search")
+    .get(
+        verifyToken,
+        allowedTo("HR", "MANAGER"),
+        validate(searchProjectsSchema),
+        searchProjects
+    );
 
 router
     .route("/:id")

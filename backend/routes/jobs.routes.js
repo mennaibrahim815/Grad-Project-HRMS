@@ -36,10 +36,10 @@ router
     .get(getJobById)
     .patch(
         verifyToken,
-        allowedTo(userRoles.HR),
+        allowedTo(userRoles.HR, userRoles.MANAGER),
         validate(validateUpdateJobSchema),
         updateJob
     )
-    .delete(verifyToken, allowedTo(userRoles.HR), deleteJob);
+    .delete(verifyToken, allowedTo(userRoles.HR, userRoles.MANAGER), deleteJob);
 
 export default router;

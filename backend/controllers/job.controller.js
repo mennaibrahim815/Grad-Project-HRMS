@@ -69,7 +69,6 @@ export const getJobById = asyncWraper(async (req, res, next) => {
     });
 });
 
-// 🚀 تم الإصلاح: استخدام Spread Operator لاستقبال كل الحقول بما فيها الـ ATS
 export const createJob = asyncWraper(async (req, res, next) => {
     const createdBy = req.currentUser.userId;
 
@@ -88,7 +87,6 @@ export const createJob = asyncWraper(async (req, res, next) => {
     });
 });
 
-// 🚀 تم الإصلاح: إضافة { safe: true } لحماية المصفوفات من التلف
 export const updateJob = asyncWraper(async (req, res, next) => {
     const JobID = req.params.id;
     if (Object.keys(req.body).length === 0) {
@@ -138,7 +136,6 @@ export const deleteJob = asyncWraper(async (req, res, next) => {
     res.json({ status: httpResponseText.SUCCESS, data: null });
 });
 
-// 🚀 تم الإصلاح: إضافة حقول الـ ATS في الـ Project عشان تظهر في البحث
 export const searchJobs = asyncWraper(async (req, res, next) => {
     const { title } = req.query;
 
