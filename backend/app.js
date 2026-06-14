@@ -1,5 +1,4 @@
 
-
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -31,6 +30,8 @@ import jobRouter from "./routes/jobs.routes.js";
 import applicantRouter from "./routes/applicants.routes.js";
 import scheduleresetDefaultLeaves from "./jobs/resetDefaultLeaves.js";
 import dashboardRouter from "./routes/dashboard.routes.js";
+import employeeDashboardRouter from "./routes/employeeDashboard.routes.js";
+import employeePerformanceRouter from "./routes/employeePerformance.routes.js";
 import { socketAuthMiddleware } from "./guards/socketAuth.middleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -107,6 +108,8 @@ app.use("/api/payroll", payrollRouter);
 app.use("/api/attendance", attendanceRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/dashboard", dashboardRouter);
+app.use("/api/employeeDashboard", employeeDashboardRouter);
+app.use("/api/employeePerformance", employeePerformanceRouter);
 
 app.all(/(.*)/, (req, res, next) => {
     const error = appErrors.create(404, "the route is not handeld", "Fail");
