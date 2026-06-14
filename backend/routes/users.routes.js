@@ -22,7 +22,7 @@ import { setFilesToBody } from "../Middleware/setFilesToBody.js";
 
 const router = Router();
 
-router.route("/").get(verifyToken, allowedTo("HR", "MANAGER"), getAllUsers);
+// 1. المسارات المحددة (Static Routes) لازم تكون في الأول
 router.route("/hrs").get(verifyToken, allowedTo("MANAGER"), getAllHRs);
 
 router
@@ -34,15 +34,19 @@ router
         searchEmployees
     );
 
+// 2. المسار الأساسي (Base Route)
+router.route("/").get(verifyToken, allowedTo("HR", "MANAGER"), getAllUsers);
+
+// 3. المسارات الديناميكية (Dynamic Routes) لازم تكون في الآخر
 router
     .route("/:id")
-    .get(validate(validateIdParams), verifyToken, getUserById)
+    .get(verifyToken, validate(validateIdParams), getUserById)
     .patch(
+        verifyToken,
         upload.fields([{ name: "general[avatar]", maxCount: 1 }]),
         processUploadedFile,
         setFilesToBody({ "general[avatar]": "general.avatar" }),
         validate(validateIdParams),
-        verifyToken,
         validate(updateValidateUserSchema),
         updateUser
     )
