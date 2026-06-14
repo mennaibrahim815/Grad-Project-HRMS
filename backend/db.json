@@ -1,0 +1,443 @@
+{
+  "HRs": [
+    {
+      "id": "ADM-001",
+      "email": "alaaahmedd383@gmail.com",
+      "password": "123",
+      "role": "hr",
+      "name": "Super Admin"
+    },
+    {
+      "id": "EMP-004",
+      "email": "alaaahmeed762@gmail.com",
+      "password": "123",
+      "role": "hr",
+      "name": "HR ALaa"
+    },
+    {
+      "id": "EMP-004",
+      "email": "mennaibrahim815@gmail.com",
+      "password": "123",
+      "role": "hr",
+      "name": "HR ALaa"
+    }
+    
+  ],
+  "employeesFullData": [
+    {
+      "id": "ADM-001",
+      "name": "Super Admin",
+      "position": "General Manager",
+      "email": "alaaahmedd383@gmail.com",
+      "role": "HR Admin",
+      "image": "https://i.pravatar.cc/150?u=admin",
+      "totalLeave": 30,
+      "salary": 5000,
+      "type": "Permanent",
+      "joined": "2023-01-10",
+      "gender": "Male",
+      "age": "32 yrs",
+      "phone": "(239) 555-0108",
+      "joiningDate": "22 June 2023",
+      "department": "Design"
+    },
+    {
+      "id": "EMP-004",
+      "name": "HR ALaa",
+      "position": "HR Manager",
+      "email": "alaaahmeed762@gmail.com",
+      "role": "HR Manager",
+      "image": "https://i.pravatar.cc/150?u=alaa",
+      "totalLeave": 25,
+      "salary": 4500,
+      "type": "Contract",
+      "joined": "2024-05-15",
+      "gender": "Female",
+      "age": "28 yrs",
+      "phone": "(239) 555-0109",
+      "joiningDate": "15 May 2024",
+      "department": "Development"
+    },
+    {
+      "id": "EMP-003",
+      "name": "Sara Ahmed",
+      "salary": 4500,
+      "type": "Contract",
+      "joined": "2024-05-15",
+      "image": "https://i.pravatar.cc/150?u=sara",
+      "position": "Frontend Lead",
+      "gender": "Female",
+      "age": "28 yrs",
+      "phone": "(239) 555-0109",
+      "email": "sara@staffly.com",
+      "joiningDate": "15 May 2024",
+      "department": "Development",
+      "role": "Frontend Dev",
+      "totalLeave": 15
+    },
+    {
+      "id": "EMP-005",
+      "name": "Sara Ahmed",
+      "salary": 4500,
+      "type": "Contract",
+      "joined": "2024-05-15",
+      "image": "https://i.pravatar.cc/150?u=sara",
+      "position": "Frontend Lead",
+      "gender": "Female",
+      "age": "28 yrs",
+      "phone": "(239) 555-0109",
+      "email": "sara@staffly.com",
+      "joiningDate": "15 May 2024",
+      "department": "Development",
+      "role": "Frontend Dev",
+      "totalLeave": 15
+    },
+    {
+      "id": "EMP-006",
+      "name": "Jones Hawkins",
+      "salary": 7000,
+      "type": "Part-time",
+      "joined": "2022-06-12",
+      "image": "https://i.pravatar.cc/150?u=jones",
+      "position": "HR Manager",
+      "gender": "Male",
+      "age": "35 yrs",
+      "phone": "(239) 555-9999",
+      "email": "alaaahmeed762@gmail.com",
+      "joiningDate": "12 June 2022",
+      "department": "HR",
+      "role": "HR Manager",
+      "totalLeave": 25
+    }
+  ],
+
+  "notifications": [
+    {
+      "id": 1,
+      "employeeId": "EMP-004",
+      "type": "leave",
+      "targetId": 101,
+      "message": "submitted a new leave request for 3 days.",
+      "time": "10 mins ago",
+      "status": "unread",
+      "actionStatus": null
+    },
+    {
+      "id": 2,
+      "type": "project_complete",
+      "targetId": 1,
+      "message": "The Website development project is now completed!",
+      "time": "2 hours ago",
+      "status": "unread",
+      "actionStatus": null
+    },
+    {
+      "id": 121,
+      "employeeId": "EMP-006",
+      "type": "leave",
+      "targetId": 102,
+      "message": "submitted a new leave request for 3 days.",
+      "time": "10 mins ago",
+      "status": "unread",
+      "actionStatus": null
+    },
+    {
+      "id": 252,
+      "type": "project_complete",
+      "targetId": 2,
+      "message": "The Website development project is now completed!",
+      "time": "2 hours ago",
+      "status": "unread",
+      "actionStatus": null
+    },
+    {
+      "id": 1563,
+      "employeeId": "EMP-005",
+      "type": "leave",
+      "targetId": 103,
+      "message": "submitted a new leave request for 3 days.",
+      "time": "10 mins ago",
+      "status": "unread",
+      "actionStatus": null
+    },
+    {
+      "id": 263,
+      "type": "project_complete",
+      "targetId": 3,
+      "message": "The Website development project is now completed!",
+      "time": "2 hours ago",
+      "status": "unread",
+      "actionStatus": null
+    }
+  ],
+
+  "leavesData": [
+    {
+      "id": 101,
+      "employeeId": "EMP-004",
+      "type": "Annual",
+      "startDate": "2026-02-15",
+      "endDate": "2026-02-18",
+      "duration": "3 days",
+      "reason": "Family Trip",
+      "status": "Pending"
+    },
+    {
+      "id": 102,
+      "employeeId": "EMP-005",
+      "type": "Short Permission",
+      "startDate": "2026-02-12",
+      "endDate": "2026-02-12",
+      "duration": "4 hours",
+      "reason": "Doctor appointment",
+      "status": "Pending"
+    },
+    {
+      "id": 103,
+      "employeeId": "EMP-006",
+      "type": "Sick",
+      "startDate": "2026-02-10",
+      "endDate": "2026-02-11",
+      "duration": "1 day",
+      "reason": "Flu",
+      "status": "Pending"
+    }
+  ],
+  "tasksData": [
+    {
+      "id": 1,
+      "title": "Prototyping",
+      "desc": "prototyping for mobile app design",
+      "status": "On-going",
+      "progress": 70,
+      "createdAt": "2026-02-10",
+      "memberIds": ["EMP-003", "EMP-004", "EMP-005", "EMP-006"]
+    },
+    {
+      "id": 4,
+      "title": "Prototyping",
+      "desc": "prototyping for mobile app design",
+      "status": "On-going",
+      "progress": 70,
+      "createdAt": "2026-02-10",
+      "memberIds": ["EMP-003", "EMP-004", "EMP-005", "EMP-006"]
+    },
+    {
+      "id": 5,
+      "title": "Prototyping",
+      "desc": "prototyping for mobile app design",
+      "status": "On-going",
+      "progress": 70,
+      "createdAt": "2026-02-10",
+      "memberIds": ["EMP-003", "EMP-004", "EMP-005", "EMP-006"]
+    },
+    {
+      "id": 6,
+      "title": "Prototyping",
+      "desc": "prototyping for mobile app design",
+      "status": "On-going",
+      "progress": 70,
+      "createdAt": "2026-02-10",
+      "memberIds": ["EMP-003", "EMP-004", "EMP-005", "EMP-006"]
+    },
+    {
+      "id": 7,
+      "title": "Prototyping",
+      "desc": "prototyping for mobile app design",
+      "status": "On-going",
+      "progress": 70,
+      "createdAt": "2026-02-10",
+      "memberIds": ["EMP-003", "EMP-004", "EMP-005", "EMP-006"]
+    },
+    {
+      "id": 2,
+      "title": "Animated illustration",
+      "desc": "create animation for design illustration",
+      "status": "Pending",
+      "progress": 50,
+      "createdAt": "2026-02-08",
+      "memberIds": ["EMP-005", "EMP-004"]
+    },
+    {
+      "id": 3,
+      "title": "Website development",
+      "desc": "create a website for the automotive industry",
+      "status": "Completed",
+      "progress": 100,
+      "createdAt": "2026-02-05",
+      "memberIds": ["EMP-003", "EMP-004", "EMP-006"]
+    },
+    {
+      "id": 35,
+      "title": "Website development",
+      "desc": "create a website for the automotive industry",
+      "status": "Completed",
+      "progress": 100,
+      "createdAt": "2026-02-05",
+      "memberIds": ["EMP-003", "EMP-004", "EMP-005", "EMP-006"]
+    },
+    {
+      "id": 83,
+      "title": "Website development",
+      "desc": "create a website for the automotive industry",
+      "status": "Completed",
+      "progress": 100,
+      "createdAt": "2026-02-05",
+      "memberIds": ["EMP-003", "EMP-004", "EMP-005", "EMP-006"]
+    },
+    {
+      "id": 553,
+      "title": "Website development",
+      "desc": "create a website for the automotive industry",
+      "status": "Completed",
+      "progress": 100,
+      "createdAt": "2026-02-05",
+      "memberIds": ["EMP-005", "EMP-004", "EMP-003"]
+    },
+    {
+      "id": 853,
+      "title": "Website development",
+      "desc": "create a website for the automotive industry",
+      "status": "Completed",
+      "progress": 100,
+      "createdAt": "2026-02-05",
+      "memberIds": ["EMP-005", "EMP-004", "EMP-003"]
+    },
+    {
+      "id": 223,
+      "title": "Website development",
+      "desc": "create a website for the automotive industry",
+      "status": "Completed",
+      "progress": 100,
+      "createdAt": "2026-02-05",
+      "memberIds": ["EMP-005", "EMP-004", "EMP-003"]
+    },
+    {
+      "id": 8523,
+      "title": "Website development",
+      "desc": "create a website for the automotive industry",
+      "status": "Completed",
+      "progress": 100,
+      "createdAt": "2026-02-05",
+      "memberIds": ["EMP-005", "EMP-004", "EMP-003"]
+    }
+  ],
+
+  "attendanceRecords": [
+    { "date": "2026-02-05", "employeeId": "ADM-001", "status": "On-time" },
+    { "date": "2026-02-05", "employeeId": "EMP-003", "status": "On-time" },
+    { "date": "2026-02-05", "employeeId": "EMP-006", "status": "Late" },
+    { "date": "2026-02-05", "employeeId": "EMP-004", "status": "Absent" },
+    { "date": "2026-02-05", "employeeId": "EMP-005", "status": "Absent" },
+
+    { "date": "2026-02-06", "employeeId": "ADM-001", "status": "On-time" },
+    { "date": "2026-02-06", "employeeId": "EMP-003", "status": "On-time" },
+    { "date": "2026-02-06", "employeeId": "EMP-006", "status": "Late" },
+    { "date": "2026-02-06", "employeeId": "EMP-004", "status": "Absent" },
+    { "date": "2026-02-06", "employeeId": "EMP-005", "status": "Absent" },
+
+    { "date": "2026-02-07", "employeeId": "ADM-001", "status": "On-time" },
+    { "date": "2026-02-07", "employeeId": "EMP-003", "status": "On-time" },
+    { "date": "2026-02-07", "employeeId": "EMP-006", "status": "On-time" },
+    { "date": "2026-02-07", "employeeId": "EMP-004", "status": "On-time" },
+    { "date": "2026-02-07", "employeeId": "EMP-005", "status": "On-time" },
+
+    { "date": "2026-02-08", "employeeId": "ADM-001", "status": "Absent" },
+    { "date": "2026-02-08", "employeeId": "EMP-003", "status": "Absent" },
+    { "date": "2026-02-08", "employeeId": "EMP-006", "status": "Absent" },
+    { "date": "2026-02-08", "employeeId": "EMP-004", "status": "Absent" },
+    { "date": "2026-02-08", "employeeId": "EMP-005", "status": "Absent" },
+
+    { "date": "2026-02-09", "employeeId": "ADM-001", "status": "Late" },
+    { "date": "2026-02-09", "employeeId": "EMP-003", "status": "Late" },
+    { "date": "2026-02-09", "employeeId": "EMP-006", "status": "Late" },
+    { "date": "2026-02-09", "employeeId": "EMP-004", "status": "Late" },
+    { "date": "2026-02-09", "employeeId": "EMP-005", "status": "Absent" },
+
+    { "date": "2026-02-11", "employeeId": "ADM-001", "status": "On-time" },
+    { "date": "2026-02-11", "employeeId": "EMP-003", "status": "On-time" },
+    { "date": "2026-02-11", "employeeId": "EMP-006", "status": "Late" },
+    { "date": "2026-02-11", "employeeId": "EMP-004", "status": "Absent" },
+    { "date": "2026-02-11", "employeeId": "EMP-005", "status": "Absent" },
+
+    { "date": "2026-02-12", "employeeId": "ADM-001", "status": "Absent" },
+    { "date": "2026-02-12", "employeeId": "EMP-003", "status": "Late" },
+    { "date": "2026-02-12", "employeeId": "EMP-006", "status": "Late" },
+    { "date": "2026-02-12", "employeeId": "EMP-004", "status": "Absent" },
+    { "date": "2026-02-12", "employeeId": "EMP-005", "status": "Absent" },
+
+    { "date": "2026-02-10", "employeeId": "ADM-001", "status": "On-time" },
+    { "date": "2026-02-10", "employeeId": "EMP-003", "status": "On-time" },
+    { "date": "2026-02-10", "employeeId": "EMP-006", "status": "Late" },
+    { "date": "2026-02-10", "employeeId": "EMP-004", "status": "Absent" },
+    { "date": "2026-02-10", "employeeId": "EMP-005", "status": "Absent" }
+  ],
+
+  "jobApplicants": [
+    {
+      "id": 1,
+      "name": "Ryan Henry",
+      "role": "UI/UX design",
+      "status": "Hired",
+      "appliedDate": "2025-01-10",
+      "image": "https://i.pravatar.cc/150?u=10"
+    },
+    {
+      "id": 2,
+      "name": "Isabella Chloe",
+      "role": "SEO specialist",
+      "status": "Rejected",
+      "appliedDate": "2025-01-12",
+      "image": "https://i.pravatar.cc/150?u=11"
+    },
+    {
+      "id": 3,
+      "name": "Leo Noah",
+      "role": "UI/UX Design",
+      "status": "In-review",
+      "appliedDate": "2025-02-05",
+      "image": "https://i.pravatar.cc/150?u=12"
+    },
+    {
+      "id": 4,
+      "name": "Ahmed Salem",
+      "role": "Developer",
+      "status": "In-review",
+      "appliedDate": "2025-02-10",
+      "image": "https://i.pravatar.cc/150?u=13"
+    },
+    {
+      "id": 5,
+      "name": "Ahmed Salem",
+      "role": "Developer",
+      "status": "In-review",
+      "appliedDate": "2025-02-10",
+      "image": "https://i.pravatar.cc/150?u=13"
+    },
+
+    {
+      "id": 45,
+      "name": "Ahmed Salem",
+      "role": "Developer",
+      "status": "In-review",
+      "appliedDate": "2025-02-10",
+      "image": "https://i.pravatar.cc/150?u=13"
+    },
+    {
+      "id": 44,
+      "name": "Ahmed Salem",
+      "role": "Developer",
+      "status": "In-review",
+      "appliedDate": "2025-02-10",
+      "image": "https://i.pravatar.cc/150?u=13"
+    },
+    {
+      "id": 49,
+      "name": "Ahmed Salem",
+      "role": "Developer",
+      "status": "In-review",
+      "appliedDate": "2025-02-10",
+      "image": "https://i.pravatar.cc/150?u=13"
+    }
+  ]
+}

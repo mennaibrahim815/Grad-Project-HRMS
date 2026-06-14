@@ -55,7 +55,7 @@ const ProfileDropdown = ({ isOpen, setIsOpen, profileRef }) => {
   const goToProfile = () => {
     navigate("/settings", {
       state: {
-        tab: "account",
+        tab: "profile",
       },
     });
 
