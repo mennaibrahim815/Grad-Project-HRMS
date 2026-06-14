@@ -24,7 +24,7 @@ router
     .get(getAllJobs)
     .post(
         verifyToken,
-        allowedTo(userRoles.HR),
+        allowedTo(userRoles.HR, userRoles.MANAGER),
         validate(validateJobSchema),
         createJob
     );

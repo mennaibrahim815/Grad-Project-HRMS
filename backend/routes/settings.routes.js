@@ -13,7 +13,9 @@ import { processUploadedFile } from "../Middleware/processUploads.js";
 
 const router = Router();
 
-router.route("/").get(verifyToken, allowedTo("HR"), getAllSettings);
+router
+    .route("/")
+    .get(verifyToken, allowedTo("HR", "MANAGER", "EMPLOYEE"), getAllSettings);
 
 router
     .route("/update")

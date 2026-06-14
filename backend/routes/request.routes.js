@@ -90,7 +90,7 @@ router
     .get(verifyToken, validate(validateIdParams), getRequestById)
     .patch(
         verifyToken,
-        allowedTo("EMPLOYEE"),
+        allowedTo("EMPLOYEE", "HR", "MANAGER"),
         upload.fields([{ name: "attachment", maxCount: 1 }]),
         processUploadedFile,
         setFilesToBody({ attachment: "attachment" }),
@@ -100,7 +100,7 @@ router
     )
     .delete(
         verifyToken,
-        allowedTo("EMPLOYEE"),
+        allowedTo("EMPLOYEE", "HR", "MANAGER"),
         validate(validateIdParams),
         deleteRequest
     );

@@ -103,7 +103,7 @@ router.get(
 router.get(
     "/dashboard/monthly/:id",
     verifyToken,
-    allowedTo("HR"),
+    allowedTo("HR", "MANAGER"),
     validate(monthYearQuerySchema),
     validate(validateIdParams),
     getMonthlyDashboardStats
@@ -112,7 +112,7 @@ router.get(
 router.get(
     "/dashboard/yearly/me",
     verifyToken,
-    allowedTo("HR", "EMPLOYEE"),
+    allowedTo("HR", "EMPLOYEE", "MANAGER"),
     validate(validateYearQuery),
     getYearlyPayrollChart
 );
@@ -126,7 +126,7 @@ router.get(
 router.get(
     "/dashboard/yearly/:id",
     verifyToken,
-    allowedTo("HR"),
+    allowedTo("HR", "MANAGER"),
     validate(validateYearQuery),
     validate(validateIdParams),
     getYearlyPayrollChart
