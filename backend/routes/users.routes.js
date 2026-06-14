@@ -8,6 +8,7 @@ import {
     updateUser,
     deleteUser,
     searchEmployees,
+    getAllHRs,
 } from "../controllers/user.controller.js";
 
 import {
@@ -22,6 +23,7 @@ import { setFilesToBody } from "../Middleware/setFilesToBody.js";
 const router = Router();
 
 router.route("/").get(verifyToken, allowedTo("HR", "MANAGER"), getAllUsers);
+router.route("/hrs").get(verifyToken, allowedTo("MANAGER"), getAllHRs);
 
 router
     .route("/search")

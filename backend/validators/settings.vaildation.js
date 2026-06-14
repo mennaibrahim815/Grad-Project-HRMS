@@ -16,5 +16,10 @@ export const updateSettingsSchema = z.object({
         gracePeriod: z.coerce.number().min(0).max(60).default(30),
         minutesMultiplier: z.number().min(1).max(4).default(2),
         maxDelayMinutes: z.number().min(60).default(120),
+        leaveBalance: z.object({
+            annual: z.coerce.number().default(21).max(60),
+            sick: z.coerce.number().default(30).max(60),
+            casual: z.coerce.number().default(6).max(10),
+        }),
     }),
 });
