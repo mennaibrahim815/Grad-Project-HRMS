@@ -103,6 +103,7 @@
 // };
 
 // export default EmployeeLeaveStatsHeader;
+
 import React, { useState, useEffect } from "react";
 import instance from "@/services/axios";
 import BaseCard from "@/components/UI/Card.jsx"; 
@@ -164,13 +165,13 @@ const EmployeeLeaveStatsHeader = ({ onStatsUpdated }) => {
 
   return (
     // استخدام px-6 و pt-6 لضبط الهوامش الداخلية والابتعاد عن حواف السايد بار العلوية والجانبية تلقائياً
-    <div className="w-full px-6 pt-6 space-y-6 text-left box-border">
+    <div className="w-full px-6 pt-6  mb-10 space-y-6 text-left box-border">
       
       {/* قسم العنوان والزر الحركي */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 w-full">
         <div>
-          <h2 className="text-white text-2xl font-bold tracking-tight">My Leave Balances</h2>
-          <p className="text-slate-500 text-xs mt-1">Track your remaining available leave balances for this year</p>
+          <h2 className="text-white text-2xl font-bold tracking-tight">My Leaves</h2>
+          <p className="text-slate-500 text-xs mt-1"> Apply and Manage your leaves </p>
         </div>
         
         <button

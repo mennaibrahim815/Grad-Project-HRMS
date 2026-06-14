@@ -191,18 +191,7 @@ const LeaveDetails = () => {
             Back to Requests
           </button>
 
-          {/* زرار السجل التاريخي */}
-          <button 
-            onClick={fetchEmployeeHistory}
-            className={`flex items-center gap-2 px-4 py-2 text-sm font-medium transition-all rounded-lg border shadow-lg ${
-              showHistory 
-              ? "bg-amber-500/10 text-amber-500 border-amber-500/20" 
-              : "bg-cyan-500/10 text-cyan-400 border-cyan-500/20 hover:bg-cyan-500 hover:text-white"
-            }`}
-          >
-            <History size={18} />
-            {showHistory ? "Hide History" : "Employee Leaves History"}
-          </button>
+      
         </div>
 
         {/*الكارد الأساسي للتفاصيلة) */}
@@ -302,7 +291,7 @@ const LeaveDetails = () => {
           </div>
         </div>
 
-        {/* قسم سجل الإجازات التاريخي */}
+        {/* قسم سجل الإجازات التاريخي
         {showHistory && (
           <div className="mt-6 bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-300">
             <div className="flex items-center gap-2 mb-6 border-b border-slate-800 pb-4">
@@ -354,7 +343,7 @@ const LeaveDetails = () => {
               </div>
             )}
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );

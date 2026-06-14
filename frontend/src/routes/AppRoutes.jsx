@@ -28,7 +28,10 @@ import LeaveDetails from "../HrPages/Leave/LeaveDetails/LeaveDetails";
 import Requests from "../HrPages/Requests/Requests";
 import EmployeeDashboard from "../EmployeePages/EmployeeDashboard/EmployeeDashboard";
 import Myleaves  from "../EmployeePages/Myleaves/Myleaves";
+import EmployeeLeaveDetails from "../EmployeePages/Myleaves/EmployeeLeaveDetails";
 import MyAttendance from "../EmployeePages/MyAttendance/MyAttendance";
+import MyRequests from "../EmployeePages/MyRequests/MyRequests";
+import MyTasks from "../EmployeePages/MyTasks/MyTasks";
 import Settings from "../HrPages/sett/Settings";
 
 export const router = createBrowserRouter(
@@ -77,6 +80,9 @@ export const router = createBrowserRouter(
         { path: "/my-dashboard", element: <EmployeeDashboard /> },
         { path: "/my-leaves", element:<Myleaves/>},
         { path: "/my-attendance", element:<MyAttendance/>},
+        { path: "/my-requests", element:<MyRequests/>},
+        { path: "/my-tasks", element:<MyTasks/>},
+        { path: "/my-leave-details/:id", element: <EmployeeLeaveDetails /> },
       ],
 
     },
@@ -90,6 +96,7 @@ export const router = createBrowserRouter(
         { path: "/employee/:id", element: <EmployeeDetail /> },
         { path: "/hiring/:id", element: <HiringDetail /> },
         { path: "/hiring/jobs/:id", element: <JobDetailPage /> },
+        
       
       ],
     },
