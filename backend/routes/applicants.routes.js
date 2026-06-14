@@ -32,12 +32,16 @@ import {
 // 1. مسارات الإحصائيات والبحث (محددة)
 router
     .route("/hiring-statistics")
-    .get(verifyToken, allowedTo(userRoles.HR), getHiringStatistics);
+    .get(
+        verifyToken,
+        allowedTo(userRoles.HR, userRoles.MANAGER),
+        getHiringStatistics
+    );
 router
     .route("/search")
     .get(
         verifyToken,
-        allowedTo(userRoles.HR),
+        allowedTo(userRoles.HR, userRoles.MANAGER),
         validate(searchApplicantsSchema),
         searchApplicants
     );
@@ -46,7 +50,7 @@ router
     .route("/:id/onboard")
     .post(
         verifyToken,
-        allowedTo("HR", "MANAGER"),
+        allowedTo(userRoles.HR, userRoles.MANAGER),
         upload.fields([{ name: "general[avatar]", maxCount: 1 }]),
         processUploadedFile,
         setFilesToBody({ "general[avatar]": "general.avatar" }),
@@ -71,27 +75,38 @@ router.route("/apply/:jobId").post(
 
 router
     .route("/job/:jobId")
-    .get(verifyToken, allowedTo(userRoles.HR), getApplicantsByJobId);
+    .get(
+        verifyToken,
+        allowedTo(userRoles.HR, userRoles.MANAGER),
+        getApplicantsByJobId
+    );
 
-// 4. المسارات العامة (يجب أن تكون في الآخر)
 router
     .route("/")
     .get(
         verifyToken,
-        allowedTo(userRoles.HR),
+        allowedTo(userRoles.HR, userRoles.MANAGER),
         validate(validateQueryParamsSchema),
         getAllApplicantsWithFilters
     );
 
 router
     .route("/:id")
-    .get(verifyToken, allowedTo(userRoles.HR), getApplicantById)
+    .get(
+        verifyToken,
+        allowedTo(userRoles.HR, userRoles.MANAGER),
+        getApplicantById
+    )
     .patch(
         verifyToken,
-        allowedTo(userRoles.HR),
+        allowedTo(userRoles.HR, userRoles.MANAGER),
         validate(validateUpdateApplicantSchema),
         updateApplicant
     )
-    .delete(verifyToken, allowedTo(userRoles.HR), deleteApplicant);
+    .delete(
+        verifyToken,
+        allowedTo(userRoles.HR, userRoles.MANAGER),
+        deleteApplicant
+    );
 
 export default router;

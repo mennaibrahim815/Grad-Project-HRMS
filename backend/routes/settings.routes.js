@@ -19,7 +19,7 @@ router
     .route("/update")
     .patch(
         verifyToken,
-        allowedTo("HR"),
+        allowedTo("HR", "MANAGER"),
         upload.fields([{ name: "companyLogo", maxCount: 1 }]),
         processUploadedFile,
         setFilesToBody({ companyLogo: "companyLogo" }),

@@ -109,7 +109,7 @@ router
     .route("/:id/reply")
     .patch(
         verifyToken,
-        allowedTo("HR"),
+        allowedTo("HR", "MANAGER"),
         upload.fields([{ name: "hrAttachment", maxCount: 1 }]),
         processUploadedFile,
         setFilesToBody({ hrAttachment: "hrAttachment" }),

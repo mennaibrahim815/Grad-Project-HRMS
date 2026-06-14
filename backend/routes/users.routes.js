@@ -27,7 +27,7 @@ router
     .route("/search")
     .get(
         verifyToken,
-        allowedTo("HR"),
+        allowedTo("HR", "MANAGER"),
         validate(searchEmployeesSchema),
         searchEmployees
     );
@@ -44,6 +44,6 @@ router
         validate(updateValidateUserSchema),
         updateUser
     )
-    .delete(verifyToken, allowedTo("HR"), deleteUser);
+    .delete(verifyToken, allowedTo("HR", "MANAGER"), deleteUser);
 
 export default router;

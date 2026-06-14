@@ -29,7 +29,7 @@ router
     .route("/")
     .get(
         verifyToken,
-        allowedTo("HR"),
+        allowedTo("HR", "MANAGER"),
         validate(getAllAttendanceQuerySchema),
         getAllAttandence
     );
@@ -37,10 +37,10 @@ router.get("/search", validate(dailySearchSchema), searchAttendance);
 
 router
     .route("/employee/me")
-    .get(verifyToken, allowedTo("HR", "EMPLOYEE"), getMyAttendance);
+    .get(verifyToken, allowedTo("HR", "EMPLOYEE", "MANAGER"), getMyAttendance);
 router
     .route("/employee/:id")
-    .get(verifyToken, allowedTo("HR"), getEmployeeAttendanceById);
+    .get(verifyToken, allowedTo("HR", "MANAGER"), getEmployeeAttendanceById);
 
 router.route("/check-in").post(validate(validateCheckInSchema), checkIn);
 
@@ -48,7 +48,7 @@ router
     .route("/stats/monthly/me")
     .get(
         verifyToken,
-        allowedTo("HR", "EMPLOYEE"),
+        allowedTo("HR", "EMPLOYEE", "MANAGER"),
         validate(monthlyStatsSchema),
         getMonthlyAttendanceStats
     );
@@ -57,7 +57,7 @@ router
     .route("/stats/monthly")
     .get(
         verifyToken,
-        allowedTo("HR"),
+        allowedTo("HR", "MANAGER"),
         validate(monthlyStatsSchema),
         getMonthlyAttendanceStats
     );
@@ -65,7 +65,7 @@ router
     .route("/stats/monthly/:id")
     .get(
         verifyToken,
-        allowedTo("HR"),
+        allowedTo("HR", "MANAGER"),
         validate(monthlyStatsSchema),
         validate(validateIdParams),
         getMonthlyAttendanceStats
@@ -74,7 +74,7 @@ router
     .route("/stats-six-months/me")
     .get(
         verifyToken,
-        allowedTo("HR", "EMPLOYEE"),
+        allowedTo("HR", "EMPLOYEE", "MANAGER"),
         validate(monthlyStatsSchema),
         getSixMonthsAttendanceStats
     );
@@ -83,7 +83,7 @@ router
     .route("/stats-six-months")
     .get(
         verifyToken,
-        allowedTo("HR"),
+        allowedTo("HR", "MANAGER"),
         validate(monthlyStatsSchema),
         getSixMonthsAttendanceStats
     );
@@ -92,7 +92,7 @@ router
     .route("/stats-six-months/:id")
     .get(
         verifyToken,
-        allowedTo("HR"),
+        allowedTo("HR", "MANAGER"),
         validate(monthlyStatsSchema),
         validate(validateIdParams),
         getSixMonthsAttendanceStats

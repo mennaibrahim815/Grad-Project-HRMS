@@ -15,21 +15,26 @@ router.use(verifyToken);
 router.get(
     "/my-notifications",
     verifyToken,
-    allowedTo("HR", "EMPLOYEE"),
+    allowedTo("HR", "EMPLOYEE", "MANAGER"),
     getMyNotifications
 );
 router.get(
     "/unread-count",
     verifyToken,
-    allowedTo("HR", "EMPLOYEE"),
+    allowedTo("HR", "EMPLOYEE", "MANAGER"),
     getUnreadCount
 );
 router.put(
     "/mark-all-read",
     verifyToken,
-    allowedTo("HR", "EMPLOYEE"),
+    allowedTo("HR", "EMPLOYEE", "MANAGER"),
     markAllAsRead
 );
-router.put("/:id/read", verifyToken, allowedTo("HR", "EMPLOYEE"), markAsRead);
+router.put(
+    "/:id/read",
+    verifyToken,
+    allowedTo("HR", "EMPLOYEE", "MANAGER"),
+    markAsRead
+);
 
 export default router;

@@ -141,13 +141,13 @@ router.get(
 router.get(
     "/employees/me",
     verifyToken,
-    allowedTo("HR", "EMPLOYEE"),
+    allowedTo("HR", "EMPLOYEE", "MANAGER"),
     getMyPayrollHistory
 );
 router.get(
     "/employees/:id",
     verifyToken,
-    allowedTo("HR"),
+    allowedTo("HR", "MANAGER"),
     getEmployeePayrollHistory
 );
 router.patch(
