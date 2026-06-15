@@ -1,10 +1,12 @@
 import Attendance from "../models/attendance.model.js";
 import Task from "../models/task.model.js";
+import User from "../models/user.model.js";
 import { httpResponseText } from "../utils/httpResponseText.js";
 import { asyncWraper } from "../Middleware/asyncWraper.js";
 import mongoose from "mongoose";
 import appErrors from "../utils/errors.js";
 import dayjs from "dayjs";
+import { calculateSingleEmployeePerformance } from "../utils/calculateSingleEmployeePerformance.js";
 
 export const getEmployeePerformance = asyncWraper(async (req, res, next) => {
     const employeeId = req.currentUser.userId;
@@ -14,62 +16,7 @@ export const getEmployeePerformance = asyncWraper(async (req, res, next) => {
         : dayjs().subtract(30, "day");
     const endDate = req.query.endDate ? dayjs(req.query.endDate) : dayjs();
 
-    //Attendance KPI
-    const attendanceRecords = await Attendance.find({
-        employeeId,
-        date: {
-            $gte: startDate.format("YYYY-MM-DD"),
-            $lte: endDate.format("YYYY-MM-DD"),
-        },
-    }).lean();
-
-    let attendanceScore = 100;
-    if (attendanceRecords.length > 0) {
-        const totalDays = attendanceRecords.length;
-        let earnedPoints = 0;
-
-        attendanceRecords.forEach((record) => {
-            if (record.status === "On Time") earnedPoints += 100;
-            else if (record.status === "Late") earnedPoints += 50;
-            else if (record.status === "Absent") earnedPoints += 0;
-        });
-        attendanceScore = Math.round(earnedPoints / totalDays);
-    }
-
-    //Tasks KPI
-    const tasks = await Task.find({
-        "assignedTo._id": new mongoose.Types.ObjectId(employeeId),
-        status: "Completed",
-        "general.deadline": {
-            $gte: startDate.toDate(),
-            $lte: endDate.toDate(),
-        },
-    }).lean();
-    //100
-    let taskScore = 0;
-    if (tasks.length > 0) {
-        let onTimeTasks = 0;
-
-        tasks.forEach((task) => {
-            const deadline = dayjs(task.general?.deadline);
-            const completedAt = task.completedAt
-                ? dayjs(task.completedAt)
-                : deadline;
-
-            if (
-                completedAt.isBefore(deadline) ||
-                completedAt.isSame(deadline, "day")
-            ) {
-                onTimeTasks++;
-            }
-        });
-        taskScore = Math.round((onTimeTasks / tasks.length) * 100);
-    }
-
-    //Overall Calculation
-    const overallPerformance = Math.round(
-        attendanceScore * 0.5 + taskScore * 0.5
-    );
+    const scores = await calculateSingleEmployeePerformance(employeeId, startDate, endDate);
 
     res.status(200).json({
         status: httpResponseText.SUCCESS,
@@ -79,10 +26,67 @@ export const getEmployeePerformance = asyncWraper(async (req, res, next) => {
                 to: endDate.format("YYYY-MM-DD"),
             },
             kpis: {
-                attendanceScore: attendanceScore,
-                taskScore: taskScore,
+                attendanceScore: scores.attendanceScore,
+                taskScore: scores.taskScore,
             },
-            overallPerformance: overallPerformance,
+            overallPerformance: scores.overallPerformance,
+        },
+    });
+});
+
+
+export const getAllEmployeesPerformance = asyncWraper(async (req, res, next) => {
+    const startDate = req.query.startDate ? dayjs(req.query.startDate) : dayjs().subtract(30, "day");
+    const endDate = req.query.endDate ? dayjs(req.query.endDate) : dayjs();
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
+    const skip = (page - 1) * limit;
+
+    const totalRecords = await User.countDocuments({ "general.role": "EMPLOYEE" });
+
+    const employees = await User.find({ "general.role": "EMPLOYEE" })
+        .select("general.firstName general.lastName general.email general.avatar employee.jobTitle")
+        .skip(skip)
+        .limit(limit)
+        .lean();
+
+    const performanceReport = await Promise.all(
+        employees.map(async (emp) => {
+            const scores = await calculateSingleEmployeePerformance(emp._id, startDate, endDate);
+
+            return {
+                employeeId: emp._id,
+                firstName: emp.general?.firstName,
+                lastName: emp.general?.lastName,
+                email: emp.general?.email,
+                avatar: emp.general?.avatar,
+                jobTitle: emp.employee?.jobTitle,
+                kpis: {
+                    attendanceScore: scores.attendanceScore,
+                    taskScore: scores.taskScore,
+                },
+                overallPerformance: scores.overallPerformance,
+            };
+        })
+    );
+
+    const totalPages = Math.ceil(totalRecords / (limit || 1)) || 0;
+
+    res.status(200).json({
+        status: httpResponseText.SUCCESS,
+        data: {
+            period: {
+                from: startDate.format("YYYY-MM-DD"),
+                to: endDate.format("YYYY-MM-DD"),
+            },
+            performanceReport,
+            pagination: {
+                totalRecords,
+                currentPage: page,
+                totalPages,
+                limit,
+            },
         },
     });
 });
