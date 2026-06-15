@@ -10,6 +10,7 @@ const AddJobModal = ({ isOpen, onClose }) => {
     const dispatch = useDispatch();
     const { createLoading } = useSelector((state) => state.hiring);
     const [success, setSuccess] = useState(false);
+    const [skillInput, setSkillInput] = useState("");  // ✅ كانت ناقصة
     const [formData, setFormData] = useState({
         title: "",
         description: "",
@@ -18,26 +19,52 @@ const AddJobModal = ({ isOpen, onClose }) => {
         jobType: "Full-time",
         workLocation: "On-site",
         status: "Open",
+        requiredEducationLevel: "Bachelor's",
+        requiredExperienceYears: "",
+        requiredSkills: [],
     });
     const [error, setError] = useState(null);
 
     const handleChange = (e) => {
         setError(null);
-        setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: name === "requiredExperienceYears" ? (value === "" ? "" : Number(value)) : value,
+        }));
+    };
+
+    const handleSkillKeyDown = (e) => {
+        if (e.key === "Enter" && skillInput.trim()) {
+            e.preventDefault();
+            if (!formData.requiredSkills.includes(skillInput.trim())) {
+                setFormData((prev) => ({
+                    ...prev,
+                    requiredSkills: [...prev.requiredSkills, skillInput.trim()],
+                }));
+            }
+            setSkillInput("");
+        }
+    };
+
+    const removeSkill = (skill) => {
+        setFormData((prev) => ({
+            ...prev,
+            requiredSkills: prev.requiredSkills.filter((s) => s !== skill),
+        }));
     };
 
     const handleSubmit = () => {
-        setError(null); 
+        setError(null);
         dispatch(createJob(formData))
             .unwrap()
             .then(() => setSuccess(true))
             .catch((err) => {
-                console.log("err in component:", err); 
+                console.log("err in component:", err);
 
                 let message;
 
                 if (Array.isArray(err?.message)) {
-                    // { status: "fail", message: [{field, message}] }
                     message = err.message[0]?.message || "Something went wrong.";
                 } else if (typeof err?.message === "string") {
                     message = err.message;
@@ -58,6 +85,7 @@ const AddJobModal = ({ isOpen, onClose }) => {
     const handleDone = () => {
         setSuccess(false);
         setError(null);
+        setSkillInput("");
         setFormData({
             title: "",
             description: "",
@@ -66,14 +94,15 @@ const AddJobModal = ({ isOpen, onClose }) => {
             jobType: "Full-time",
             workLocation: "On-site",
             status: "Open",
+            requiredEducationLevel: "Bachelor's",
+            requiredExperienceYears: "",
+            requiredSkills: [],
         });
         onClose();
     };
 
     return (
         <Modal open={isOpen} onClose={onClose}>
-
-
             {success ? (
                 <div className="p-6">
                     <SuccessCard
@@ -87,7 +116,7 @@ const AddJobModal = ({ isOpen, onClose }) => {
                 <>
                     <ModalHeader title="Create Job Post" onClose={onClose} />
 
-                    <div className="flex flex-col gap-4 px-6 py-5">
+                    <div className="flex flex-col gap-4 px-6 py-5 overflow-y-auto max-h-[80vh] custom-scrollbar">
                         <div>
                             <label className="text-slate-400 text-xs block mb-1.5">Job Title</label>
                             <input name="title" value={formData.title} onChange={handleChange}
@@ -107,9 +136,9 @@ const AddJobModal = ({ isOpen, onClose }) => {
                                 <label className="text-slate-400 text-xs block mb-1.5">Department</label>
                                 <select name="department" value={formData.department} onChange={handleChange}
                                     className="w-full bg-[#1e2a3a] border border-white/10 rounded-xl px-4 py-2.5 text-slate-100 text-sm outline-none cursor-pointer">
-                                    <option>UI Design</option>
-                                    <option>Social Media</option>
+                                    <option>Software Engineering</option>
                                     <option>Marketing</option>
+                                    <option>Design</option>
                                 </select>
                             </div>
                             <div>
@@ -145,12 +174,54 @@ const AddJobModal = ({ isOpen, onClose }) => {
                             </div>
                         </div>
 
+                        {/* ✅ حقلين جدد */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-slate-400 text-xs block mb-1.5">Required Education</label>
+                                <select name="requiredEducationLevel" value={formData.requiredEducationLevel} onChange={handleChange}
+                                    className="w-full bg-[#1e2a3a] border border-white/10 rounded-xl px-4 py-2.5 text-slate-100 text-sm outline-none cursor-pointer">
+                                    <option>High School</option>
+                                    <option>Bachelor's</option>
+                                    <option>Master's</option>
+                                    <option>PhD</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="text-slate-400 text-xs block mb-1.5">Years of Experience</label>
+                                <input type="number" min="0" name="requiredExperienceYears"
+                                    value={formData.requiredExperienceYears} onChange={handleChange}
+                                    placeholder="e.g. 3"
+                                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-slate-100 text-sm outline-none focus:border-blue-500/50 placeholder:text-slate-600" />
+                            </div>
+                        </div>
+
+                        {/* ✅ حقل الـ Skills */}
+                        <div>
+                            <label className="text-slate-400 text-xs block mb-1.5">Required Skills</label>
+                            <div className="flex flex-wrap gap-2 bg-white/5 border border-white/10 rounded-xl px-3 py-2 min-h-[42px] items-center">
+                                {formData.requiredSkills.map((skill) => (
+                                    <span key={skill} className="flex items-center gap-1 bg-blue-500/15 border border-blue-500/30 text-blue-400 text-xs px-3 py-1 rounded-full">
+                                        {skill}
+                                        <i className="fas fa-times text-[10px] cursor-pointer" onClick={() => removeSkill(skill)}></i>
+                                    </span>
+                                ))}
+                                <input
+                                    value={skillInput}
+                                    onChange={(e) => setSkillInput(e.target.value)}
+                                    onKeyDown={handleSkillKeyDown}
+                                    placeholder="Add skill..."
+                                    className="bg-transparent outline-none text-slate-100 text-sm flex-1 min-w-[80px] placeholder:text-slate-600"
+                                />
+                            </div>
+                            <p className="text-slate-600 text-xs mt-1">Press Enter to add a skill</p>
+                        </div>
+
                         <div>
                             <label className="text-slate-400 text-xs block mb-1.5">Status</label>
                             <div className="flex gap-3">
                                 {["Open", "Closed"].map((s) => (
                                     <label key={s} className={`flex-1 flex items-center gap-2 rounded-xl px-4 py-2.5 cursor-pointer border transition-all
-                    ${formData.status === s ? "bg-blue-500/10 border-blue-500/30" : "bg-white/3 border-white/10"}`}>
+                                        ${formData.status === s ? "bg-blue-500/10 border-blue-500/30" : "bg-white/3 border-white/10"}`}>
                                         <input type="radio" name="status" value={s}
                                             checked={formData.status === s} onChange={handleChange}
                                             className="accent-blue-500" />
@@ -159,10 +230,13 @@ const AddJobModal = ({ isOpen, onClose }) => {
                                 ))}
                             </div>
                         </div>
+
+                        {/* ✅ لون الـ error اتغير لـ #EC3A76 */}
                         {error && (
-                            <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20">
-                                <i className="fas fa-circle-exclamation text-red-400 text-sm"></i>
-                                <p className="text-red-400 text-sm">{error}</p>
+                            <div className="flex items-center gap-2 px-4 py-3 rounded-xl"
+                                style={{ background: "rgba(236,58,118,0.1)", border: "1px solid rgba(236,58,118,0.2)" }}>
+                                <i className="fas fa-circle-exclamation text-sm" style={{ color: "#EC3A76" }}></i>
+                                <p className="text-sm" style={{ color: "#EC3A76" }}>{error}</p>
                             </div>
                         )}
 

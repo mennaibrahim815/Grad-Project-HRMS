@@ -34,7 +34,7 @@ function EmployeeStep({ data, errors = {}, onChange, onBlur }) {
             <option value="software engineering" className="bg-[#1A1D24]">Software Engineering</option>
             <option value="marketing" className="bg-[#1A1D24]">Marketing</option>
             <option value="design" className="bg-[#1A1D24]">Design</option>
-            <option value="hr" className="bg-[#1A1D24]">HR</option>
+
           </select>
           {errors.department && <span className="text-xs text-[#EC3A76]">{errors.department}</span>}
         </div>

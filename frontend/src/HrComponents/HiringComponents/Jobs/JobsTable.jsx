@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Trash2, Eye, MapPin, Briefcase, Clock, Building2 } from "lucide-react";
+import { Trash2, Eye, MapPin, Briefcase, Clock, Building2, GraduationCap, CalendarDays, Tags } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 import {
@@ -131,7 +131,44 @@ const JobCard = ({ job, openMenuId, setOpenMenuId, navigate, setConfirmModal }) 
                         <MapPin size={15} style={{ color: ICON_COLOR }} className="shrink-0" />
                         <span className="truncate">{job.workLocation || "—"}</span>
                     </div>
+
+                    {/* ✅ حقلين جدد */}
+                    <div className="flex items-center gap-2 text-slate-400">
+                        <GraduationCap size={15} style={{ color: ICON_COLOR }} className="shrink-0" />
+                        <span className="truncate">{job.requiredEducationLevel || "—"}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-400">
+                        <CalendarDays size={15} style={{ color: ICON_COLOR }} className="shrink-0" />
+                        <span className="truncate">
+                            {job.requiredExperienceYears != null ? `${job.requiredExperienceYears} yrs` : "—"}
+                        </span>
+                    </div>
                 </div>
+
+                {/* ✅ Required Skills */}
+                {job.requiredSkills?.length > 0 && (
+                    <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-1.5 text-slate-500 text-xs">
+                            <Tags size={13} style={{ color: ICON_COLOR }} />
+                            <span>Required Skills</span>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5">
+                            {job.requiredSkills.slice(0, 4).map((skill) => (
+                                <span
+                                    key={skill}
+                                    className="text-xs px-2.5 py-0.5 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400"
+                                >
+                                    {skill}
+                                </span>
+                            ))}
+                            {job.requiredSkills.length > 4 && (
+                                <span className="text-xs px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-400">
+                                    +{job.requiredSkills.length - 4}
+                                </span>
+                            )}
+                        </div>
+                    </div>
+                )}
 
                 {/* Footer */}
                 <div className="pt-3 border-t border-white/5 flex items-center justify-between">
@@ -261,16 +298,14 @@ const JobsTable = () => {
             </AnimatePresence>
 
             {/* Controls */}
-            
-                <TableControls
-                    searchTerm={searchQuery}
-                    setSearchTerm={setSearchQuery}
-                    filterValue={activeFilter}
-                    setFilterValue={setActiveFilter}
-                    filterOptions={["All", "Full-time", "Part-time", "Contract", "Internship"]}
-                    setCurrentPage={() => {}}
-                />
-            
+            <TableControls
+                searchTerm={searchQuery}
+                setSearchTerm={setSearchQuery}
+                filterValue={activeFilter}
+                setFilterValue={setActiveFilter}
+                filterOptions={["All", "Full-time", "Part-time", "Contract", "Internship"]}
+                setCurrentPage={() => {}}
+            />
 
             {/* Cards Grid */}
             {jobsLoading || jobsSearchLoading ? (
@@ -304,16 +339,15 @@ const JobsTable = () => {
             )}
 
             {/* Pagination */}
-            
-                <Pagination
-                    pagination={jobsPagination}
-                    handlePageChange={handlePageChange}
-                    handleRecordsPerPageChange={(newLimit) => setRecordsPerPage(newLimit)}
-                    currentDataLength={jobsList.length}
-                    recordsPerPage={recordsPerPage}
-                    entityName="jobs"
-                />
-    
+            <Pagination
+                pagination={jobsPagination}
+                handlePageChange={handlePageChange}
+                handleRecordsPerPageChange={(newLimit) => setRecordsPerPage(newLimit)}
+                currentDataLength={jobsList.length}
+                recordsPerPage={recordsPerPage}
+                entityName="jobs"
+            />
+
         </div>
     );
 };

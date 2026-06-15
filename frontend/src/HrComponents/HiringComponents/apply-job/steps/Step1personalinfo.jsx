@@ -223,9 +223,9 @@ const Step1PersonalInfo = ({ formData, handleChange, handleBlur, errors, touched
                         onBlur={() => handleBlur("department")}
                         className={selectCls("department", errors, touched)}
                     >
-                        <option>UI Design</option>
+                        <option>Software Engineering</option>
                         <option>Marketing</option>
-                        <option>Social Media</option>
+                        <option>Design</option>
                     </select>
                     <FieldError field="department" errors={errors} touched={touched} />
                 </div>
