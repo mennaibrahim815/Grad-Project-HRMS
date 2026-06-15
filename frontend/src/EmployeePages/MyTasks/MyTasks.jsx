@@ -115,7 +115,7 @@ const MyTasks = () => {
   };
 
   return (
-    <div className="w-full min-h-screen flex flex-col gap-6 p-4 sm:p-6 box-border bg-[#0B131A]">
+    <div >
       
       {/* هيدر الإحصائيات */}
       <EmployeeTasksStatsHeader onStatsUpdated={handleStatsUpdated} />

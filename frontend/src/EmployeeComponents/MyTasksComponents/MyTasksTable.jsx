@@ -163,7 +163,7 @@ const MyTasksTable = ({
   ];
 
   return (
-    <BaseCard padding="p-0">
+    <BaseCard padding="p-0" >
       <TableControls
         searchTerm={searchTerm} 
         setSearchTerm={setSearchTerm} 

@@ -65,7 +65,7 @@ const EmployeeTasksStatsHeader = ({ onStatsUpdated }) => {
   ];
 
   return (
-    <div className="w-full flex flex-col gap-6 text-left box-border">
+    <div className="w-full flex flex-col mb-10 gap-6 text-left box-border">
       
       {/* Header text */}
       <div className="flex flex-col sm:flex-row justify-between mt-10 items-start sm:items-center gap-4 w-full">

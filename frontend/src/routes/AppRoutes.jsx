@@ -147,14 +147,13 @@ import Performance from "../HrPages/Performance/Performance";
 import LeaveRequests from "../HrPages/Leave/LeaveRequests/LeaveRequests";
 import LeaveDetails from "../HrPages/Leave/LeaveDetails/LeaveDetails";
 import Requests from "../HrPages/Requests/Requests";
+import Tasks from "../HrPages/Tasks/Tasks";
 import EmployeeDashboard from "../EmployeePages/EmployeeDashboard/EmployeeDashboard";
 import Myleaves  from "../EmployeePages/Myleaves/Myleaves";
 import EmployeeLeaveDetails from "../EmployeePages/Myleaves/EmployeeLeaveDetails";
 import MyAttendance from "../EmployeePages/MyAttendance/MyAttendance";
 import MyRequests from "../EmployeePages/MyRequests/MyRequests";
 import MyTasks from "../EmployeePages/MyTasks/MyTasks";
-// import Myleaves from "../EmployeePages/Myleaves/Myleaves";
-// import MyAttendance from "../EmployeePages/MyAttendance/MyAttendance";
 import Myparoll from "../EmployeePages/MyPayroll/Mypayroll";
 import Settings from "../HrPages/sett/Settings";
 
@@ -191,6 +190,8 @@ export const router = createBrowserRouter(
             { path: "/leave-details/:id", element: <LeaveDetails /> },
             { path: "/performance", element: <Performance /> },
             { path: "/Requests", element: <Requests /> },
+            { path: "/Tasks", element: <Tasks /> },
+
             // تابة المانجر محمية داخلياً برول المانجر بس
             { path: "/manage-hrs", element: <ProtectedRoute allowedRoles={["MANAGER"]}><ManageHRs /></ProtectedRoute> },
           ],
@@ -210,7 +211,7 @@ export const router = createBrowserRouter(
             { path: "/my-requests", element:<MyRequests/>},
             { path: "/my-tasks", element:<MyTasks/>},
             { path: "/my-leave-details/:id", element: <EmployeeLeaveDetails /> },
-            { path: "/my-payroll", element: <Mypayroll /> },
+            { path: "/my-payroll", element: <Myparoll /> },
           ],
         },
 
@@ -227,51 +228,6 @@ export const router = createBrowserRouter(
         },
       ],
     },
-
-//     // --- 🟢 Employee ---
-//     {
-//       element: (
-//         <ProtectedRoute allowedRoles={["EMPLOYEE"]}>
-//           <EmployeeLayout />
-//         </ProtectedRoute>
-//       ),
-//       children: [
-//         { path: "/my-dashboard", element: <EmployeeDashboard /> },
-//         { path: "/my-leaves", element:<Myleaves/>},
-//         { path: "/my-attendance", element:<MyAttendance/>},
-//         { path: "/my-requests", element:<MyRequests/>},
-//         { path: "/my-tasks", element:<MyTasks/>},
-//         { path: "/my-leave-details/:id", element: <EmployeeLeaveDetails /> },
-//       ],
-
-//     },
-// {
-//   element: (
-//     <ProtectedRoute allowedRoles={["EMPLOYEE"]}>
-//       <MainLayout />
-//     </ProtectedRoute>
-//   ),
-//   children: [
-//     { path: "/my-dashboard", element: <EmployeeDashboard /> },
-//     { path: "/my-leaves", element: <Myleaves /> },
-//     { path: "/my-attendance", element: <MyAttendance /> },
-//     { path: "/my-payroll", element: <Myparoll /> },
-//   ],
-// },
-
-//     // --- 🟡 Shared ---
-//     {
-//       element: <ProtectedRoute allowedRoles={["HR", "EMPLOYEE"]} />,
-//       children: [
-//         { path: "/profile", element: <EmployeeDetail /> },
-//         { path: "/settings", element: <Settings /> },
-//         { path: "/employee/:id", element: <EmployeeDetail /> },
-//         { path: "/hiring/:id", element: <HiringDetail /> },
-//         { path: "/hiring/jobs/:id", element: <JobDetailPage /> },
-        
-      
-//       ],
-//     },
 
     { path: "*", element: <Error /> },
   ],
