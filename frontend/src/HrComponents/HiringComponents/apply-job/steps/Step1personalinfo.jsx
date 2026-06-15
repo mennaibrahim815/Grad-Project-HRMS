@@ -223,9 +223,9 @@ const Step1PersonalInfo = ({ formData, handleChange, handleBlur, errors, touched
                         onBlur={() => handleBlur("department")}
                         className={selectCls("department", errors, touched)}
                     >
-                        <option>Software Engineering</option>
+                        <option>UI Design</option>
                         <option>Marketing</option>
-                        <option>Design</option>
+                        <option>Social Media</option>
                     </select>
                     <FieldError field="department" errors={errors} touched={touched} />
                 </div>
@@ -241,7 +241,7 @@ const Step1PersonalInfo = ({ formData, handleChange, handleBlur, errors, touched
                         className={selectCls("experienceLevel", errors, touched)}
                     >
                         <option>Junior</option>
-                        <option>Mid</option>
+                        <option value="Mid-Level">Mid</option>
                         <option>Senior</option>
                     </select>
                     <FieldError field="experienceLevel" errors={errors} touched={touched} />
