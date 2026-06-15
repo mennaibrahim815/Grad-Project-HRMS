@@ -8,6 +8,7 @@ import {
     getMyAndTeamTasks,
     getTaskStatistics,
     searchTasks,
+    getOngoingTasks,
 } from "../controllers/task.controller.js";
 import { verifyToken } from "../guards/verifyToken.js";
 import { validate } from "../Middleware/validate.Middelware.js";
@@ -26,6 +27,7 @@ router.route("/search").get(verifyToken, allowedTo("HR", "EMPLOYEE"), searchTask
 router.route("/my-tasks").get(verifyToken, allowedTo("EMPLOYEE"), getMyAndTeamTasks);
 
 router.route("/").get(verifyToken, allowedTo("HR"), getTasks);
+router.route("/ongoing").get(verifyToken, allowedTo("HR"), getOngoingTasks);
 router.route("/task/:id").get(verifyToken, allowedTo("HR"), getTasks);
 
 router

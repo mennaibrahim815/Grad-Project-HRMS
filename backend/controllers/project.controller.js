@@ -9,7 +9,7 @@ import mongoose from "mongoose";
 export const getAllProjects = asyncWraper(async (req, res, next) => {
     const { tag, status, priority, startDate, deadline, createdBy } = req.query;
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
+    const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
 
     const matchCondition = {};
