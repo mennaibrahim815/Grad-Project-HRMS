@@ -200,59 +200,39 @@ export const updateTask = asyncWraper(async (req, res, next) => {
 
     const task = await Task.findById(taskId);
     if (!task) {
-        const error = appErrors.create(
-            404,
-            "Task Not Found",
-            httpResponseText.FAIL
-        );
+        const error = appErrors.create(404, "Task Not Found", httpResponseText.FAIL);
         return next(error);
     }
 
     let updateData = {};
 
     if (req.currentUser.role === "EMPLOYEE") {
-        const { status, document } = req.body;
+        const { document } = req.body;
 
-        if (status) {
-            if (status === "Completed") {
-                const error = appErrors.create(
-                    403,
-                    "Employees cannot change status to Completed. This requires HR approval.",
-                    httpResponseText.FAIL
-                );
-                return next(error);
-            }
-
-            if (status === "On-going") {
-                updateData.status = "On-going";
-                await Project.findByIdAndUpdate(
-                    task.projectId,
-                    { $set: { status: "On-going" } },
-                    { runValidators: true }
-                );
-            }
+        if (!document) {
+            return next(appErrors.create(400, "Employee can only upload a document.", httpResponseText.FAIL));
         }
 
-        if (document) {
-            updateData.document = document;
-            updateData.acceptance = "waiting";
-        }
-    } else if (req.currentUser.role === "HR") {
-        const { acceptance, title, deadline, priority, assignedTo, status } =
-            req.body;
+        updateData.document = document;
+        updateData.status = "On-going";
+        updateData.acceptance = "waiting";
+
+        await Project.findByIdAndUpdate(
+            task.projectId,
+            { $set: { status: "On-going" } },
+            { returnDocument: "after",runValidators: true }
+        );
+    } 
+
+    else if (req.currentUser.role === "HR") {
+        const { acceptance, title, deadline, priority, assignedTo, status } = req.body;
 
         if (assignedTo && assignedTo.length > 0) {
             const project = await Project.findById(task.projectId);
-            const projectMemberIds = project.assignedTo.map((member) =>
-                member._id.toString()
-            );
+            const projectMemberIds = project.assignedTo.map(member => member._id.toString());
             for (const employee of assignedTo) {
                 if (!projectMemberIds.includes(employee._id.toString())) {
-                    const error = appErrors.create(
-                        400,
-                        "Employee is not assigned to this project.",
-                        httpResponseText.FAIL
-                    );
+                    const error = appErrors.create(400, "Employee is not assigned to this project.", httpResponseText.FAIL);
                     return next(error);
                 }
             }
@@ -262,11 +242,12 @@ export const updateTask = asyncWraper(async (req, res, next) => {
             if (acceptance === "accept") {
                 updateData.acceptance = "accept";
                 updateData.status = "Completed";
-                updateData.completedAt = new Date();
+                updateData.completedAt = new Date(); 
             } else if (acceptance === "reject") {
-                updateData.acceptance = "reject";
+                updateData.acceptance = "waiting";
                 updateData.status = "Pending";
-                updateData.completedAt = null;
+                updateData.document = null;
+                updateData.completedAt = null; 
             }
         }
 
@@ -274,43 +255,36 @@ export const updateTask = asyncWraper(async (req, res, next) => {
         if (deadline) updateData.deadline = new Date(deadline);
         if (priority) updateData.priority = priority;
         if (assignedTo) updateData.assignedTo = assignedTo;
+        
         if (status && !acceptance) {
             updateData.status = status;
             if (status === "Completed") updateData.completedAt = new Date();
         }
 
-        updateData.updatedBy = req.currentUser._id;
+        updateData.updatedBy = req.currentUser.userId
     }
 
     if (Object.keys(updateData).length === 0) {
-        return next(
-            appErrors.create(
-                400,
-                "No valid actions or fields provided for update",
-                httpResponseText.FAIL
-            )
-        );
+        return next(appErrors.create(400, "No valid actions or fields provided for update", httpResponseText.FAIL));
     }
-
-    const flattenedUpdateData = flatten(updateData);
+    
+    const flattenedData = flatten(updateData);
 
     const updatedTask = await Task.findByIdAndUpdate(
         taskId,
-        { $set: flattenedUpdateData },
+        { $set: flattenedData },
         { returnDocument: "after", runValidators: true }
     );
-
+    
     if (req.currentUser.role === "HR" && updateData.acceptance === "accept") {
         const allProjectTasks = await Task.find({ projectId: task.projectId });
-        const isAllCompleted = allProjectTasks.every(
-            (t) => t.status === "Completed"
-        );
+        const isAllCompleted = allProjectTasks.every((t) => t.status === "Completed");
 
         if (isAllCompleted) {
             await Project.findByIdAndUpdate(
                 task.projectId,
                 { $set: { status: "Completed" } },
-                { runValidators: true }
+                { returnDocument: "after",runValidators: true }
             );
         }
     }
@@ -368,5 +342,31 @@ export const searchTasks = asyncWraper(async (req, res, next) => {
     res.status(200).json({
         status: httpResponseText.SUCCESS,
         data: { results },
+    });
+});
+
+export const getOngoingTasks = asyncWraper(async (req, res, next) => {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const matchQuery = { status: "On-going" };
+
+    const [totalRecords, tasks] = await Promise.all([
+        Task.countDocuments(matchQuery),
+        Task.find(matchQuery).sort({ createdAt: -1 }).skip(skip).limit(limit),
+    ]);
+
+    res.status(200).json({
+        status: httpResponseText.SUCCESS,
+        data: {
+            tasks,
+            pagination: {
+                totalRecords,
+                currentPage: page,
+                totalPages: Math.ceil(totalRecords / limit),
+                limit,
+            },
+        },
     });
 });
