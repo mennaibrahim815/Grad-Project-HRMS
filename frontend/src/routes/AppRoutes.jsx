@@ -1,6 +1,127 @@
+// import { createBrowserRouter, Navigate } from "react-router-dom";
+// import MainLayout from "../layouts/MainLayout";
+// import ProtectedRoute from "./ProtectedRoute";
+// import Login from "../HrPages/auth/Login/Login";
+// import ForgotPassword from "../HrPages/auth/ForgotPassword/ForgotPassword";
+// import VerifyCode from "../HrPages/auth/VerifyCode/VerifyCode";
+// import ResetPassword from "../HrPages/auth/ResetPassword/ResetPassword";
+// import ApplyJob from "../HrPages/ApplyJob/ApplyJob";
+// import ApplyJobForm from "../HrPages/ApplyJobForm/ApplyJobForm";
+
+// import ManageHRs from "../HrPages/ManageHRs/ManageHRs";
+
+// import Splash from "../HrPages/Splash/Splash";
+// import Error from "../HrPages/error/Error";
+// import Dashboard from "../HrPages/Dashboard/Dashboard";
+// import Employees from "../HrPages/Emlpoyees/Employees";
+// import EmployeeDetail from "../HrPages/EmployeeDetail/EmployeeDetail";
+// import Project from "../HrPages/Project/Project";
+// import Payroll from "../HrPages/Payroll/PayrollDashboard/Payroll";
+// import PayrollManagment from "../HrPages/Payroll/PayrollManagement/payrollManagement";
+// import Hiring from "../HrPages/Hiring/Hiring";
+// import HiringJobs from "../HrPages/HiringJobs/HiringJobs";
+// import HiringDetail from "../HrPages/HiringDetail/HiringDetail";
+// import JobDetailPage from "../HrPages/JobDetailPage/JobDetailPage";
+// import Attendance from "../HrPages/Attendance/Attendance";
+// import Performance from "../HrPages/Performance/Performance";
+// import LeaveRequests from "../HrPages/Leave/LeaveRequests/LeaveRequests";
+// import LeaveDetails from "../HrPages/Leave/LeaveDetails/LeaveDetails";
+// import Requests from "../HrPages/Requests/Requests";
+// import EmployeeDashboard from "../EmployeePages/EmployeeDashboard/EmployeeDashboard";
+// import Myleaves from "../EmployeePages/Myleaves/Myleaves";
+// import MyAttendance from "../EmployeePages/MyAttendance/MyAttendance";
+// import Settings from "../HrPages/sett/Settings";
+
+// export const router = createBrowserRouter(
+//   [
+//     { path: "/", element: <Splash />, errorElement: <Error /> },
+//     { path: "/login", element: <Login /> },
+//     { path: "/forgot-password", element: <ForgotPassword /> },
+//     { path: "/verify", element: <VerifyCode /> },
+//     { path: "/reset-password", element: <ResetPassword /> },
+//     { path: "/apply-job", element: <ApplyJob /> },
+//     { path: "/careers/apply/:id", element: <ApplyJobForm /> },
+
+//     // --- 🔵 HR ---
+//     {
+//       element: (
+//         <ProtectedRoute allowedRoles={["HR", "MANAGER"]}>
+//           <MainLayout />
+//         </ProtectedRoute>
+//       ),
+//       children: [
+//         { path: "/dashboard", element: <Dashboard /> },
+//         { path: "/employees", element: <Employees /> },
+//         { path: "/project", element: <Project /> },
+//         { path: "/payroll/dashboard", element: <Payroll /> },
+//         { path: "/payroll/management", element: <PayrollManagment /> },
+//         { path: "/hiring", element: <Hiring /> },
+//         { path: "/hiring/jobs", element: <HiringJobs /> },
+//         { path: "/attendance", element: <Attendance /> },
+//         { path: "/leave-requests", element: <LeaveRequests /> },
+
+//         { path: "/leave-details/:id", element: <LeaveDetails /> },
+
+//         { path: "/performance", element: <Performance /> },
+//         { path: "/Requests", element: <Requests /> },
+
+        
+//         {
+//           path: "/manage-hrs",
+//           element: (
+//             <ProtectedRoute allowedRoles={["MANAGER"]}>
+//               <ManageHRs />
+//             </ProtectedRoute>
+//           ),
+//         },
+//       ],
+//     },
+
+//     // --- 🟢 Employee ---
+//     {
+//       element: (
+//         <ProtectedRoute allowedRoles={["EMPLOYEE"]}>
+//           <MainLayout />
+//         </ProtectedRoute>
+//       ),
+//       children: [
+//         { path: "/my-dashboard", element: <EmployeeDashboard /> },
+//         { path: "/my-leaves", element: <Myleaves /> },
+//         { path: "/my-attendance", element: <MyAttendance /> },
+//       ],
+//     },
+
+//     // --- 🟡 Shared ---
+//     {
+//       element: <ProtectedRoute allowedRoles={["HR", "EMPLOYEE", "MANAGER"]} />,
+//       children: [
+//         { path: "/profile", element: <EmployeeDetail /> },
+//         { path: "/settings", element: <Settings /> },
+//         { path: "/employee/:id", element: <EmployeeDetail /> },
+//         { path: "/hiring/:id", element: <HiringDetail /> },
+//         { path: "/hiring/jobs/:id", element: <JobDetailPage /> },
+//       ],
+//     },
+
+//     { path: "*", element: <Error /> },
+//   ],
+//   {
+//     future: {
+//       v7_startTransition: true,
+//       v7_relativeSplatPath: true,
+//       v7_fetcherPersist: true,
+//       v7_normalizeFormMethod: true,
+//       v7_partialHydration: true,
+//       v7_skipActionErrorRevalidation: true,
+//     },
+//   },
+// );
+
+
+
+
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
-import EmployeeLayout from "../layouts/EmployeeLayout";
 import ProtectedRoute from "./ProtectedRoute";
 import Login from "../HrPages/auth/Login/Login";
 import ForgotPassword from "../HrPages/auth/ForgotPassword/ForgotPassword";
@@ -8,7 +129,7 @@ import VerifyCode from "../HrPages/auth/VerifyCode/VerifyCode";
 import ResetPassword from "../HrPages/auth/ResetPassword/ResetPassword";
 import ApplyJob from "../HrPages/ApplyJob/ApplyJob";
 import ApplyJobForm from "../HrPages/ApplyJobForm/ApplyJobForm";
-
+import ManageHRs from "../HrPages/ManageHRs/ManageHRs";
 import Splash from "../HrPages/Splash/Splash";
 import Error from "../HrPages/error/Error";
 import Dashboard from "../HrPages/Dashboard/Dashboard";
@@ -32,6 +153,9 @@ import EmployeeLeaveDetails from "../EmployeePages/Myleaves/EmployeeLeaveDetails
 import MyAttendance from "../EmployeePages/MyAttendance/MyAttendance";
 import MyRequests from "../EmployeePages/MyRequests/MyRequests";
 import MyTasks from "../EmployeePages/MyTasks/MyTasks";
+// import Myleaves from "../EmployeePages/Myleaves/Myleaves";
+// import MyAttendance from "../EmployeePages/MyAttendance/MyAttendance";
+import Myparoll from "../EmployeePages/MyPayroll/Mypayroll";
 import Settings from "../HrPages/sett/Settings";
 
 export const router = createBrowserRouter(
@@ -44,67 +168,116 @@ export const router = createBrowserRouter(
     { path: "/apply-job", element: <ApplyJob /> },
     { path: "/careers/apply/:id", element: <ApplyJobForm /> },
 
-    // --- 🔵 HR ---
     {
-      element: (
-        <ProtectedRoute allowedRoles={["HR"]}>
-          <MainLayout />
-        </ProtectedRoute>
-      ),
+      element: <ProtectedRoute />, // حماية عامة للجلسة
       children: [
-        { path: "/dashboard", element: <Dashboard /> },
-        { path: "/employees", element: <Employees /> },
-        { path: "/project", element: <Project /> },
-        { path: "/payroll/dashboard", element: <Payroll /> },
-        { path: "/payroll/management", element: <PayrollManagment /> },
-        { path: "/hiring", element: <Hiring /> },
-        { path: "/hiring/jobs", element: <HiringJobs /> },
-        { path: "/attendance", element: <Attendance /> },
-        { path: "/leave-requests", element: <LeaveRequests /> },
+        // 🔵 موديول الإدارة (يفتح للـ HR والـ MANAGER)
+        {
+          element: (
+            <ProtectedRoute allowedRoles={["HR", "MANAGER"]}>
+              <MainLayout />
+            </ProtectedRoute>
+          ),
+          children: [
+            { path: "/dashboard", element: <Dashboard /> },
+            { path: "/employees", element: <Employees /> },
+            { path: "/project", element: <Project /> },
+            { path: "/payroll/dashboard", element: <Payroll /> },
+            { path: "/payroll/management", element: <PayrollManagment /> },
+            { path: "/hiring", element: <Hiring /> },
+            { path: "/hiring/jobs", element: <HiringJobs /> },
+            { path: "/attendance", element: <Attendance /> },
+            { path: "/leave-requests", element: <LeaveRequests /> },
+            { path: "/leave-details/:id", element: <LeaveDetails /> },
+            { path: "/performance", element: <Performance /> },
+            { path: "/Requests", element: <Requests /> },
+            // تابة المانجر محمية داخلياً برول المانجر بس
+            { path: "/manage-hrs", element: <ProtectedRoute allowedRoles={["MANAGER"]}><ManageHRs /></ProtectedRoute> },
+          ],
+        },
 
-        { path: "/leave-details/:id", element: <LeaveDetails /> },
+        // 🟢 موديول الموظف
+        {
+          element: (
+            <ProtectedRoute allowedRoles={["EMPLOYEE"]}>
+              <MainLayout />
+            </ProtectedRoute>
+          ),
+          children: [
+            { path: "/my-dashboard", element: <EmployeeDashboard /> },
+            { path: "/my-leaves", element: <Myleaves /> },
+            { path: "/my-attendance", element: <MyAttendance /> },
+            { path: "/my-requests", element:<MyRequests/>},
+            { path: "/my-tasks", element:<MyTasks/>},
+            { path: "/my-leave-details/:id", element: <EmployeeLeaveDetails /> },
+            { path: "/my-payroll", element: <Mypayroll /> },
+          ],
+        },
 
-        { path: "/performance", element: <Performance /> },
-        { path: "/Requests", element: <Requests /> },
+        // 🟡 الصفحات المشتركة
+        {
+          element: <ProtectedRoute allowedRoles={["HR", "EMPLOYEE", "MANAGER"]} />,
+          children: [
+            { path: "/profile", element: <EmployeeDetail /> },
+            { path: "/settings", element: <Settings /> },
+            { path: "/employee/:id", element: <EmployeeDetail /> },
+            { path: "/hiring/:id", element: <HiringDetail /> },
+            { path: "/hiring/jobs/:id", element: <JobDetailPage /> },
+          ],
+        },
       ],
     },
 
-    // --- 🟢 Employee ---
-    {
-      element: (
-        <ProtectedRoute allowedRoles={["EMPLOYEE"]}>
-          <EmployeeLayout />
-        </ProtectedRoute>
-      ),
-      children: [
-        { path: "/my-dashboard", element: <EmployeeDashboard /> },
-        { path: "/my-leaves", element:<Myleaves/>},
-        { path: "/my-attendance", element:<MyAttendance/>},
-        { path: "/my-requests", element:<MyRequests/>},
-        { path: "/my-tasks", element:<MyTasks/>},
-        { path: "/my-leave-details/:id", element: <EmployeeLeaveDetails /> },
-      ],
+//     // --- 🟢 Employee ---
+//     {
+//       element: (
+//         <ProtectedRoute allowedRoles={["EMPLOYEE"]}>
+//           <EmployeeLayout />
+//         </ProtectedRoute>
+//       ),
+//       children: [
+//         { path: "/my-dashboard", element: <EmployeeDashboard /> },
+//         { path: "/my-leaves", element:<Myleaves/>},
+//         { path: "/my-attendance", element:<MyAttendance/>},
+//         { path: "/my-requests", element:<MyRequests/>},
+//         { path: "/my-tasks", element:<MyTasks/>},
+//         { path: "/my-leave-details/:id", element: <EmployeeLeaveDetails /> },
+//       ],
 
-    },
+//     },
+// {
+//   element: (
+//     <ProtectedRoute allowedRoles={["EMPLOYEE"]}>
+//       <MainLayout />
+//     </ProtectedRoute>
+//   ),
+//   children: [
+//     { path: "/my-dashboard", element: <EmployeeDashboard /> },
+//     { path: "/my-leaves", element: <Myleaves /> },
+//     { path: "/my-attendance", element: <MyAttendance /> },
+//     { path: "/my-payroll", element: <Myparoll /> },
+//   ],
+// },
 
-    // --- 🟡 Shared ---
-    {
-      element: <ProtectedRoute allowedRoles={["HR", "EMPLOYEE"]} />,
-      children: [
-        { path: "/profile", element: <EmployeeDetail /> },
-        { path: "/settings", element: <Settings /> },
-        { path: "/employee/:id", element: <EmployeeDetail /> },
-        { path: "/hiring/:id", element: <HiringDetail /> },
-        { path: "/hiring/jobs/:id", element: <JobDetailPage /> },
+//     // --- 🟡 Shared ---
+//     {
+//       element: <ProtectedRoute allowedRoles={["HR", "EMPLOYEE"]} />,
+//       children: [
+//         { path: "/profile", element: <EmployeeDetail /> },
+//         { path: "/settings", element: <Settings /> },
+//         { path: "/employee/:id", element: <EmployeeDetail /> },
+//         { path: "/hiring/:id", element: <HiringDetail /> },
+//         { path: "/hiring/jobs/:id", element: <JobDetailPage /> },
         
       
-      ],
-    },
+//       ],
+//     },
 
     { path: "*", element: <Error /> },
   ],
   {
     future: {
+      
       v7_startTransition: true,
       v7_relativeSplatPath: true,
       v7_fetcherPersist: true,
@@ -112,5 +285,5 @@ export const router = createBrowserRouter(
       v7_partialHydration: true,
       v7_skipActionErrorRevalidation: true,
     },
-  },
+  }
 );

@@ -92,7 +92,9 @@ const Login = () => {
         {/* Navigation Button - Go to Hiring Page */}
 <Link
   to="/apply-job" // 👈 لو عايزة تغيّري باث صفحة الهايرينج عدلي هنا
-  className="absolute top-6 left-6 flex items-center gap-3 px-4 py-2 rounded-lg bg-[#1e293b]/80 backdrop-blur-md border border-white/1 text-white text-sm font-medium shadow-md hover:bg-[#273449] hover:shadow-blue-500/20 hover:border-none transition-all"
+  className="absolute top-8 left-6 flex items-center gap-2 px-4 py-2 rounded-xl
+                               border border-white/10 bg-white/5 hover:bg-white/10
+                               text-slate-300 text-sm font-medium transition-all"
 >
   {/* small badge like the UI */}
   <span className="w-6 h-6 flex items-center justify-center rounded-full rgba(59,130,246,0.15) text-xs font-bold">
