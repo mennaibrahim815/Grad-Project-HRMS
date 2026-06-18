@@ -4,7 +4,8 @@ import { motion, AnimatePresence } from "framer-motion";
 const ReusableCalendar = ({
   mode = "single",
   value,
-  onSave
+  onSave,
+  align = "right"
 }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -142,7 +143,7 @@ const ReusableCalendar = ({
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="fixed sm:absolute top-1/2 sm:top-full left-1/2 sm:left-auto right-auto sm:right-0 -translate-x-1/2 sm:translate-x-0 -translate-y-1/2 sm:translate-y-0 sm:mt-2 w-[calc(100vw-2rem)] sm:w-72 max-w-72 bg-[#142129] border border-gray-800 rounded-3xl p-4 z-[100] shadow-2xl max-h-[80vh] overflow-y-auto scrollbar-hide"
+            className={`fixed sm:absolute top-1/2 sm:top-full ${align === "left" ? "sm:left-0 sm:right-auto" : "sm:right-0 sm:left-auto"} left-1/2 -translate-x-1/2 sm:translate-x-0 -translate-y-1/2 sm:translate-y-0 sm:mt-2 w-[calc(100vw-2rem)] sm:w-72 max-w-72 bg-[#142129] border border-gray-800 rounded-3xl p-4 z-[999] shadow-2xl max-h-[80vh] overflow-y-auto scrollbar-hide`}
           >
             <div className="flex justify-between items-center mb-4">
               <button onClick={() => handleNavigation(-1)} className="text-gray-500 hover:text-white p-2 transition-colors">

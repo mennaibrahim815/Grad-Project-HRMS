@@ -51,16 +51,16 @@
 
 //   const getPriorityColor = (priority) => {
 //     switch (priority?.toLowerCase()) {
-//       case 'high': return 'bg-red-500/10 text-red-400 border-red-500/20';
-//       case 'medium': return 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20';
-//       default: return 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20';
+//       case 'high': return 'bg-[#DF165A]/10 text-[#EC3A76] border-[#DF165A]/20';
+//       case 'medium': return 'bg-[#F89B49]/10 text-[#F89B49] border-[#F89B49]/20';
+//       default: return 'bg-[#0293FA]/10 text-[#35AAFD] border-[#0293FA]/20';
 //     }
 //   };
 
 //   if (loading) {
 //     return (
 //       <div className="flex h-screen items-center justify-center bg-[#0f172a]">
-//         <Loader2 className="h-8 w-8 animate-spin text-cyan-500" />
+//         <Loader2 className="h-8 w-8 animate-spin text-[#00E583]" />
 //       </div>
 //     );
 //   }
@@ -69,16 +69,16 @@
 //     <div className="p-6 bg-[#0f172a] min-h-screen text-slate-100">
 //       {/* Header */}
 //       <div className="flex flex-col gap-2 mb-8">
-//         <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-//           <Clock className="text-cyan-400" /> On-going Tasks Review
+//         <h1 className="text-2xl font-bold tracking-tight text-[#121417] flex items-center gap-2">
+//           <Clock className="text-[#00E583]" /> On-going Tasks Review
 //         </h1>
-//         <p className="text-slate-400 text-sm">
+//         <p className="text-[#7E889A] text-sm">
 //           Review employee task updates and accept or reject submissions based on documentation.
 //         </p>
 //       </div>
 
 //       {error && (
-//         <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl mb-6">
+//         <div className="flex items-center gap-2 bg-[#DF165A]/10 border border-[#DF165A]/20 text-[#EC3A76] p-4 rounded-xl mb-6">
 //           <AlertCircle size={18} />
 //           <span>{error}</span>
 //         </div>
@@ -87,14 +87,14 @@
 //       {/* Task Grid */}
 //       {tasks.length === 0 ? (
 //         <div className="flex flex-col items-center justify-center p-12 border border-dashed border-slate-700 rounded-2xl bg-slate-900/20">
-//           <p className="text-slate-500 text-sm italic">No submitted tasks awaiting review at the moment.</p>
+//           <p className="text-[#7E889A] text-sm italic">No submitted tasks awaiting review at the moment.</p>
 //         </div>
 //       ) : (
 //         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 //           {tasks.map((task) => (
 //             <div 
 //               key={task._id} 
-//               className="bg-gradient-to-br from-slate-900/40 to-[#182731] border border-slate-800 rounded-2xl p-5 space-y-4 shadow-xl hover:border-slate-700/60 transition-all flex flex-col justify-between"
+//               className="bg-gradient-to-br from-slate-900/40 to-[#182731] border border-[#383D47] rounded-2xl p-5 space-y-4 shadow-xl hover:border-[#7E889A]/40 transition-all flex flex-col justify-between"
 //             >
 //               <div className="space-y-3">
 //                 {/* Header Card */}
@@ -107,16 +107,16 @@
 
 //                 {/* Deadline */}
 //                 {task.deadline && (
-//                   <div className="flex items-center gap-1.5 text-xs text-slate-400">
-//                     <Calendar size={13} className="text-slate-500" />
+//                   <div className="flex items-center gap-1.5 text-xs text-[#7E889A]">
+//                     <Calendar size={13} className="text-[#7E889A]" />
 //                     <span>Deadline: {new Date(task.deadline).toLocaleDateString()}</span>
 //                   </div>
 //                 )}
 
 //                 {/* Assigned To (Employee Info) */}
 //                 {task.assignedTo && task.assignedTo.length > 0 && (
-//                   <div className="bg-slate-800/40 border border-slate-700/30 rounded-xl p-3 space-y-2">
-//                     <span className="text-[10px] text-slate-500 uppercase tracking-wider font-bold block">Assigned Employee:</span>
+//                   <div className="bg-[#111E29] border border-[#1F2E3D] rounded-xl p-3 space-y-2">
+//                     <span className="text-[10px] text-[#7E889A] uppercase tracking-wider font-bold block">Assigned Employee:</span>
 //                     {task.assignedTo.map((emp) => {
 //                       const fullName = `${emp.general?.firstName || ""} ${emp.general?.lastName || ""}`.trim() || "Unknown Employee";
 //                       return (
@@ -129,7 +129,7 @@
 //                           />
 //                           <div className="flex flex-col">
 //                             <span className="text-xs font-semibold text-slate-200">{fullName}</span>
-//                             <span className="text-[10px] text-slate-400">{emp.employee?.jobTitle || "Developer"}</span>
+//                             <span className="text-[10px] text-[#7E889A]">{emp.employee?.jobTitle || "Developer"}</span>
 //                           </div>
 //                         </div>
 //                       );
@@ -139,12 +139,12 @@
 
 //                 {/* Document Link - بما إن الـ filter شغال، الزرار ده هيظهر دائماً بكل أمان */}
 //                 <div className="pt-2">
-//                   <span className="text-[11px] text-slate-500 block mb-1 font-medium">Submitted Deliverable:</span>
+//                   <span className="text-[11px] text-[#7E889A] block mb-1 font-medium">Submitted Deliverable:</span>
 //                   <a
 //                     href={task.document}
 //                     target="_blank"
 //                     rel="noreferrer"
-//                     className="flex items-center justify-between bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 rounded-xl p-2.5 text-xs text-cyan-400 font-medium transition-colors"
+//                     className="flex items-center justify-between bg-cyan-950/40 hover:bg-cyan-900/40 border border-cyan-500/30 rounded-xl p-2.5 text-xs text-cyan-400 font-medium transition-colors"
 //                   >
 //                     <span className="truncate max-w-[200px]">Download Attached File</span>
 //                     <Download size={14} className="flex-shrink-0" />
@@ -153,16 +153,16 @@
 //               </div>
 
 //               {/* Action Buttons */}
-//               <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-800/60 mt-4">
+//               <div className="grid grid-cols-2 gap-3 pt-4 border-t border-[#383D47]/60 mt-4">
 //                 <button
 //                   onClick={() => handleAction(task._id, "reject")}
-//                   className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border border-red-500/30 text-red-400 hover:bg-red-500/10 text-xs font-semibold transition-all"
+//                   className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl border border-[#DF165A]/40 text-[#EC3A76] hover:bg-[#EC3A76]/10 text-xs font-semibold transition-all"
 //                 >
 //                   <X size={14} /> Reject
 //                 </button>
 //                 <button
 //                   onClick={() => handleAction(task._id, "accept")}
-//                   className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-emerald-600 text-white hover:bg-emerald-500 text-xs font-semibold transition-all shadow-md shadow-emerald-900/20"
+//                   className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-[#00E583] text-[#121417] hover:bg-[#4BFFB2] text-xs font-semibold transition-all shadow-md shadow-emerald-900/20"
 //                 >
 //                   <Check size={14} /> Accept
 //                 </button>

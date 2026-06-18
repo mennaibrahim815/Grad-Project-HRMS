@@ -235,8 +235,8 @@
 
 import React, { useState, useEffect } from "react";
 import LeaveTable from "@/HrComponents/LeavePageComponents/LeaveTable";
- import LeaveStatsHeader from "@/HrComponents/LeavePageComponents/LeaveStatsHeader.jsx"; // استدعاء المكون الجديد هنا
- import instance from "@/services/axios";
+import LeaveStatsHeader from "@/HrComponents/LeavePageComponents/LeaveStatsHeader.jsx"; // استدعاء المكون الجديد هنا
+import instance from "@/services/axios";
 import LeaveYearlyChartSection from "@/HrComponents/LeavePageComponents/LeaveYearlyChartSection.jsx"; // 1. استدعاء التشارت الجديد هنا
 
 
