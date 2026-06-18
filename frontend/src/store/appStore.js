@@ -28,8 +28,10 @@ import payrollReducer from "./HrSlices/payroll/payrollSlice";
 import empAttendanceReducer from "./EmployeeSlices/attendance/empAttendanceSlice";
 import empPayrollReducer from "./EmployeeSlices/payroll/empPayrollSlice";
 
+import themeReducer from "./themeSlice";
 export const store = configureStore({
   reducer: {
+    theme: themeReducer,
     // Authentication
     auth: loginReducer,
     forgotPassword: forgotPasswordReducer,

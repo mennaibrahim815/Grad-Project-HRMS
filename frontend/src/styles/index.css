@@ -1,5 +1,6 @@
 @import "tailwindcss";
-@theme {
+
+/* @theme {
   --color-n-900: #121417;
   --color-n-800: #1B1E22;
   --color-n-700: #383D47;
@@ -25,42 +26,97 @@
   --color-primary-red-dark: #34141F;
   --color-primary-red-mid: #6B0A2B;
   --color-primary-red-light: #F598B7;
-}
+} */
 :root {
   --bg-main: #121417;
-  --bg-deep: #0b0d10;
+  --bg-deep: #0f172a;
+  --bg-card: #1e293b; /* ← ناقصة، ده slate-800 */
 
   --text-main: #fcfcfd;
   --text-muted: #7e889a;
 
-  --border-main: #58606f;
+  --border-main: rgba(51, 65, 85, 0.5);
 
-  /* accent (for subtle glow only) */
+  --card-from: rgba(255, 255, 255, 0.05);
+  --card-to: #182731;
+  --card-border: rgba(100, 116, 139, 0.3);
+
   --accent-soft: rgba(75, 255, 178, 0.1);
+  --tab-inactive-bg: rgba(51, 65, 85, 0.5);
+  --tab-inactive-text: #cbd5e1;
+  --input-bg: rgba(30, 41, 59, 0.6);
+  --border-subtle: rgba(30, 41, 59, 0.6);
+
+  /* ناقصين للـ Pagination */
+  --hover-bg: rgba(71, 85, 105, 0.5); /* slate-600/50 */
+  --dropdown-bg: #1e293b; /* slate-800 */
+  --dropdown-hover: rgba(51, 65, 85, 0.5); /* slate-700/50 */
+  --accent-cyan: #22d3ee;
+    --menu-gradient-from: #1e2a3a;
+  --menu-gradient-to: #162231;
+  --menu-border: rgba(255, 255, 255, 0.08);
+  --menu-hover: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme="light"] {
+  --bg-main: #f5f7fa;
+  --bg-deep: #eef0f4;
+  --bg-card: #ffffff;
+  --text-main: #121417;
+  --text-muted: #697386;
+  --border-main: #d1d5db;
+  --accent-soft: rgba(2, 147, 250, 0.08);
+  --card-from: rgba(255, 255, 255, 0.6);
+  --card-to: #e8f4fd;
+  --card-border: rgba(148, 163, 184, 0.4);
+  --tab-inactive-bg: #e2e8f0;
+  --tab-inactive-text: #475569;
+  --input-bg: #f1f5f9;
+  --border-subtle: #e2e8f0;
+
+  --hover-bg: #e2e8f0;
+  --dropdown-bg: #ffffff;
+  --dropdown-hover: #f1f5f9;
+  --accent-cyan: #0293fa;
+
+
+  /* ... الموجود */
+  --menu-gradient-from: #ffffff;
+  --menu-gradient-to: #f1f5f9;
+  --menu-border: rgba(15, 23, 42, 0.08);
+  --menu-hover: rgba(15, 23, 42, 0.05);
+
 }
 
 @keyframes flash-animation {
   0% {
     background-color: transparent;
   }
+
   30% {
     background-color: rgba(59, 130, 246, 0.15);
     border-color: #3b82f6;
     box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
     transform: scale(1.02);
   }
+
   100% {
     background-color: transparent;
   }
 }
-html, body, #root {
-  background-color: #0f172a; /* لون slate-900 */
+
+html,
+body,
+#root {
+  background-color: var(--bg-deep);
+  /* لون slate-900 */
   margin: 0;
   padding: 0;
   min-height: 100vh;
   /* بيمنع ظهور اللون الأبيض في السكرول الحاد */
-  overscroll-behavior-y: none; 
+  overscroll-behavior-y: none;
 }
+
 .flash-highlight {
   animation: flash-animation 1.5s ease-in-out infinite;
   z-index: 10;
@@ -70,6 +126,7 @@ html, body, #root {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -85,7 +142,8 @@ html, body, #root {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(59, 130, 246, 0.5); /* لون أزرق شفاف */
+  background: rgba(59, 130, 246, 0.5);
+  /* لون أزرق شفاف */
   border-radius: 10px;
 }
 
