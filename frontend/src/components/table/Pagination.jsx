@@ -17,31 +17,30 @@ const ChevronDown = () => (
     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
   </svg>
 )
+
 const Pagination = ({
-  pagination, 
+  pagination,
   handlePageChange,
   handleRecordsPerPageChange,
-  currentDataLength ,
+  currentDataLength,
   entityName = "records"
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
 
- 
- const { 
-  currentPage = 1, 
-  totalPages = 1, 
-  totalRecords = 0, 
-  limit = 5,
-} = pagination || {};
-
+  const {
+    currentPage = 1,
+    totalPages = 1,
+    totalRecords = 0,
+    limit = 5,
+  } = pagination || {};
 
   return (
-    <div className="p-4 md:p-6 border-t border-slate-700/50">
+    <div className="p-4 md:p-6 border-t" style={{ borderColor: 'var(--border-main)' }}>
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        
+
         {/* Showing info: */}
-        <p className="text-sm text-slate-400">
-          Showing: <span className="text-cyan-400 font-medium">{currentDataLength}</span> of {totalRecords} {entityName}
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+          Showing: <span style={{ color: 'var(--accent-cyan)' }} className="font-medium">{currentDataLength}</span> of {totalRecords} {entityName}
         </p>
 
         {/* Page numbers */}
@@ -49,12 +48,12 @@ const Pagination = ({
           <button
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
-            className="p-2 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-600/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            style={{ background: 'var(--tab-inactive-bg)', color: 'var(--text-muted)' }}
+            className="p-2 rounded-lg hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             <ChevronLeft />
           </button>
 
-        
           {Array.from({ length: Math.min(3, totalPages) }, (_, i) => {
             let pageNum;
             if (totalPages <= 3) {
@@ -66,15 +65,20 @@ const Pagination = ({
             } else {
               pageNum = currentPage - 1 + i;
             }
-            
+
             return (
               <button
                 key={pageNum}
                 onClick={() => handlePageChange(pageNum)}
-                className={`w-8 h-8 rounded-lg text-sm font-medium transition-all ${
-                  currentPage === pageNum
-                    ? 'bg-[#0095ff] text-white shadow-lg shadow-cyan-500/30'
-                    : 'bg-slate-700/50 text-slate-400 hover:bg-slate-600/50'
+                style={currentPage === pageNum ? {
+                  background: '#0095ff',
+                  color: '#ffffff',
+                } : {
+                  background: 'var(--tab-inactive-bg)',
+                  color: 'var(--text-muted)',
+                }}
+                className={`w-8 h-8 rounded-lg text-sm font-medium transition-all hover:opacity-80 ${
+                  currentPage === pageNum ? 'shadow-lg shadow-cyan-500/30' : ''
                 }`}
               >
                 {pageNum}
@@ -85,7 +89,8 @@ const Pagination = ({
           <button
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages || totalPages === 0}
-            className="p-2 rounded-lg bg-slate-700/50 text-slate-400 hover:bg-slate-600/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+            style={{ background: 'var(--tab-inactive-bg)', color: 'var(--text-muted)' }}
+            className="p-2 rounded-lg hover:opacity-80 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
           >
             <ChevronRight />
           </button>
@@ -93,29 +98,39 @@ const Pagination = ({
 
         {/* Records per page */}
         <div className="flex items-center gap-3">
-          
-          <span className="text-sm text-slate-400">Show {limit} records per page</span>
+
+          <span className="text-sm" style={{ color: 'var(--text-muted)' }}>Show {limit} records per page</span>
           <div className="relative">
             <button
               onClick={() => setShowDropdown(!showDropdown)}
-              className="flex items-center gap-2 px-3 py-1.5 bg-slate-700/50 border border-slate-600/50 rounded-lg text-sm text-slate-300 hover:bg-slate-600/50 transition-all"
+              style={{
+                background: 'var(--tab-inactive-bg)',
+                borderColor: 'var(--border-main)',
+                color: 'var(--tab-inactive-text)',
+              }}
+              className="flex items-center gap-2 px-3 py-1.5 border rounded-lg text-sm hover:opacity-80 transition-all"
             >
               {limit}
               <ChevronDown />
             </button>
-            
+
             {showDropdown && (
-              <div className="absolute bottom-full mb-2 right-0 bg-slate-800 border border-slate-600/50 rounded-lg shadow-xl overflow-hidden z-20">
+              <div
+                style={{ background: 'var(--dropdown-bg)', borderColor: 'var(--border-main)' }}
+                className="absolute bottom-full mb-2 right-0 border rounded-lg shadow-xl overflow-hidden z-20"
+              >
                 {[5, 10, 20, 50].map(value => (
                   <button
                     key={value}
                     onClick={() => {
                       handleRecordsPerPageChange(value);
-                      setShowDropdown(false); // قفل الدروب داون بعد الاختيار
+                      setShowDropdown(false);
                     }}
-                    className={`w-full px-4 py-2 text-sm text-left hover:bg-slate-700/50 transition-colors ${
-                      limit === value ? 'text-cyan-400 bg-slate-700/30' : 'text-slate-300'
-                    }`}
+                    style={{
+                      color: limit === value ? 'var(--accent-cyan)' : 'var(--tab-inactive-text)',
+                      background: limit === value ? 'var(--dropdown-hover)' : 'transparent',
+                    }}
+                    className="w-full px-4 py-2 text-sm text-left transition-colors hover:opacity-80"
                   >
                     {value}
                   </button>
@@ -128,4 +143,5 @@ const Pagination = ({
     </div>
   );
 };
+
 export default Pagination;

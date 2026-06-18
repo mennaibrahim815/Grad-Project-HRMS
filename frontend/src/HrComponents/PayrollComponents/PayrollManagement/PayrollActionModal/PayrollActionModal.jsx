@@ -6,6 +6,7 @@ import {
     CreditCard,
     X,
     Check,
+    Info,
     AlertTriangle,
     Loader2,
     CheckCircle2,
@@ -22,74 +23,77 @@ import {
 } from "../../../../store/HrSlices/payroll/payrollSlice";
 
 // ─── Per-action config ────────────────────────────────────────────────────────
-// Colors reference your palette:
-//   Draft  → Blue  500 #0293FA / Blue  900 #013256
-//   Approve→ Orange 600 #F68018 / Orange 900 #673204
-//   Pay    → Green 500 #4BFFB2 / Green 900 #00331E
-
 const ACTION_CONFIGS = {
     draft: {
         Icon: FileText,
-        title: "Generate payroll draft",
+        actionLabel: "Generate draft",
+        title: "Payroll draft",
         description:
-            "This will calculate net salaries for all active employees based on attendance, delays, and approved leaves.",
+            "Calculates net salaries for all active employees based on attendance, delays, and approved leaves.",
         warning:
-            "If a draft already exists for this month, the system will return a message — no duplicate will be created.",
+            "If a draft already exists for this month, the system returns a message — no duplicate will be created.",
+        WarningIcon: Info,
         confirmText: "Generate draft",
         thunk: generateDraft,
-        // icon wrapper
-        iconWrapCls: "bg-[#013256]",
-        iconColor: "#62BDFE",
+        // pill
+        pillCls: "bg-[#0E2A45] border border-[#1A4870] text-[#62BDFE]",
+        // warning strip
+        warnCls: "bg-[#0E2A45] border border-[#1A4870] text-[#62BDFE]",
         // confirm button
-        confirmCls: "bg-[#0293FA] text-[#121417] hover:bg-[#35AAFD]",
+        confirmCls: "bg-[#0293FA] text-[#0D1117] hover:bg-[#35AAFD]",
         // result
         successTitle: "Draft generated successfully",
         errorTitle: "Could not generate draft",
     },
     approve: {
         Icon: CircleCheck,
+        actionLabel: "Approve",
         title: "Approve payroll",
         description:
-            "This will approve all draft payrolls and mark attendance records as processed.",
+            "Approves all draft payrolls and marks attendance records as processed.",
         warning:
-            "Approval cannot be executed before the cutoff day. This action cannot be undone.",
+            "Cannot be executed before the cutoff day. This action cannot be undone.",
+        WarningIcon: AlertTriangle,
         confirmText: "Approve",
         thunk: approvePayroll,
-        iconWrapCls: "bg-[#673204]",
-        iconColor: "#FBCCA2",
-        confirmCls: "bg-[#F68018] text-[#FCFCFD] hover:bg-[#FAB97F]",
+        pillCls: "bg-[#3A1E06] border border-[#6B3710] text-[#F89B49]",
+        warnCls: "bg-[#3A1E06] border border-[#6B3710] text-[#F89B49]",
+        confirmCls: "bg-[#F89B49] text-[#0D1117] hover:bg-[#FAB97F]",
         successTitle: "Payroll approved",
         errorTitle: "Approval failed",
     },
     pay: {
         Icon: CreditCard,
+        actionLabel: "Pay all",
         title: "Bulk pay employees",
         description:
-            'This will mark all "Pending" payroll records as Paid for the selected month.',
+            'Marks all "Pending" payroll records as Paid for the selected month.',
         warning:
             "Only payrolls with status Pending will be processed. Already paid records are skipped.",
+        WarningIcon: Info,
         confirmText: "Pay all",
         thunk: bulkPayPayroll,
-        iconWrapCls: "bg-[#00331E]",
-        iconColor: "#A8FFDA",
-        confirmCls: "bg-[#4BFFB2] text-[#121417] hover:bg-[#80FFC8]",
+        pillCls: "bg-[#0A2918] border border-[#144D2E] text-[#4BFFB2]",
+        warnCls: "bg-[#0A2918] border border-[#144D2E] text-[#4BFFB2]",
+        confirmCls: "bg-[#4BFFB2] text-[#0D1117] hover:bg-[#80FFC8]",
         successTitle: "Payment processed",
         errorTitle: "Payment failed",
     },
     singlePay: {
         Icon: CreditCard,
-        title: "Process employee payment",
+        actionLabel: "Confirm payment",
+        title: "Process payment",
         description: "You are about to mark this specific employee's payroll as Paid.",
-        warning: "This action will update the status to 'Paid' and cannot be reversed easily.",
-        confirmText: "Confirm Payment",
-        thunk: paySinglePayroll, // الأكشن الجديد
-        iconWrapCls: "bg-[#00331E]",
-        iconColor: "#A8FFDA",
-        confirmCls: "bg-[#4BFFB2] text-[#121417] hover:bg-[#80FFC8]",
+        warning: "This will update the status to 'Paid' and cannot be reversed easily.",
+        WarningIcon: AlertTriangle,
+        confirmText: "Confirm payment",
+        thunk: paySinglePayroll,
+        pillCls: "bg-[#0A2918] border border-[#144D2E] text-[#4BFFB2]",
+        warnCls: "bg-[#0A2918] border border-[#144D2E] text-[#4BFFB2]",
+        confirmCls: "bg-[#4BFFB2] text-[#0D1117] hover:bg-[#80FFC8]",
         successTitle: "Payment successful",
         errorTitle: "Payment failed",
     },
-
 };
 
 function monthLabel(month, year) {
@@ -100,24 +104,13 @@ function monthLabel(month, year) {
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
-/**
- * PayrollActionModal
- *
- * @param {("draft"|"approve"|"pay")} action
- * @param {() => void} onClose
- *
- * Reads month & year from Redux — no prop drilling needed.
- * After a successful action, auto-dispatches fetchAllPayrolls.
- */
 export function PayrollActionModal({ action, onClose, targetId }) {
     const dispatch = useDispatch();
-
 
     const { managementSelectedMonth, actionState } = useSelector(
         (state) => state.payroll
     );
 
-    // managementSelectedMonth stored as "YYYY-MM"
     const [yearStr, monthStr] = managementSelectedMonth.split("-");
     const month = parseInt(monthStr, 10);
     const year = parseInt(yearStr, 10);
@@ -125,17 +118,13 @@ export function PayrollActionModal({ action, onClose, targetId }) {
     const config = ACTION_CONFIGS[action];
 
     const isLoading = actionState.loading;
-    const result = actionState.result; // null | { ok: bool, message: string, data: any }
+    const result = actionState.result;
     const phase = isLoading ? "loading" : result ? "result" : "confirm";
 
-    // Clear result on unmount so next open is always fresh
     useEffect(() => {
-        return () => {
-            dispatch(clearActionResult());
-        };
+        return () => { dispatch(clearActionResult()); };
     }, [dispatch]);
 
-    // After success → refresh table
     useEffect(() => {
         if (result?.ok) {
             dispatch(fetchAllPayrolls({ month, year }));
@@ -144,80 +133,83 @@ export function PayrollActionModal({ action, onClose, targetId }) {
 
     if (!config) return null;
 
-    const { Icon } = config;
+    const { Icon, WarningIcon } = config;
+
     const handleConfirm = () => {
         if (action === "singlePay") {
-
-            dispatch(config.thunk({
-                id: targetId,
-                month,
-                year
-            }));
+            dispatch(config.thunk({ id: targetId, month, year }));
         } else {
-
             dispatch(config.thunk({ month, year }));
         }
     };
+
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#121417]/75 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#0D1117]/80 backdrop-blur-sm"
             onClick={(e) => e.target === e.currentTarget && onClose()}
         >
             <BaseCard
                 padding="p-0"
-                className="w-[400px] max-w-[calc(100vw-2rem)] overflow-hidden"
+                className="w-[400px] max-w-[calc(100vw-2rem)] overflow-hidden bg-[#161B22] border border-[#30363D] rounded-2xl"
             >
-
                 {/* ── Header ── */}
-                <div className="flex items-center justify-between px-5 py-4 border-b border-[#383D47]">
-                    <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${config.iconWrapCls}`}>
-                            <Icon size={18} color={config.iconColor} />
-                        </div>
+                <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#30363D]">
+                    <div className="flex items-center gap-2.5">
+                        {/* Action pill — icon + label */}
+                        <span
+                            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.pillCls}`}
+                        >
+                            <Icon size={12} />
+                            {config.actionLabel}
+                        </span>
+                        {/* Title + month */}
                         <div>
-                            <p className="text-sm font-medium text-[#FCFCFD] m-0">{config.title}</p>
-                            <p className="text-xs text-[#697386] mt-0.5 m-0">{monthLabel(month, year)}</p>
+                            <p className="text-[13px] font-medium text-[#E6EDF3] m-0 leading-none">
+                                {config.title}
+                            </p>
+                            <p className="text-[11px] text-[#5C6370] mt-0.5 m-0 leading-none">
+                                {monthLabel(month, year)}
+                            </p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
                         aria-label="Close modal"
-                        className="flex items-center justify-center w-8 h-8 rounded-lg border border-[#383D47] text-[#A1A7B5] hover:bg-[#383D47] transition-colors cursor-pointer bg-transparent"
+                        className="flex items-center justify-center w-7 h-7 rounded-lg border border-[#30363D] text-[#5C6370] hover:bg-[#30363D] hover:text-[#8B949E] transition-colors cursor-pointer bg-transparent"
                     >
-                        <X size={15} />
+                        <X size={13} />
                     </button>
                 </div>
 
                 {/* ── Confirm phase ── */}
                 {phase === "confirm" && (
                     <>
-                        <div className="px-5 py-4 space-y-3">
-                            <p className="text-sm text-[#A1A7B5] leading-relaxed m-0">
+                        <div className="px-4 pt-3.5 pb-0 space-y-2.5">
+                            <p className="text-[12.5px] text-[#8B949E] leading-relaxed m-0">
                                 {config.description}
                             </p>
-                            <div className="flex gap-2 rounded-xl border border-[#984A06] bg-[#673204] px-3 py-2.5">
-                                <AlertTriangle
-                                    size={15}
-                                    color="#F68018"
-                                    className="flex-shrink-0 mt-0.5"
-                                />
-                                <p className="text-xs text-[#FBCCA2] leading-relaxed m-0">
+                            {/* Inline warning strip */}
+                            <div
+                                className={`flex items-start gap-2 px-2.5 py-2 rounded-lg ${config.warnCls}`}
+                            >
+                                <WarningIcon size={13} className="flex-shrink-0 mt-0.5" />
+                                <p className="text-[11.5px] leading-snug m-0">
                                     {config.warning}
                                 </p>
                             </div>
                         </div>
-                        <div className="flex justify-end gap-2 px-5 py-3 border-t border-[#383D47]">
+                        <div className="flex justify-end gap-2 px-4 py-3 border-t border-[#30363D] mt-3.5">
                             <button
                                 onClick={onClose}
-                                className="px-4 py-2 rounded-lg text-sm border border-[#383D47] text-[#A1A7B5] bg-transparent hover:bg-[#383D47] transition-colors cursor-pointer"
+                                className="px-3.5 py-1.5 rounded-lg text-[12.5px] border border-[#30363D] text-[#8B949E] bg-transparent hover:bg-[#30363D] transition-colors cursor-pointer"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleConfirm}
-                                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer border-0 ${config.confirmCls}`}
+                                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[12.5px] font-medium transition-colors cursor-pointer border-0 ${config.confirmCls}`}
                             >
-                                <Check size={14} />
+                                <Check size={13} />
                                 {config.confirmText}
                             </button>
                         </div>
@@ -227,8 +219,8 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                 {/* ── Loading phase ── */}
                 {phase === "loading" && (
                     <div className="flex flex-col items-center justify-center py-10 gap-3">
-                        <Loader2 size={26} color="#A1A7B5" className="animate-spin" />
-                        <p className="text-sm text-[#697386] m-0">Processing request…</p>
+                        <Loader2 size={22} color="#5C6370" className="animate-spin" />
+                        <p className="text-[12.5px] text-[#5C6370] m-0">Processing request…</p>
                     </div>
                 )}
 
@@ -236,41 +228,44 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                 {phase === "result" && result && (
                     <>
                         <div
-                            className={`flex gap-3 px-5 py-4 border-y ${result.ok
-                                ? "bg-[#00331E] border-[#00522F]"
-                                : "bg-[#34141F] border-[#6B0A2B]"
-                                }`}
+                            className={`flex gap-3 px-4 py-3.5 border-y ${
+                                result.ok
+                                    ? "bg-[#0A2918] border-[#144D2E]"
+                                    : "bg-[#1E0A12] border-[#4D1428]"
+                            }`}
                         >
                             <div
-                                className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${result.ok ? "bg-[#00522F]" : "bg-[#6B0A2B]"
-                                    }`}
+                                className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${
+                                    result.ok ? "bg-[#144D2E]" : "bg-[#4D1428]"
+                                }`}
                             >
                                 {result.ok ? (
-                                    <CheckCircle2 size={18} color="#4BFFB2" />
+                                    <CheckCircle2 size={16} color="#4BFFB2" />
                                 ) : (
-                                    <XCircle size={18} color="#EC3A76" />
+                                    <XCircle size={16} color="#EC3A76" />
                                 )}
                             </div>
                             <div>
                                 <p
-                                    className={`text-sm font-medium m-0 mb-1 ${result.ok ? "text-[#A8FFDA]" : "text-[#F598B7]"
-                                        }`}
+                                    className={`text-[13px] font-medium m-0 mb-1 ${
+                                        result.ok ? "text-[#A8FFDA]" : "text-[#F598B7]"
+                                    }`}
                                 >
                                     {result.ok ? config.successTitle : config.errorTitle}
                                 </p>
-                                {/* Backend message shown as-is */}
                                 <p
-                                    className={`text-xs leading-relaxed m-0 ${result.ok ? "text-[#4BFFB2]" : "text-[#EC3A76]"
-                                        } opacity-85`}
+                                    className={`text-[11.5px] leading-relaxed m-0 ${
+                                        result.ok ? "text-[#4BFFB2]" : "text-[#EC3A76]"
+                                    } opacity-80`}
                                 >
                                     {result.message}
                                 </p>
                             </div>
                         </div>
-                        <div className="flex justify-end px-5 py-3">
+                        <div className="flex justify-end px-4 py-3">
                             <button
                                 onClick={onClose}
-                                className="px-5 py-2 rounded-lg text-sm border border-[#383D47] text-[#A1A7B5] bg-transparent hover:bg-[#383D47] transition-colors cursor-pointer"
+                                className="px-4 py-1.5 rounded-lg text-[12.5px] border border-[#30363D] text-[#8B949E] bg-transparent hover:bg-[#30363D] transition-colors cursor-pointer"
                             >
                                 Close
                             </button>
