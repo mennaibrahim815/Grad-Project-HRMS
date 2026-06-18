@@ -69,7 +69,7 @@ const HiringProgressBar = ({ status }) => {
       {/* Rejected badge */}
       {status === "Rejected" && (
         <div className="mt-3 flex justify-center">
-          <span className="px-3 py-1 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs">
+          <span className="px-3 py-1 rounded-full bg-red-500/10 border text-[#EC3A76] bg-[#EC3A76]/20 text-xs">
             Application Rejected
           </span>
         </div>

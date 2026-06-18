@@ -15,6 +15,8 @@ const CandidateProfileCard = ({ applicant, loading }) => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
+  const [rejectModal, setRejectModal] = useState(false);
+  const [rejectionReason, setRejectionReason] = useState("");
   const btnRef = useRef(null);
   const menuRef = useRef(null);
 
@@ -30,6 +32,7 @@ const CandidateProfileCard = ({ applicant, loading }) => {
     });
     setOpen((prev) => !prev);
   };
+
   useEffect(() => {
     const close = (e) => {
       if (
@@ -44,9 +47,18 @@ const CandidateProfileCard = ({ applicant, loading }) => {
   }, []);
 
   const handleStatusChange = (newStatus) => {
-    console.log("clicked", newStatus, _id);
-    dispatch(updateApplicantStatus({ id: _id, status: newStatus }));
     setOpen(false);
+    if (newStatus === "Rejected") {
+      setRejectModal(true);
+      return;
+    }
+    dispatch(updateApplicantStatus({ id: _id, status: newStatus }));
+  };
+
+  const handleConfirmReject = () => {
+    dispatch(updateApplicantStatus({ id: _id, status: "Rejected", rejectionReason }));
+    setRejectModal(false);
+    setRejectionReason("");
   };
 
   if (loading) {
@@ -58,63 +70,111 @@ const CandidateProfileCard = ({ applicant, loading }) => {
   }
 
   return (
-    <BaseCard className="flex flex-col items-center text-center gap-4">
-      <img
-        src={personalInfo?.avatar}
-        alt={fullName}
-        className="w-20 h-20 rounded-full object-cover ring-2 ring-blue-500/30"
-      />
+    <>
+      <BaseCard className="flex flex-col items-center text-center gap-4">
+        <img
+          src={personalInfo?.avatar}
+          alt={fullName}
+          className="w-20 h-20 rounded-full object-cover ring-2 ring-blue-500/30"
+        />
 
-      <div>
-        <p className="text-white font-semibold text-lg">{fullName || "—"}</p>
-        <p className="text-slate-400 text-sm mt-1">{personalInfo?.department || "—"}</p>
-      </div>
+        <div>
+          <p className="text-white font-semibold text-lg">{fullName || "—"}</p>
+          <p className="text-slate-400 text-sm mt-1">{personalInfo?.department || "—"}</p>
+        </div>
 
-      {options.length > 0 ? (
-        <>
-          <button
-            ref={btnRef}
-            onClick={handleOpen}
-            className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 text-slate-200 text-sm transition-all"
-          >
-            {status}
-            <i className={`fas fa-chevron-down text-xs transition-transform duration-200 ${open ? "rotate-180" : ""}`}></i>
-          </button>
-
-          {open && createPortal(
-            <div
-              ref={menuRef}
-              style={{
-                position: "absolute",
-                top: pos.top,
-                left: pos.left,
-                transform: "translateX(-50%)",
-                zIndex: 9999,
-              }}
-              className="bg-[#1e2a3a] border border-white/10 rounded-xl overflow-hidden shadow-2xl min-w-[160px]"
+        {options.length > 0 ? (
+          <>
+            <button
+              ref={btnRef}
+              onClick={handleOpen}
+              className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 text-slate-200 text-sm transition-all"
             >
-              {options.map((opt) => (
-                <button
-                  key={opt}
-                  onClick={() => handleStatusChange(opt)}
-                  className="w-full px-4 py-2.5 text-sm text-slate-300 hover:bg-white/10 transition-all text-left"
-                >
-                  {opt}
-                </button>
-              ))}
-            </div>,
-            document.body
-          )}
-        </>
-      ) : (
-        <span className={`px-4 py-1.5 rounded-full text-xs font-medium border
-          ${status === "Hired" ? 'bg-emerald-500/15 text-emerald-400 border-emerald-400/40' : ""}
-          ${status === "Rejected" ? 'text-red-400 bg-red-500/20 rounded-full' : ""}
-        `}>
-          {status}
-        </span>
+              {status}
+              <i className={`fas fa-chevron-down text-xs transition-transform duration-200 ${open ? "rotate-180" : ""}`}></i>
+            </button>
+
+            {open && createPortal(
+              <div
+                ref={menuRef}
+                style={{
+                  position: "absolute",
+                  top: pos.top,
+                  left: pos.left,
+                  transform: "translateX(-50%)",
+                  zIndex: 9999,
+                }}
+                className="bg-[#1e2a3a] border border-white/10 rounded-xl overflow-hidden shadow-2xl min-w-[160px]"
+              >
+                {options.map((opt) => (
+                  <button
+                    key={opt}
+                    onClick={() => handleStatusChange(opt)}
+                    className={`w-full px-4 py-2.5 text-sm transition-all text-left hover:bg-white/10
+                      ${opt === "Rejected" ? "text-[#EC3A76]" : "text-slate-300"}`}
+                  >
+                    {opt}
+                  </button>
+                ))}
+              </div>,
+              document.body
+            )}
+          </>
+        ) : (
+          <span className={`px-4 py-1.5 rounded-full text-xs font-medium border
+            ${status === "Hired" ? "bg-emerald-500/15 text-emerald-400 border-emerald-400/40" : ""}
+            ${status === "Rejected" ? "text-[#EC3A76] bg-[#EC3A76]/20 border-[#EC3A76]/20" : ""}
+          `}>
+            {status}
+          </span>
+        )}
+      </BaseCard>
+
+      {/* ── Rejection Reason Modal ── */}
+      {rejectModal && createPortal(
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] border border-gray-800/50 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+
+            {/* Icon */}
+            <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#EC3A76]/15 mx-auto mb-4">
+              <i className="fas fa-circle-xmark text-[#EC3A76] text-xl" />
+            </div>
+
+            <h3 className="text-white text-center font-semibold text-lg mb-1">Reject Applicant</h3>
+            <p className="text-slate-400 text-center text-sm mb-4">
+              Please provide a reason for rejection to notify the applicant.
+            </p>
+
+            <textarea
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder="e.g. We are looking for someone with more experience..."
+              rows={3}
+              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-slate-100 text-sm outline-none focus:border-[#EC3A76]/50 placeholder:text-slate-600 resize-none mb-4 transition-all"
+            />
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setRejectModal(false); setRejectionReason(""); }}
+                className="flex-1 py-2.5 rounded-xl bg-[#58606F]/20 hover:bg-[#58606F]/30 text-[#58606F] text-sm font-medium transition-all"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirmReject}
+                disabled={!rejectionReason.trim()}
+                className="flex-1 py-2.5 rounded-xl text-sm font-medium transition-all disabled:opacity-40"
+                style={{ background: "rgba(236,58,118,0.15)", color: "#EC3A76", border: "1px solid rgba(236,58,118,0.3)" }}
+              >
+                Confirm Reject
+              </button>
+            </div>
+
+          </div>
+        </div>,
+        document.body
       )}
-    </BaseCard>
+    </>
   );
 };
 
