@@ -19,7 +19,14 @@ const Sidebar = () => {
     { name: "Dashboard", icon: "fas fa-th-large", path: "/dashboard" },
     { name: "Employees", icon: "fas fa-users", path: "/employees" },
     { name: "Project", icon: "fas fa-project-diagram", path: "/project" },
-    { name: "Tasks", icon: "fas fa-check-circle", path: "/Tasks" },
+    {
+      name: "Tasks",
+      icon: "fas fa-check-circle",
+      children: [
+        { name: "AllTasks", path: "/Tasks/alltasks" },
+        { name: "OngoingTasks", path: "/Tasks/ongoingtasks" },
+      ],
+    },
     {
       name: "Payroll",
       icon: "fas fa-wallet",

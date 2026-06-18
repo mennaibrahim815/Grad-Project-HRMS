@@ -147,7 +147,8 @@ import Performance from "../HrPages/Performance/Performance";
 import LeaveRequests from "../HrPages/Leave/LeaveRequests/LeaveRequests";
 import LeaveDetails from "../HrPages/Leave/LeaveDetails/LeaveDetails";
 import Requests from "../HrPages/Requests/Requests";
-import Tasks from "../HrPages/Tasks/Tasks";
+import Tasks from "../HrPages/Tasks/AllTasks/AllTasks";
+import OngoingTasks from "../HrPages/Tasks/OngoingTasks/OngoingTasks";
 import EmployeeDashboard from "../EmployeePages/EmployeeDashboard/EmployeeDashboard";
 import Myleaves  from "../EmployeePages/Myleaves/Myleaves";
 import EmployeeLeaveDetails from "../EmployeePages/Myleaves/EmployeeLeaveDetails";
@@ -170,7 +171,7 @@ export const router = createBrowserRouter(
     {
       element: <ProtectedRoute />, // حماية عامة للجلسة
       children: [
-        // 🔵 موديول الإدارة (يفتح للـ HR والـ MANAGER)
+        //  (HR and MANAGER)
         {
           element: (
             <ProtectedRoute allowedRoles={["HR", "MANAGER"]}>
@@ -190,14 +191,16 @@ export const router = createBrowserRouter(
             { path: "/leave-details/:id", element: <LeaveDetails /> },
             { path: "/performance", element: <Performance /> },
             { path: "/Requests", element: <Requests /> },
-            { path: "/Tasks", element: <Tasks /> },
+            { path: "/Tasks/alltasks", element: <Tasks /> },
+            { path: "/Tasks/ongoingTasks", element: <OngoingTasks /> },
+            
 
             // تابة المانجر محمية داخلياً برول المانجر بس
             { path: "/manage-hrs", element: <ProtectedRoute allowedRoles={["MANAGER"]}><ManageHRs /></ProtectedRoute> },
           ],
         },
 
-        // 🟢 موديول الموظف
+        //  EMPLOYEE
         {
           element: (
             <ProtectedRoute allowedRoles={["EMPLOYEE"]}>
@@ -215,7 +218,7 @@ export const router = createBrowserRouter(
           ],
         },
 
-        // 🟡 الصفحات المشتركة
+        // shared bages
         {
           element: <ProtectedRoute allowedRoles={["HR", "EMPLOYEE", "MANAGER"]} />,
           children: [
