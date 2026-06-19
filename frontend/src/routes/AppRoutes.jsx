@@ -162,11 +162,10 @@ export const router = createBrowserRouter(
     { path: "/reset-password", element: <ResetPassword /> },
     { path: "/apply-job", element: <ApplyJob /> },
     { path: "/careers/apply/:id", element: <ApplyJobForm /> },
-
     {
-      element: <ProtectedRoute />, // حماية عامة للجلسة
+      element: <ProtectedRoute />,
       children: [
-        // 🔵 موديول الإدارة (يفتح للـ HR والـ MANAGER)
+        // (HR and MANAGER)
         {
           element: (
             <ProtectedRoute allowedRoles={["HR", "MANAGER"]}>
@@ -186,12 +185,10 @@ export const router = createBrowserRouter(
             { path: "/leave-details/:id", element: <LeaveDetails /> },
             { path: "/performance", element: <Performance /> },
             { path: "/Requests", element: <Requests /> },
-            // تابة المانجر محمية داخلياً برول المانجر بس
             { path: "/manage-hrs", element: <ProtectedRoute allowedRoles={["MANAGER"]}><ManageHRs /></ProtectedRoute> },
           ],
         },
-
-        // 🟢 موديول الموظف
+        // EMPLOYEE
         {
           element: (
             <ProtectedRoute allowedRoles={["EMPLOYEE"]}>
@@ -204,13 +201,12 @@ export const router = createBrowserRouter(
             { path: "/my-attendance", element: <MyAttendance /> },
           ],
         },
-
-        // 🟡 الصفحات المشتركة
+        // shared bages
         {
           element: <ProtectedRoute allowedRoles={["HR", "EMPLOYEE", "MANAGER"]} />,
           children: [
             { path: "/profile", element: <EmployeeDetail /> },
-            { path: "/settings", element: <Settings /> },
+            // { path: "/settings", element: <Settings /> },
             { path: "/employee/:id", element: <EmployeeDetail /> },
             { path: "/hiring/:id", element: <HiringDetail /> },
             { path: "/hiring/jobs/:id", element: <JobDetailPage /> },
@@ -218,46 +214,14 @@ export const router = createBrowserRouter(
         },
       ],
     },
-
-    // --- 🟢 Employee ---
-{
-  element: (
-    <ProtectedRoute allowedRoles={["EMPLOYEE"]}>
-      <MainLayout />
-    </ProtectedRoute>
-  ),
-  children: [
-    { path: "/my-dashboard", element: <EmployeeDashboard /> },
-    { path: "/my-leaves", element: <Myleaves /> },
-    { path: "/my-attendance", element: <MyAttendance /> },
-    { path: "/my-payroll", element: <Myparoll /> },
-  ],
-},
-
-    // --- 🟡 Shared ---
-    {
-      element: <ProtectedRoute allowedRoles={["HR", "EMPLOYEE"]} />,
-      children: [
-        { path: "/profile", element: <EmployeeDetail /> },
-        { path: "/settings", element: <Settings /> },
-        { path: "/employee/:id", element: <EmployeeDetail /> },
-        { path: "/hiring/:id", element: <HiringDetail /> },
-        { path: "/hiring/jobs/:id", element: <JobDetailPage /> },
-      
-      ],
-    },
-
     { path: "*", element: <Error /> },
   ],
   {
     future: {
-      
       v7_startTransition: true,
       v7_relativeSplatPath: true,
       v7_fetcherPersist: true,
       v7_normalizeFormMethod: true,
       v7_partialHydration: true,
       v7_skipActionErrorRevalidation: true,
-    },
-  }
-);
+    },});
