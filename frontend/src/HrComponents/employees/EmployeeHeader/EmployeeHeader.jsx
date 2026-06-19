@@ -6,7 +6,7 @@ import ReusableCalendar from "../../../components/UI/ReusableCalendar";
 import { useSelector, useDispatch } from "react-redux";
 import { setSelectedDate } from "../../../store/HrSlices/attendance/attendanceSlice";
 
-const EmployeeHeader = ({title, addButtonNAme}) => {
+const EmployeeHeader = ({ title, addButtonNAme }) => {
   const dispatch = useDispatch();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -23,7 +23,7 @@ const EmployeeHeader = ({title, addButtonNAme}) => {
       <div className="flex items-center justify-between mb-6 sm:mb-10 bg-transparent p-3 sm:p-4 rounded-2xl gap-2 sm:gap-5">
 
         {/* Title */}
-        <h1 className="text-lg sm:text-2xl font-bold text-white tracking-tight shrink-0">
+        <h1 className="text-lg sm:text-2xl font-bold tracking-tight shrink-0" style={{ color: 'var(--text-main)' }}>
           {title}
         </h1>
 

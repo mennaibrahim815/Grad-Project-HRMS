@@ -1,9 +1,9 @@
 import BaseCard from "../../../../components/UI/Card";
 
 const InfoCell = ({ label, value }) => (
-  <div className="bg-white/5 rounded-xl p-3">
-    <p className="text-slate-500 text-xs mb-1">{label}</p>
-    <p className="text-slate-200 text-sm font-medium">{value || "—"}</p>
+  <div style={{ background: 'var(--tab-inactive-bg)' }} className="rounded-xl p-3">
+    <p className="text-xs mb-1" style={{ color: 'var(--text-muted)' }}>{label}</p>
+    <p className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>{value || "—"}</p>
   </div>
 );
 
@@ -17,20 +17,20 @@ const ProfessionalInfoCard = ({ applicant}) => {
       {/* Motivation */}
       {additionalQuestions?.motivation && (
         <div>
-          <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-2">
+          <p className="text-xs font-medium uppercase tracking-wider mb-2" style={{ color: 'var(--text-muted)' }}>
             Overview
           </p>
-          <p className="text-slate-300 text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>
             {additionalQuestions.motivation}
           </p>
         </div>
       )}
 
-      <div className="border-t border-white/5" />
+      <div className="border-t" style={{ borderColor: 'var(--border-main)' }} />
 
       {/* Professional Info Grid */}
       <div>
-        <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-3">
+        <p className="text-xs font-medium uppercase tracking-wider mb-3" style={{ color: 'var(--text-muted)' }}>
           Professional Info
         </p>
         <div className="grid grid-cols-2 gap-3">
@@ -45,8 +45,6 @@ const ProfessionalInfoCard = ({ applicant}) => {
           <InfoCell label="Education"       value={professionalInfo?.educationLevel}  />
         </div>
       </div>
-
-    
 
     </BaseCard>
   );

@@ -22,7 +22,6 @@ import {
     clearActionResult,
 } from "../../../../store/HrSlices/payroll/payrollSlice";
 
-// ─── Per-action config ────────────────────────────────────────────────────────
 const ACTION_CONFIGS = {
     draft: {
         Icon: FileText,
@@ -35,13 +34,8 @@ const ACTION_CONFIGS = {
         WarningIcon: Info,
         confirmText: "Generate draft",
         thunk: generateDraft,
-        // pill
-        pillCls: "bg-[#0E2A45] border border-[#1A4870] text-[#62BDFE]",
-        // warning strip
-        warnCls: "bg-[#0E2A45] border border-[#1A4870] text-[#62BDFE]",
-        // confirm button
-        confirmCls: "bg-[#0293FA] text-[#0D1117] hover:bg-[#35AAFD]",
-        // result
+        pillVar: "blue",
+        confirmStyle: { background: '#0293FA', color: '#0D1117' },
         successTitle: "Draft generated successfully",
         errorTitle: "Could not generate draft",
     },
@@ -56,9 +50,8 @@ const ACTION_CONFIGS = {
         WarningIcon: AlertTriangle,
         confirmText: "Approve",
         thunk: approvePayroll,
-        pillCls: "bg-[#3A1E06] border border-[#6B3710] text-[#F89B49]",
-        warnCls: "bg-[#3A1E06] border border-[#6B3710] text-[#F89B49]",
-        confirmCls: "bg-[#F89B49] text-[#0D1117] hover:bg-[#FAB97F]",
+        pillVar: "orange",
+        confirmStyle: { background: '#F89B49', color: '#0D1117' },
         successTitle: "Payroll approved",
         errorTitle: "Approval failed",
     },
@@ -73,9 +66,8 @@ const ACTION_CONFIGS = {
         WarningIcon: Info,
         confirmText: "Pay all",
         thunk: bulkPayPayroll,
-        pillCls: "bg-[#0A2918] border border-[#144D2E] text-[#4BFFB2]",
-        warnCls: "bg-[#0A2918] border border-[#144D2E] text-[#4BFFB2]",
-        confirmCls: "bg-[#4BFFB2] text-[#0D1117] hover:bg-[#80FFC8]",
+        pillVar: "green",
+        confirmStyle: { background: '#4BFFB2', color: '#0D1117' },
         successTitle: "Payment processed",
         errorTitle: "Payment failed",
     },
@@ -88,13 +80,19 @@ const ACTION_CONFIGS = {
         WarningIcon: AlertTriangle,
         confirmText: "Confirm payment",
         thunk: paySinglePayroll,
-        pillCls: "bg-[#0A2918] border border-[#144D2E] text-[#4BFFB2]",
-        warnCls: "bg-[#0A2918] border border-[#144D2E] text-[#4BFFB2]",
-        confirmCls: "bg-[#4BFFB2] text-[#0D1117] hover:bg-[#80FFC8]",
+        pillVar: "green",
+        confirmStyle: { background: '#4BFFB2', color: '#0D1117' },
         successTitle: "Payment successful",
         errorTitle: "Payment failed",
     },
 };
+
+// helper بيرجع الـ style بتاع أي pill variant
+const pillStyle = (variant) => ({
+    background: `var(--pill-${variant}-bg)`,
+    borderColor: `var(--pill-${variant}-border)`,
+    color: `var(--pill-${variant}-text)`,
+});
 
 function monthLabel(month, year) {
     return new Date(year, month - 1).toLocaleString("en-US", {
@@ -103,7 +101,6 @@ function monthLabel(month, year) {
     });
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
 export function PayrollActionModal({ action, onClose, targetId }) {
     const dispatch = useDispatch();
 
@@ -145,29 +142,29 @@ export function PayrollActionModal({ action, onClose, targetId }) {
 
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#0D1117]/80 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
             onClick={(e) => e.target === e.currentTarget && onClose()}
         >
             <BaseCard
                 padding="p-0"
-                className="w-[400px] max-w-[calc(100vw-2rem)] overflow-hidden bg-[#161B22] border border-[#30363D] rounded-2xl"
+                style={{ background: 'var(--modal-bg)', borderColor: 'var(--border-main)' }}
+                className="w-[400px] max-w-[calc(100vw-2rem)] overflow-hidden border rounded-2xl"
             >
                 {/* ── Header ── */}
-                <div className="flex items-center justify-between px-4 py-3.5 border-b border-[#30363D]">
+                <div className="flex items-center justify-between px-4 py-3.5 border-b" style={{ borderColor: 'var(--border-main)' }}>
                     <div className="flex items-center gap-2.5">
-                        {/* Action pill — icon + label */}
                         <span
-                            className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${config.pillCls}`}
+                            style={pillStyle(config.pillVar)}
+                            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border"
                         >
                             <Icon size={12} />
                             {config.actionLabel}
                         </span>
-                        {/* Title + month */}
                         <div>
-                            <p className="text-[13px] font-medium text-[#E6EDF3] m-0 leading-none">
+                            <p className="text-[13px] font-medium m-0 leading-none" style={{ color: 'var(--text-main)' }}>
                                 {config.title}
                             </p>
-                            <p className="text-[11px] text-[#5C6370] mt-0.5 m-0 leading-none">
+                            <p className="text-[11px] mt-0.5 m-0 leading-none" style={{ color: 'var(--text-muted)' }}>
                                 {monthLabel(month, year)}
                             </p>
                         </div>
@@ -175,7 +172,8 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                     <button
                         onClick={onClose}
                         aria-label="Close modal"
-                        className="flex items-center justify-center w-7 h-7 rounded-lg border border-[#30363D] text-[#5C6370] hover:bg-[#30363D] hover:text-[#8B949E] transition-colors cursor-pointer bg-transparent"
+                        style={{ borderColor: 'var(--border-main)', color: 'var(--text-muted)' }}
+                        className="flex items-center justify-center w-7 h-7 rounded-lg border hover:opacity-70 transition-colors cursor-pointer bg-transparent"
                     >
                         <X size={13} />
                     </button>
@@ -185,12 +183,13 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                 {phase === "confirm" && (
                     <>
                         <div className="px-4 pt-3.5 pb-0 space-y-2.5">
-                            <p className="text-[12.5px] text-[#8B949E] leading-relaxed m-0">
+                            <p className="text-[12.5px] leading-relaxed m-0" style={{ color: 'var(--text-muted)' }}>
                                 {config.description}
                             </p>
                             {/* Inline warning strip */}
                             <div
-                                className={`flex items-start gap-2 px-2.5 py-2 rounded-lg ${config.warnCls}`}
+                                style={pillStyle(config.pillVar)}
+                                className="flex items-start gap-2 px-2.5 py-2 rounded-lg border"
                             >
                                 <WarningIcon size={13} className="flex-shrink-0 mt-0.5" />
                                 <p className="text-[11.5px] leading-snug m-0">
@@ -198,16 +197,18 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                                 </p>
                             </div>
                         </div>
-                        <div className="flex justify-end gap-2 px-4 py-3 border-t border-[#30363D] mt-3.5">
+                        <div className="flex justify-end gap-2 px-4 py-3 border-t mt-3.5" style={{ borderColor: 'var(--border-main)' }}>
                             <button
                                 onClick={onClose}
-                                className="px-3.5 py-1.5 rounded-lg text-[12.5px] border border-[#30363D] text-[#8B949E] bg-transparent hover:bg-[#30363D] transition-colors cursor-pointer"
+                                style={{ borderColor: 'var(--border-main)', color: 'var(--text-muted)' }}
+                                className="px-3.5 py-1.5 rounded-lg text-[12.5px] border bg-transparent hover:opacity-70 transition-colors cursor-pointer"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleConfirm}
-                                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[12.5px] font-medium transition-colors cursor-pointer border-0 ${config.confirmCls}`}
+                                style={config.confirmStyle}
+                                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[12.5px] font-medium transition-colors cursor-pointer border-0 hover:opacity-90"
                             >
                                 <Check size={13} />
                                 {config.confirmText}
@@ -220,7 +221,7 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                 {phase === "loading" && (
                     <div className="flex flex-col items-center justify-center py-10 gap-3">
                         <Loader2 size={22} color="#5C6370" className="animate-spin" />
-                        <p className="text-[12.5px] text-[#5C6370] m-0">Processing request…</p>
+                        <p className="text-[12.5px] m-0" style={{ color: 'var(--text-muted)' }}>Processing request…</p>
                     </div>
                 )}
 
@@ -228,16 +229,14 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                 {phase === "result" && result && (
                     <>
                         <div
-                            className={`flex gap-3 px-4 py-3.5 border-y ${
-                                result.ok
-                                    ? "bg-[#0A2918] border-[#144D2E]"
-                                    : "bg-[#1E0A12] border-[#4D1428]"
-                            }`}
+                            style={pillStyle(result.ok ? "green" : "red")}
+                            className="flex gap-3 px-4 py-3.5 border-y"
                         >
                             <div
-                                className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                                    result.ok ? "bg-[#144D2E]" : "bg-[#4D1428]"
-                                }`}
+                                style={{
+                                    background: result.ok ? 'var(--pill-green-border)' : 'var(--pill-red-border)',
+                                }}
+                                className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
                             >
                                 {result.ok ? (
                                     <CheckCircle2 size={16} color="#4BFFB2" />
@@ -247,16 +246,14 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                             </div>
                             <div>
                                 <p
-                                    className={`text-[13px] font-medium m-0 mb-1 ${
-                                        result.ok ? "text-[#A8FFDA]" : "text-[#F598B7]"
-                                    }`}
+                                    style={{ color: result.ok ? 'var(--pill-green-text)' : 'var(--pill-red-text)' }}
+                                    className="text-[13px] font-medium m-0 mb-1"
                                 >
                                     {result.ok ? config.successTitle : config.errorTitle}
                                 </p>
                                 <p
-                                    className={`text-[11.5px] leading-relaxed m-0 ${
-                                        result.ok ? "text-[#4BFFB2]" : "text-[#EC3A76]"
-                                    } opacity-80`}
+                                    style={{ color: result.ok ? 'var(--pill-green-text)' : 'var(--pill-red-text)', opacity: 0.85 }}
+                                    className="text-[11.5px] leading-relaxed m-0"
                                 >
                                     {result.message}
                                 </p>
@@ -265,7 +262,8 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                         <div className="flex justify-end px-4 py-3">
                             <button
                                 onClick={onClose}
-                                className="px-4 py-1.5 rounded-lg text-[12.5px] border border-[#30363D] text-[#8B949E] bg-transparent hover:bg-[#30363D] transition-colors cursor-pointer"
+                                style={{ borderColor: 'var(--border-main)', color: 'var(--text-muted)' }}
+                                className="px-4 py-1.5 rounded-lg text-[12.5px] border bg-transparent hover:opacity-70 transition-colors cursor-pointer"
                             >
                                 Close
                             </button>

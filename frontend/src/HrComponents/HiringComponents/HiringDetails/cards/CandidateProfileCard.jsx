@@ -79,8 +79,8 @@ const CandidateProfileCard = ({ applicant, loading }) => {
         />
 
         <div>
-          <p className="text-white font-semibold text-lg">{fullName || "—"}</p>
-          <p className="text-slate-400 text-sm mt-1">{personalInfo?.department || "—"}</p>
+          <p className="font-semibold text-lg" style={{ color: 'var(--text-main)' }}>{fullName || "—"}</p>
+          <p className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>{personalInfo?.department || "—"}</p>
         </div>
 
         {options.length > 0 ? (
@@ -88,7 +88,8 @@ const CandidateProfileCard = ({ applicant, loading }) => {
             <button
               ref={btnRef}
               onClick={handleOpen}
-              className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 text-slate-200 text-sm transition-all"
+              style={{ background: 'var(--tab-inactive-bg)', color: 'var(--text-main)' }}
+              className="flex items-center gap-2 px-4 py-2 rounded-full hover:opacity-80 text-sm transition-all"
             >
               {status}
               <i className={`fas fa-chevron-down text-xs transition-transform duration-200 ${open ? "rotate-180" : ""}`}></i>
@@ -103,15 +104,17 @@ const CandidateProfileCard = ({ applicant, loading }) => {
                   left: pos.left,
                   transform: "translateX(-50%)",
                   zIndex: 9999,
+                  background: 'var(--bg-card)',
+                  borderColor: 'var(--border-main)',
                 }}
-                className="bg-[#1e2a3a] border border-white/10 rounded-xl overflow-hidden shadow-2xl min-w-[160px]"
+                className="border rounded-xl overflow-hidden shadow-2xl min-w-[160px]"
               >
                 {options.map((opt) => (
                   <button
                     key={opt}
                     onClick={() => handleStatusChange(opt)}
-                    className={`w-full px-4 py-2.5 text-sm transition-all text-left hover:bg-white/10
-                      ${opt === "Rejected" ? "text-[#EC3A76]" : "text-slate-300"}`}
+                    style={{ color: opt === "Rejected" ? "#EC3A76" : 'var(--text-muted)' }}
+                    className="w-full px-4 py-2.5 text-sm transition-all text-left hover:opacity-70"
                   >
                     {opt}
                   </button>
@@ -133,15 +136,20 @@ const CandidateProfileCard = ({ applicant, loading }) => {
       {/* ── Rejection Reason Modal ── */}
       {rejectModal && createPortal(
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] border border-gray-800/50 rounded-2xl p-6 w-full max-w-sm shadow-2xl">
+          <div
+            style={{
+              background: 'linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)',
+            }}
+            className="rounded-2xl p-6 w-full max-w-sm shadow-2xl"
+          >
 
             {/* Icon */}
             <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#EC3A76]/15 mx-auto mb-4">
               <i className="fas fa-circle-xmark text-[#EC3A76] text-xl" />
             </div>
 
-            <h3 className="text-white text-center font-semibold text-lg mb-1">Reject Applicant</h3>
-            <p className="text-slate-400 text-center text-sm mb-4">
+            <h3 className="text-center font-semibold text-lg mb-1" style={{ color: 'var(--text-main)' }}>Reject Applicant</h3>
+            <p className="text-center text-sm mb-4" style={{ color: 'var(--text-muted)' }}>
               Please provide a reason for rejection to notify the applicant.
             </p>
 
@@ -150,13 +158,15 @@ const CandidateProfileCard = ({ applicant, loading }) => {
               onChange={(e) => setRejectionReason(e.target.value)}
               placeholder="e.g. We are looking for someone with more experience..."
               rows={3}
-              className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-slate-100 text-sm outline-none focus:border-[#EC3A76]/50 placeholder:text-slate-600 resize-none mb-4 transition-all"
+              style={{ background: 'var(--input-bg)', borderColor: 'var(--border-main)', color: 'var(--text-main)' }}
+              className="w-full border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-[#EC3A76]/50 placeholder:text-slate-500 resize-none mb-4 transition-all"
             />
 
             <div className="flex gap-3">
               <button
                 onClick={() => { setRejectModal(false); setRejectionReason(""); }}
-                className="flex-1 py-2.5 rounded-xl bg-[#58606F]/20 hover:bg-[#58606F]/30 text-[#58606F] text-sm font-medium transition-all"
+                style={{ background: 'var(--tab-inactive-bg)', color: 'var(--tab-inactive-text)' }}
+                className="flex-1 py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-80"
               >
                 Cancel
               </button>

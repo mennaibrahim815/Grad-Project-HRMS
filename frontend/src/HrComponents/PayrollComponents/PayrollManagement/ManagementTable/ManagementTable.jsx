@@ -19,7 +19,6 @@ const getAvatarUrl = (name, background = '0D8ABC', color = 'fff') => {
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${background}&color=${color}&size=80&bold=true&rounded=true`
 };
 
-
 const AttendanceBadge = ({ status }) => {
     const getStatusStyles = () => {
         switch (status) {
@@ -31,7 +30,6 @@ const AttendanceBadge = ({ status }) => {
 
             case 'Draft,':
                 return 'bg-slate-500/20 text-slate-400 border-slate-400/40'
-
 
         }
     }
@@ -89,8 +87,8 @@ function ManagementTable() {
                             className="w-10 h-10 rounded-full object-cover"
                         />
                         <div>
-                            <p className="text-sm font-medium text-slate-100">{fullName}</p>
-                            <p className="text-xs text-slate-500">{row._id?.slice(-6)}</p>
+                            <p className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>{fullName}</p>
+                            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{row._id?.slice(-6)}</p>
                         </div>
                     </div>
                 );
@@ -100,10 +98,8 @@ function ManagementTable() {
             header: "Period",
             accessor: "month",
             render: (row) => {
-
                 const date = new Date(row.year, row.month - 1);
                 return date.toLocaleString("en-US", { month: "long", year: "numeric" });
-
             }
         },
         {
@@ -165,19 +161,14 @@ function ManagementTable() {
                                 },
                             ];
 
-
-
                         case "Paid":
                             return [
                                 ...baseActions,
                                 {
                                     label: "Download Payslip",
-                                    icon: Download, // من lucide-react
+                                    icon: Download,
                                     variant: "success",
-                            
-                                        // handle download
                                     onClick: () => generatePayslip(row),
-                                
                                 },
                             ];
 
@@ -203,7 +194,8 @@ function ManagementTable() {
                             onClick={() =>
                                 setOpenMenuId(openMenuId === row._id ? null : row._id)
                             }
-                            className="p-2 text-slate-400 hover:text-slate-200"
+                            style={{ color: 'var(--text-muted)' }}
+                            className="p-2 hover:opacity-70 transition-opacity"
                         >
                             <EditIcon />
                         </button>
@@ -233,7 +225,7 @@ function ManagementTable() {
         setActiveFilter("All");
         setSearchQuery("");
     }, [managementSelectedMonth]);
-    
+
     useEffect(() => {
         if (editRow) {
             const updatedRow = payrollList.find((r) => r._id === editRow._id);
@@ -287,15 +279,23 @@ function ManagementTable() {
     };
 
     const NoDataCard = () => (
-        <div className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] p-7 rounded-[2rem] border border-gray-800/50 relative group transition-all hover:border-blue-500/30 flex flex-col items-center justify-center gap-5 py-16">
-            <div className="w-16 h-16 rounded-2xl bg-slate-800/60 border border-slate-700/50 flex items-center justify-center">
-                <FileText size={28} className="text-slate-500" />
+        <div
+            style={{
+                background: 'linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)',
+            }}
+            className="p-7 rounded-[2rem] relative group transition-all hover:border-blue-500/30 flex flex-col items-center justify-center gap-5 py-16"
+        >
+            <div
+                style={{ background: 'var(--tab-inactive-bg)', borderColor: 'var(--border-main)' }}
+                className="w-16 h-16 rounded-2xl border flex items-center justify-center"
+            >
+                <FileText size={28} style={{ color: 'var(--text-muted)' }} />
             </div>
             <div className="text-center">
-                <p className="text-slate-200 font-semibold text-base mb-1">
+                <p className="font-semibold text-base mb-1" style={{ color: 'var(--text-main)' }}>
                     No payroll draft for this month
                 </p>
-                <p className="text-slate-500 text-sm">
+                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
                     Generate a draft first to see payroll data
                 </p>
             </div>
@@ -309,23 +309,24 @@ function ManagementTable() {
         </div>
     );
 
-    // Empty State 
+    // Empty State
     const NoFilterResults = () => (
         <div className="flex flex-col items-center justify-center py-14 gap-3">
-            <div className="w-12 h-12 rounded-xl bg-slate-800 flex items-center justify-center">
-                <Search size={20} className="text-slate-500" />
+            <div style={{ background: 'var(--tab-inactive-bg)' }} className="w-12 h-12 rounded-xl flex items-center justify-center">
+                <Search size={20} style={{ color: 'var(--text-muted)' }} />
             </div>
             <div className="text-center">
-                <p className="text-slate-300 font-medium text-sm mb-1">No results found</p>
-                <p className="text-slate-500 text-xs">
+                <p className="font-medium text-sm mb-1" style={{ color: 'var(--text-main)' }}>No results found</p>
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
                     No employees with{" "}
-                    <span className="text-slate-400 font-medium">"{activeFilter}"</span>{" "}
+                    <span className="font-medium" style={{ color: 'var(--text-main)' }}>"{activeFilter}"</span>{" "}
                     status this month
                 </p>
             </div>
             <button
                 onClick={() => { setActiveFilter("All"); setSearchQuery(""); }}
-                className="px-4 py-2 border border-slate-600 text-slate-400 hover:text-slate-200 hover:border-slate-500 text-sm rounded-xl transition-colors"
+                style={{ borderColor: 'var(--border-main)', color: 'var(--text-muted)' }}
+                className="px-4 py-2 border hover:opacity-80 text-sm rounded-xl transition-colors"
             >
                 Clear filters
             </button>

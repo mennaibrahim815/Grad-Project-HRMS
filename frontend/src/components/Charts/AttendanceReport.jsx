@@ -1,4 +1,3 @@
-
 import {
   BarChart,
   Bar,
@@ -10,20 +9,18 @@ import {
 } from "recharts";
 
 const AttendanceReport = ({ title, desc, data, filter }) => {
-  
+
   const rawData = data?.chartData || data?.weeklyAttendenceStats || [];
 
-  
   const chartData = rawData.map((item) => ({
     name: (item.monthName || item.dayName || "").substring(0, 3),
     onTime: item.totalOnTime ?? item.onTimeCount ?? 0,
     late: item.totalLate ?? item.lateCount ?? 0,
     absent: item.totalAbsent ?? item.absentCount ?? 0,
-    displayDate: item.year 
-      ? `${item.monthName} ${item.year}` 
+    displayDate: item.year
+      ? `${item.monthName} ${item.year}`
       : (item.fullDate ? new Date(item.fullDate).toLocaleDateString("en-GB") : ""),
   }));
-
 
   const stats = data?.totals || {
     onTime: chartData[chartData.length - 1]?.onTime || 0,
@@ -32,19 +29,27 @@ const AttendanceReport = ({ title, desc, data, filter }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] p-[20px] rounded-[2.5rem] border border-gray-800/50 shadow-xl w-full mb-8 min-h-[420px]">
+    <div
+      style={{
+        background: 'linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)',
+      }}
+      className="p-[20px] rounded-[2.5rem] shadow-xl w-full mb-8 min-h-[420px]"
+    >
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-8">
         <div>
-          <h3 className="text-xl font-bold text-white mb-1">{title}</h3>
-          <p className="text-gray-500 text-[10px] font-black uppercase tracking-[0.2em]">{desc}</p>
+          <h3 className="text-xl font-bold mb-1" style={{ color: 'var(--text-main)' }}>{title}</h3>
+          <p className="text-[10px] font-black uppercase tracking-[0.2em]" style={{ color: 'var(--text-muted)' }}>{desc}</p>
         </div>
-        <button className="flex items-center gap-2 px-4 py-2 bg-slate-700/50 rounded-lg text-slate-300 text-sm hover:bg-slate-600/50 transition-colors">
+        <button
+          style={{ background: 'var(--tab-inactive-bg)', color: 'var(--tab-inactive-text)' }}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm hover:opacity-80 transition-colors"
+        >
           {filter}
         </button>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
-      
+
         <div className="flex lg:flex-col justify-center gap-6 min-w-[105px]">
           <StatItem label="On-time" value={stats.onTime} color="bg-blue-500" />
           <StatItem label="Late attend" value={stats.late} color="bg-green-400" />
@@ -65,24 +70,27 @@ const AttendanceReport = ({ title, desc, data, filter }) => {
                     <stop offset="100%" stopColor="#38f9d7" />
                   </linearGradient>
                   <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(45 2 2)">
-                    <path d="M-1,2 l6,0" stroke="#374151" strokeWidth="2" />
+                    <path d="M-1,2 l6,0" stroke="var(--border-main)" strokeWidth="2" />
                   </pattern>
                 </defs>
-                <CartesianGrid vertical={false} stroke="#1f2937" strokeDasharray="3 3" opacity={0.3} />
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "#4b5563", fontSize: 11 }} dy={15} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#4b5563", fontSize: 11 }} />
+                <CartesianGrid vertical={false} stroke="var(--border-main)" strokeDasharray="3 3" opacity={0.3} />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: "var(--text-muted)", fontSize: 11 }} dy={15} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: "var(--text-muted)", fontSize: 11 }} />
                 <Tooltip
-                  cursor={{ fill: "rgba(255,255,255,0.02)" }}
+                  cursor={{ fill: "rgba(128,128,128,0.08)" }}
                   content={({ active, payload }) => {
                     if (!active || !payload?.length) return null;
                     const d = payload[0].payload;
                     return (
-                      <div className="bg-[#0b141a] border border-gray-700 rounded-xl p-3 shadow-xl">
-                        <p className="text-xs text-gray-400 font-bold mb-2">{d.displayDate}</p>
+                      <div
+                        style={{ background: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
+                        className="border rounded-xl p-3 shadow-xl"
+                      >
+                        <p className="text-xs font-bold mb-2" style={{ color: 'var(--text-muted)' }}>{d.displayDate}</p>
                         <div className="text-xs space-y-1">
                           <p className="text-blue-400">On-time: {d.onTime}</p>
                           <p className="text-green-400">Late: {d.late}</p>
-                          <p className="text-gray-400">Absent: {d.absent}</p>
+                          <p style={{ color: 'var(--text-muted)' }}>Absent: {d.absent}</p>
                         </div>
                       </div>
                     );
@@ -90,11 +98,14 @@ const AttendanceReport = ({ title, desc, data, filter }) => {
                 />
                 <Bar dataKey="onTime" fill="url(#blueGrad)" radius={[6, 6, 0, 0]} barSize={20} />
                 <Bar dataKey="late" fill="url(#greenGrad)" radius={[6, 6, 0, 0]} barSize={20} />
-                <Bar dataKey="absent" fill="url(#diagonalHatch)" radius={[6, 6, 0, 0]} barSize={20} stroke="#374151" />
+                <Bar dataKey="absent" fill="url(#diagonalHatch)" radius={[6, 6, 0, 0]} barSize={20} stroke="var(--border-main)" />
               </BarChart>
             ) : (
-              <div className="h-full flex items-center justify-center border-2 border-dashed border-gray-700 rounded-3xl">
-                <p className="text-gray-500 text-xs uppercase tracking-widest">No Data Available</p>
+              <div
+                style={{ borderColor: 'var(--border-main)' }}
+                className="h-full flex items-center justify-center border-2 border-dashed rounded-3xl"
+              >
+                <p className="text-xs uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>No Data Available</p>
               </div>
             )}
           </ResponsiveContainer>
@@ -104,15 +115,14 @@ const AttendanceReport = ({ title, desc, data, filter }) => {
   );
 };
 
-
 const StatItem = ({ label, value, color }) => (
   <div className="space-y-0.5">
-    <div className="text-4xl font-black text-white tracking-tighter">
+    <div className="text-4xl font-black tracking-tighter" style={{ color: 'var(--text-stat)' }}>
       {value}
     </div>
     <div className="flex items-center gap-2">
       <span className={`w-2.5 h-2.5 rounded-full ${color}`}></span>
-      <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">
+      <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>
         {label}
       </span>
     </div>
@@ -120,6 +130,3 @@ const StatItem = ({ label, value, color }) => (
 );
 
 export default AttendanceReport;
-
-
-

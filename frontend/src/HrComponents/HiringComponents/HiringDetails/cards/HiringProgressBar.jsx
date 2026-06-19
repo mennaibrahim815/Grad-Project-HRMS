@@ -7,7 +7,7 @@ const HiringProgressBar = ({ status }) => {
 
   return (
     <BaseCard>
-      <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mb-4">
+      <p className="text-xs font-medium uppercase tracking-wider mb-4" style={{ color: 'var(--text-muted)' }}>
         Hiring Progress
       </p>
 
@@ -22,42 +22,52 @@ const HiringProgressBar = ({ status }) => {
 
               {/* Circle */}
               <div className="flex flex-col items-center gap-2">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all
-                  ${isCompleted
-                    ? "bg-blue-500 border-blue-500"
-                    : isCurrent && !isRejected
-                      ? "bg-transparent border-blue-500"
+                <div
+                  style={
+                    isCompleted
+                      ? { background: '#3b82f6', borderColor: '#3b82f6' }
+                      : isCurrent && !isRejected
+                      ? { background: 'transparent', borderColor: '#3b82f6' }
                       : isCurrent && isRejected
-                        ? "bg-transparent border-red-400"
-                        : "bg-transparent border-slate-600"
-                  }`}
+                      ? { background: 'transparent', borderColor: '#f87171' }
+                      : { background: 'transparent', borderColor: 'var(--border-main)' }
+                  }
+                  className="w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all"
                 >
                   {isCompleted ? (
                     <i className="fas fa-check text-white text-xs"></i>
                   ) : isCurrent && isRejected ? (
                     <i className="fas fa-times text-red-400 text-xs"></i>
                   ) : (
-                    <div className={`w-2 h-2 rounded-full
-                      ${isCurrent ? "bg-blue-500" : "bg-slate-600"}`}
+                    <div
+                      style={{ background: isCurrent ? '#3b82f6' : 'var(--border-main)' }}
+                      className="w-2 h-2 rounded-full"
                     />
                   )}
                 </div>
 
                 {/* Label */}
-                <span className={`text-xs whitespace-nowrap
-                  ${isCompleted                    ? "text-blue-400"  : ""}
-                  ${isCurrent && !isRejected       ? "text-blue-400"  : ""}
-                  ${isCurrent && isRejected        ? "text-red-400"   : ""}
-                  ${!isCompleted && !isCurrent     ? "text-slate-500" : ""}
-                `}>
+                <span
+                  style={{
+                    color: isCompleted
+                      ? '#60a5fa'
+                      : isCurrent && !isRejected
+                      ? '#60a5fa'
+                      : isCurrent && isRejected
+                      ? '#f87171'
+                      : 'var(--text-muted)'
+                  }}
+                  className="text-xs whitespace-nowrap"
+                >
                   {step}
                 </span>
               </div>
 
               {/* Line بين الـ steps */}
               {index < STEPS.length - 1 && (
-                <div className={`flex-1 h-0.5 mx-2 mb-5 transition-all
-                  ${isCompleted ? "bg-blue-500" : "bg-slate-700"}`}
+                <div
+                  style={{ background: isCompleted ? '#3b82f6' : 'var(--border-main)' }}
+                  className="flex-1 h-0.5 mx-2 mb-5 transition-all"
                 />
               )}
 

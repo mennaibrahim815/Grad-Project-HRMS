@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchHiringSummary } from "../../../store/HrSlices/Hiring/hiringSlice";
+
 const StatBadge = ({ count, label }) => (
-    <div className="flex items-center gap-1.5 px-4 py-2 lg:px-6 lg:py-3 rounded-full bg-gradient-to-br from-white/5 to-[#182731] border backdrop-blur-sm">
-        <span className="text-white font-bold text-sm lg:text-lg">{count}</span>
-        <span className="text-slate-400 text-sm lg:text-lg">{label}</span>
+    <div
+        style={{
+            background: 'linear-gradient(to bottom right, var(--card-from), var(--card-to))',
+            borderColor: 'var(--border-main)',
+        }}
+        className="flex items-center gap-1.5 px-4 py-2 lg:px-6 lg:py-3 rounded-full border backdrop-blur-sm"
+    >
+        <span className="font-bold text-sm lg:text-lg" style={{ color: 'var(--text-main)' }}>{count}</span>
+        <span className="text-sm lg:text-lg" style={{ color: 'var(--text-muted)' }}>{label}</span>
     </div>
 );
 
@@ -21,16 +28,14 @@ const HiringHeader = ({ onAddJob }) => {
 
     return (
         <>
-          
-
             <div className="mb-10 mt-6">
 
                 <div className="flex flex-col gap-3 lg:hidden">
                     <div className="flex items-center justify-between">
-                        <h1 className="text-2xl font-bold text-white tracking-tight">Hiring</h1>
+                        <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-main)' }}>Hiring</h1>
                     </div>
                     {summaryLoading ? (
-                        <i className="fas fa-spinner fa-spin text-slate-400"></i>
+                        <i className="fas fa-spinner fa-spin" style={{ color: 'var(--text-muted)' }}></i>
                     ) : (
                         <div className="flex flex-wrap gap-2">
                             <StatBadge count={stats?.totalApplicants} label="Total Applicants" />
@@ -42,12 +47,11 @@ const HiringHeader = ({ onAddJob }) => {
                     )}
                 </div>
 
-
                 <div className="hidden lg:flex items-center justify-between gap-4">
-                    <h1 className="text-2xl font-bold text-white tracking-tight shrink-0">Hiring</h1>
+                    <h1 className="text-2xl font-bold tracking-tight shrink-0" style={{ color: 'var(--text-main)' }}>Hiring</h1>
 
                     {summaryLoading ? (
-                        <i className="fas fa-spinner fa-spin text-slate-400 mx-auto"></i>
+                        <i className="fas fa-spinner fa-spin mx-auto" style={{ color: 'var(--text-muted)' }}></i>
                     ) : (
                         <div className="flex items-center gap-3 flex-1 justify-center">
                             <StatBadge count={stats?.totalApplicants} label="Total Applicants" />
@@ -63,7 +67,6 @@ const HiringHeader = ({ onAddJob }) => {
             </div>
         </>
     );
-
 };
 
 export default HiringHeader;

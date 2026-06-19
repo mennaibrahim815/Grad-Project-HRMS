@@ -60,10 +60,10 @@ const Step3Documents = ({
                     className={`flex flex-col items-center justify-center gap-2 p-6 rounded-xl border-2 border-dashed
                                 cursor-pointer transition-all
                                 ${touched.resume && errors.resume
-                                    ? "border-red-500/40 bg-red-500/5"
-                                    : formData.resume
-                                    ? "border-blue-500/40 bg-blue-500/5"
-                                    : "border-white/10 bg-white/3 hover:border-white/20 hover:bg-white/5"}`}
+                            ? "border-red-500/40 bg-red-500/5"
+                            : formData.resume
+                                ? "border-blue-500/40 bg-blue-500/5"
+                                : "border-white/10 bg-white/3 hover:border-white/20 hover:bg-white/5"}`}
                 >
                     <input
                         ref={fileRef}
@@ -114,8 +114,8 @@ const Step3Documents = ({
                             className={`flex-1 flex items-center gap-2 rounded-xl px-4 py-2.5
                                         cursor-pointer border transition-all
                                         ${formData.workPreference === opt
-                                            ? "bg-blue-500/10 border-blue-500/30"
-                                            : "bg-white/3 border-white/10 hover:bg-white/5"}`}
+                                    ? "bg-blue-500/10 border-blue-500/30"
+                                    : "bg-white/3 border-white/10 hover:bg-white/5"}`}
                         >
                             <input
                                 type="radio"
@@ -148,7 +148,7 @@ const Step3Documents = ({
                     className={`w-full bg-white/5 border rounded-xl px-4 py-2.5 text-slate-100 text-sm
                                 outline-none transition-all [color-scheme:dark]
                                 ${touched.earliestStartDate && errors.earliestStartDate
-                                    ? "border-red-500/50" : "border-white/10 focus:border-blue-500/50"}`}
+                            ? "border-red-500/50" : "border-white/10 focus:border-blue-500/50"}`}
                 />
                 <FieldError field="earliestStartDate" errors={errors} touched={touched} />
             </div>
