@@ -65,7 +65,6 @@
 //         { path: "/performance", element: <Performance /> },
 //         { path: "/Requests", element: <Requests /> },
 
-        
 //         {
 //           path: "/manage-hrs",
 //           element: (
@@ -117,9 +116,6 @@
 //   },
 // );
 
-
-
-
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import ProtectedRoute from "./ProtectedRoute";
@@ -149,7 +145,7 @@ import LeaveDetails from "../HrPages/Leave/LeaveDetails/LeaveDetails";
 import Requests from "../HrPages/Requests/Requests";
 import Tasks from "../HrPages/Tasks/Tasks";
 import EmployeeDashboard from "../EmployeePages/EmployeeDashboard/EmployeeDashboard";
-import Myleaves  from "../EmployeePages/Myleaves/Myleaves";
+import Myleaves from "../EmployeePages/Myleaves/Myleaves";
 import EmployeeLeaveDetails from "../EmployeePages/Myleaves/EmployeeLeaveDetails";
 import MyAttendance from "../EmployeePages/MyAttendance/MyAttendance";
 import MyRequests from "../EmployeePages/MyRequests/MyRequests";
@@ -190,9 +186,14 @@ export const router = createBrowserRouter(
             { path: "/performance", element: <Performance /> },
             { path: "/Requests", element: <Requests /> },
             { path: "/Tasks", element: <Tasks /> },
-
-            // تابة المانجر محمية داخلياً برول المانجر بس
-            { path: "/manage-hrs", element: <ProtectedRoute allowedRoles={["MANAGER"]}><ManageHRs /></ProtectedRoute> },
+            {
+              path: "/manage-hrs",
+              element: (
+                <ProtectedRoute allowedRoles={["MANAGER"]}>
+                  <ManageHRs />
+                </ProtectedRoute>
+              ),
+            },
           ],
         },
         // EMPLOYEE
@@ -206,21 +207,33 @@ export const router = createBrowserRouter(
             { path: "/my-dashboard", element: <EmployeeDashboard /> },
             { path: "/my-leaves", element: <Myleaves /> },
             { path: "/my-attendance", element: <MyAttendance /> },
-            { path: "/my-requests", element:<MyRequests/>},
-            { path: "/my-tasks", element:<MyTasks/>},
-            { path: "/my-leave-details/:id", element: <EmployeeLeaveDetails /> },
+            { path: "/my-requests", element: <MyRequests /> },
+            { path: "/my-tasks", element: <MyTasks /> },
+            {
+              path: "/my-leave-details/:id",
+              element: <EmployeeLeaveDetails />,
+            },
             { path: "/my-payroll", element: <Myparoll /> },
           ],
         },
         // shared bages
         {
-          element: <ProtectedRoute allowedRoles={["HR", "EMPLOYEE", "MANAGER"]} />,
+          element: (
+            <ProtectedRoute allowedRoles={["HR", "EMPLOYEE", "MANAGER"]} />
+          ),
           children: [
-            { path: "/profile", element: <EmployeeDetail /> },
-            // { path: "/settings", element: <Settings /> },
+            { path: "/my-dashboard", element: <MyDashBourd /> },
             { path: "/employee/:id", element: <EmployeeDetail /> },
             { path: "/hiring/:id", element: <HiringDetail /> },
             { path: "/hiring/jobs/:id", element: <JobDetailPage /> },
+                        {
+              path: "/settings",
+              element: (
+            <ProtectedRoute allowedRoles={["HR", "MANAGER"]}>
+                  <Settings />
+                </ProtectedRoute>
+              ),
+            },
           ],
         },
       ],
@@ -235,4 +248,6 @@ export const router = createBrowserRouter(
       v7_normalizeFormMethod: true,
       v7_partialHydration: true,
       v7_skipActionErrorRevalidation: true,
-    },});
+    },
+  },
+);

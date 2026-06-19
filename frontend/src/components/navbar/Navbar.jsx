@@ -58,7 +58,12 @@ const Navbar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
   }, [isSearchModalOpen]);
 
-  return (
+
+
+const { user } = useSelector((state) => state.auth);
+const userRole = user?.general?.role;  
+
+return (
     <>
       {/* NAVBAR */}
       {/* Navbar */}
@@ -90,15 +95,15 @@ const Navbar = () => {
 
           {/* Theme Toggle */}
           <ThemeToggle />
-
-          {/* Settings */}
-          <button
-            onClick={() => navigate("/settings")}
-            className="w-10 h-10 bg-[#142129] rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all"
-            title="Settings"
-          >
-            <i className="fas fa-cog"></i>
-          </button>
+{(userRole === "HR" || userRole === "MANAGER") && (
+  <button
+    onClick={() => navigate("/settings")}
+    className="w-10 h-10 bg-[#142129] rounded-full flex items-center justify-center text-gray-400 hover:text-white transition-all"
+    title="Settings"
+  >
+    <i className="fas fa-cog"></i>
+  </button>
+)}
 
           {/* Notifications */}
           <NotificationDropdown

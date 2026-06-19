@@ -30,12 +30,18 @@ import React, { useState, useEffect, useCallback } from 'react';
 import instance from '@/services/axios'; 
 import EmployeeTasksStatsHeader from '@/EmployeeComponents/MyTasksComponents/EmployeeTasksStatsHeader.jsx';
 import MyTasksTable from '@/EmployeeComponents/MyTasksComponents/MyTasksTable.jsx'; 
+import { useSearchParams } from "react-router-dom";
 
 const MyTasks = () => {
   const [tasks, setTasks] = useState([]);
   const [tableLoading, setTableLoading] = useState(true);
   const [taskScope, setTaskScope] = useState("My Tasks"); // القيمة الظاهرة بالجدول "My Tasks" أو "Team Tasks"
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [searchParams] = useSearchParams();
+const highlightId = searchParams.get("highlightId");
+
+const [activeRow, setActiveRow] = useState(null);
 
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -46,6 +52,17 @@ const MyTasks = () => {
 
   const [refreshStatsFn, setRefreshStatsFn] = useState(null);
 
+  useEffect(() => {
+  if (highlightId) {
+    setActiveRow(highlightId);
+
+    const timer = setTimeout(() => {
+      setActiveRow(null);
+    }, 1200); // 1.2 ثانية highlight
+
+    return () => clearTimeout(timer);
+  }
+}, [highlightId]);
   // دالة موحدة لجلب وتصفية البيانات بناءً على البحث أو الفلتر
   const fetchTasksHistory = useCallback(async () => {
     try {
@@ -99,6 +116,9 @@ const MyTasks = () => {
       if (refreshStatsFn) refreshStatsFn();
     }, 400); // تأخير 400ms لتجنب تكرار الطلبات غير الضرورية أثناء الكتابة
 
+
+
+    
     return () => clearTimeout(delayDebounceFn);
   }, [fetchTasksHistory, refreshStatsFn]);
 
@@ -121,18 +141,19 @@ const MyTasks = () => {
       <EmployeeTasksStatsHeader onStatsUpdated={handleStatsUpdated} />
       
       {/* جدول المهام الشامل بعد دمج الـ Tabs والسيرش وتحديثات الفورم */}
-      <MyTasksTable 
-        tasks={tasks}
-        loading={tableLoading}
-        taskScope={taskScope}
-        setTaskScope={setTaskScope}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        pagination={pagination}
-        onPageChange={handlePageChange}
-        onLimitChange={handleLimitChange}
-        refreshTable={fetchTasksHistory} // لتحديث الداتا فوراً بمجرد حفظ الفورم بنجاح
-      />
+<MyTasksTable 
+  tasks={tasks}
+  loading={tableLoading}
+  taskScope={taskScope}
+  setTaskScope={setTaskScope}
+  searchTerm={searchTerm}
+  setSearchTerm={setSearchTerm}
+  pagination={pagination}
+  onPageChange={handlePageChange}
+  onLimitChange={handleLimitChange}
+  refreshTable={fetchTasksHistory}
+  highlightId={activeRow}
+/>
       
     </div>
   );

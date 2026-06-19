@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DataTable from "../../components/table/DataTable";
 import TableControls from "../../components/table/TableControls";
 import Pagination from "../../components/table/Pagination";
@@ -36,7 +36,8 @@ const MyTasksTable = ({
   onPageChange,
   onLimitChange,
   loading,
-  refreshTable 
+  refreshTable,
+  highlightId   // 👈 ADD THIS
 }) => {
   const [openMenuId, setOpenMenuId] = useState(null);
   
@@ -45,7 +46,10 @@ const MyTasksTable = ({
   const [selectedStatus, setSelectedStatus] = useState("Pending");
   const [selectedFile, setSelectedFile] = useState(null);
   const [submitLoading, setSubmitLoading] = useState(false);
+  const [flashId, setFlashId] = useState(null);
 
+
+  
   const handleOpenUpdate = (id, currentStatus) => {
     setOpenMenuId(null);
     setSelectedStatus(currentStatus);
@@ -80,12 +84,34 @@ const MyTasksTable = ({
       setSubmitLoading(false);
     }
   };
+  
+  useEffect(() => {
+  if (highlightId) {
+    setFlashId(highlightId);
+
+    const timer = setTimeout(() => {
+      setFlashId(null);
+    }, 1200);
+
+    return () => clearTimeout(timer);
+  }
+}, [highlightId]);
 
   const columns = [
-    { 
-      header: "Task Title", 
-      render: (row) => <span className="font-semibold text-white truncate max-w-[220px] block">{row.title || "N/A"}</span> 
-    },
+   {
+  header: "Task Title",
+  render: (row) => (
+    <span
+      className={`font-semibold text-white truncate max-w-[220px] block transition-all duration-500 ${
+        flashId === row._id
+          ? "text-yellow-300 drop-shadow-[0_0_10px_rgba(250,204,21,0.8)]"
+          : ""
+      }`}
+    >
+      {row.title || "N/A"}
+    </span>
+  )
+},
     { 
       header: "Assigned To", 
       render: (row) => {
