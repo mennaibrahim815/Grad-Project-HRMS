@@ -2,7 +2,6 @@ const steps = [
   { id: 1, label: 'General' },
   { id: 2, label: 'Experiance' },
   { id: 3, label: 'Employee' },
-
 ];
 
 const AddEmployeeSteps = ({ currentStep, onStepChange }) => {
@@ -14,31 +13,27 @@ const AddEmployeeSteps = ({ currentStep, onStepChange }) => {
           {/* Step circle */}
           <button
             onClick={() => onStepChange(step.id)}
-            className={`h-7 w-7 rounded-full flex items-center justify-center text-xs font-medium transition
-              ${
-                step.id === currentStep
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-white/10 text-white/50 hover:bg-white/20'
-              }`}
+            style={
+              step.id === currentStep
+                ? { background: '#3b82f6', color: '#ffffff' }
+                : { background: 'var(--tab-inactive-bg)', color: 'var(--text-muted)' }
+            }
+            className="h-7 w-7 rounded-full flex items-center justify-center text-xs font-medium transition hover:opacity-80"
           >
             {step.id}
           </button>
 
           {/* Step label */}
           <span
-            className={`ml-2 text-xs whitespace-nowrap
-              ${
-                step.id === currentStep
-                  ? 'text-white'
-                  : 'text-white/40'
-              }`}
+            className="ml-2 text-xs whitespace-nowrap"
+            style={{ color: step.id === currentStep ? 'var(--text-main)' : 'var(--text-muted)' }}
           >
             {step.label}
           </span>
 
           {/* Connector line */}
           {index !== steps.length - 1 && (
-            <div className="flex-1 h-px bg-white/10 mx-3" />
+            <div className="flex-1 h-px mx-3" style={{ background: 'var(--border-main)' }} />
           )}
 
         </div>
@@ -48,5 +43,3 @@ const AddEmployeeSteps = ({ currentStep, onStepChange }) => {
 };
 
 export default AddEmployeeSteps;
-
-

@@ -1,16 +1,16 @@
 import BaseCard from "../../../../components/UI/Card";
 import React from 'react'
-
 function DocumentsCard({ applicant }) {
     const { documents } = applicant || {};
     return (
         <BaseCard className="flex flex-col gap-4">
-            <p className="text-slate-400 text-xs font-medium uppercase tracking-wider">
+            <p className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
                 Documents
             </p>
             <div className="flex gap-3">
                 {documents?.resume ? (
                     <a
+                    
                         href={documents.resume}
                         target="_blank"
                         rel="noreferrer"
@@ -20,7 +20,10 @@ function DocumentsCard({ applicant }) {
                         View Resume
                     </a>
                 ) : (
-                    <span className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-500 text-sm cursor-not-allowed">
+                    <span
+                        style={{ background: 'var(--tab-inactive-bg)', borderColor: 'var(--border-main)', color: 'var(--text-muted)' }}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm cursor-not-allowed"
+                    >
                         <i className="fas fa-file-pdf text-sm"></i>
                         No Resume
                     </span>
@@ -30,20 +33,24 @@ function DocumentsCard({ applicant }) {
                         href={documents.portfolio}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-300 text-sm hover:bg-white/10 transition-all"
+                        style={{ background: 'var(--tab-inactive-bg)', borderColor: 'var(--border-main)', color: 'var(--text-main)' }}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm hover:opacity-80 transition-all"
                     >
                         <i className="fas fa-globe text-sm"></i>
                         Portfolio
                     </a>
                 ) : (
-                    <span className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-500 text-sm cursor-not-allowed">
+                    <span
+                        style={{ background: 'var(--tab-inactive-bg)', borderColor: 'var(--border-main)', color: 'var(--text-muted)' }}
+                        className="flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm cursor-not-allowed"
+                    >
                         <i className="fas fa-globe text-sm"></i>
                         No Portfolio
                     </span>
                 )}
             </div>
-        </BaseCard >
-    )
+        </BaseCard>
+    );
 }
 
 export default DocumentsCard;

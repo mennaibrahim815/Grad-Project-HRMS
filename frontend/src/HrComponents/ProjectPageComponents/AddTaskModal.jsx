@@ -1,3 +1,4 @@
+
 import { X, Loader2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import API from "@/services/axios";
@@ -7,6 +8,7 @@ export default function AddTaskModal({ projectId, onClose, onSuccess }) {
   const [taskTitle, setTaskTitle] = useState("");
   const [status, setStatus] = useState("Pending");
   const [priority, setPriority] = useState("Medium");
+  const [deadline, setDeadline] = useState(""); 
   
   const [employeeSearch, setEmployeeSearch] = useState("");
   const [filteredEmployees, setFilteredEmployees] = useState([]);
@@ -41,10 +43,10 @@ export default function AddTaskModal({ projectId, onClose, onSuccess }) {
   }, [employeeSearch]);
 
   const handleSaveTask = async () => {
-    if (!taskTitle || !selectedEmployee) {
+    if (!taskTitle.trim() || !selectedEmployee || !deadline) {
       Swal.fire({
         title: "Warning!",
-        text: "Please fill in the title and assign an employee.",
+        text: "Please fill in the title, deadline, and assign an employee.",
         icon: "warning",
         confirmButtonColor: "#0891b2",
         background: "#182731",
@@ -55,32 +57,36 @@ export default function AddTaskModal({ projectId, onClose, onSuccess }) {
 
     setLoading(true);
 
-    // بناء الـ Payload المتطابق مع تعديل الباك إند الجديد في الـ Task
+    // دالة لضمان صياغة التاريخ السليمة والمقبولة بالسيرفر YYYY-MM-DD
+    const formatDate = (dateStr) => {
+      if (!dateStr) return "";
+      return new Date(dateStr).toISOString().split('T')[0];
+    };
+
     const taskPayload = {
       title: taskTitle,
-      assignment: {
-        status: status,
-        priority: priority,
-        assignedTo: [
-          {
-            _id: selectedEmployee.id,
-            general: {
-              firstName: selectedEmployee.firstName,
-              lastName: selectedEmployee.lastName,
-              avatar: selectedEmployee.img
-            },
-            employee: {
-              jobTitle: selectedEmployee.jobTitle
-            }
+      status: status,
+      priority: priority,
+      deadline: formatDate(deadline), 
+      assignedTo: [
+        {
+          _id: selectedEmployee._id,
+          general: {
+            firstName: selectedEmployee.general?.firstName || "",
+            lastName: selectedEmployee.general?.lastName || "",
+            avatar: selectedEmployee.general?.avatar || ""
+          },
+          employee: {
+            jobTitle: selectedEmployee.employee?.jobTitle || "Software Engineer"
           }
-        ]
-      }
+        }
+      ]
     };
 
     try {
-      // إرسال الـ request إلى الـ endpoint بالـ projectId المطلوب للـ Task
       const response = await API.post(`/tasks/${projectId}`, taskPayload);
-      if (response.data.status === "success") {
+      
+      if (response.data.status === "success" || response.status === 201) {
         Swal.fire({
           title: "Success!",
           text: "Task added to project successfully!",
@@ -91,14 +97,29 @@ export default function AddTaskModal({ projectId, onClose, onSuccess }) {
           color: "#fff",
           iconColor: "#0891b2",
         });
-        if (onSuccess) onSuccess();
+
+        if (onSuccess) {
+          onSuccess(response.data.data.task);
+        }
         onClose();
       }
     } catch (error) {
-      console.error("Error creating task:", error);
+      console.error("Error creating task:", error.response?.data);
+      
+      const backendError = error.response?.data?.message;
+      let errorText = "Error saving task";
+
+      if (Array.isArray(backendError)) {
+        errorText = backendError.map(err => `${err.field || 'Field'}: ${err.message}`).join("\n");
+      } else if (typeof backendError === "string") {
+        errorText = backendError;
+      } else if (backendError?.message) {
+        errorText = backendError.message;
+      }
+
       Swal.fire({
-        title: "Error!",
-        text: error.response?.data?.message?.[0]?.message || "Error saving task",
+        title: "Validation Error!",
+        text: errorText,
         icon: "error",
         confirmButtonColor: "#0891b2",
         background: "#182731",
@@ -157,6 +178,17 @@ export default function AddTaskModal({ projectId, onClose, onSuccess }) {
           </select>
         </div>
 
+        {/* Deadline Input */}
+        <div className="flex flex-col mb-4">
+          <label className="text-gray-400 text-sm mb-1">Deadline</label>
+          <input
+            type="date"
+            value={deadline}
+            className="w-full bg-[#1B1E22] border border-white/10 rounded-xl px-3 py-2 text-white outline-none focus:border-blue-500 [color-scheme:dark]"
+            onChange={(e) => setDeadline(e.target.value)}
+          />
+        </div>
+
         {/* Assigned Employee Search */}
         <div className="flex flex-col mb-6 relative">
           <label className="text-gray-400 text-sm mb-1">Assigned To</label>
@@ -164,8 +196,10 @@ export default function AddTaskModal({ projectId, onClose, onSuccess }) {
           {selectedEmployee && (
             <div className="flex items-center justify-between bg-blue-500/10 border border-blue-500/20 px-3 py-2 rounded-xl mb-2">
               <div className="flex items-center gap-2">
-                <img src={selectedEmployee.img || "https://i.pravatar.cc/100"} className="w-6 h-6 rounded-full" alt="" />
-                <span className="text-xs text-blue-400">{selectedEmployee.name} ({selectedEmployee.jobTitle})</span>
+                <img src={selectedEmployee.general?.avatar || "https://i.pravatar.cc/100"} className="w-6 h-6 rounded-full object-cover" alt="" />
+                <span className="text-xs text-blue-400">
+                  {selectedEmployee.general?.firstName} {selectedEmployee.general?.lastName} ({selectedEmployee.employee?.jobTitle || "Employee"})
+                </span>
               </div>
               <button onClick={() => setSelectedEmployee(null)} className="text-blue-400/50 hover:text-red-400">
                 <X size={14} />
@@ -193,20 +227,13 @@ export default function AddTaskModal({ projectId, onClose, onSuccess }) {
                   key={emp._id}
                   className="flex items-center gap-3 px-4 py-3 hover:bg-[#2A2E35] cursor-pointer text-white text-sm"
                   onClick={() => {
-                    setSelectedEmployee({
-                      id: emp._id,
-                      name: `${emp.general.firstName} ${emp.general.lastName}`,
-                      firstName: emp.general.firstName,
-                      lastName: emp.general.lastName,
-                      img: emp.general.avatar,
-                      jobTitle: emp.employee?.jobTitle || "Software Engineer"
-                    });
+                    setSelectedEmployee(emp); 
                     setEmployeeSearch("");
                     setFilteredEmployees([]);
                   }}
                 >
-                  <img src={emp.general.avatar || "https://i.pravatar.cc/100"} className="w-8 h-8 rounded-full" alt="" />
-                  <span>{emp.general.firstName} {emp.general.lastName}</span>
+                  <img src={emp.general?.avatar || "https://i.pravatar.cc/100"} className="w-8 h-8 rounded-full object-cover" alt="" />
+                  <span>{emp.general?.firstName} {emp.general?.lastName}</span>
                 </li>
               ))}
             </ul>
@@ -215,8 +242,9 @@ export default function AddTaskModal({ projectId, onClose, onSuccess }) {
 
         {/* Action Buttons */}
         <div className="flex gap-4 mt-8">
-          <button className="flex-1 border border-white/20 text-gray-300 py-2.5 rounded-full text-sm" onClick={onClose}>Cancel</button>
+          <button type="button" className="flex-1 border border-white/20 text-gray-300 py-2.5 rounded-full text-sm" onClick={onClose}>Cancel</button>
           <button
+            type="button"
             onClick={handleSaveTask}
             disabled={loading}
             className="flex-1 bg-white text-black py-2.5 rounded-full font-bold text-sm disabled:opacity-50 flex items-center justify-center gap-2"

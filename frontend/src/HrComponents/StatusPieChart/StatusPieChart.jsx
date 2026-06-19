@@ -1,7 +1,6 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 import { useNavigate } from "react-router-dom";
 
-
 const renderCustomizedLabel = ({
   cx,
   cy,
@@ -30,14 +29,17 @@ const renderCustomizedLabel = ({
     </g>
   );
 };
+
 const StatusPieChart = ({ data, totalCount, title, pieStripes }) => {
   const navigate = useNavigate();
 
-  
   if (!data || data.length === 0) {
     return (
-      <div className="bg-[#142129] p-8 rounded-[2.5rem] border border-gray-800/50 shadow-xl h-full flex items-center justify-center min-h-[420px]">
-        <div className="text-center text-gray-500">
+      <div
+        style={{ background: 'var(--bg-card)' }}
+        className="p-8 rounded-[2.5rem] shadow-xl h-full flex items-center justify-center min-h-[420px]"
+      >
+        <div className="text-center" style={{ color: 'var(--text-muted)' }}>
           <i className="fas fa-chart-pie text-4xl mb-3 opacity-30"></i>
           <p className="text-sm">No data available</p>
         </div>
@@ -46,13 +48,19 @@ const StatusPieChart = ({ data, totalCount, title, pieStripes }) => {
   }
 
   return (
-    <div className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] p-[20px] rounded-[2.5rem] border border-gray-800/50 shadow-xl h-full flex flex-col relative min-h-[420px] overflow-hidden">
+    <div
+      style={{
+        background: 'linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)',
+      }}
+      className="p-[20px] rounded-[2.5rem] shadow-xl h-full flex flex-col relative min-h-[420px] overflow-hidden"
+    >
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h3 className="text-xl font-bold text-white">{title}</h3>
+        <h3 className="text-xl font-bold" style={{ color: 'var(--text-main)' }}>{title}</h3>
         <button
-          onClick={() => navigate("/employees")} 
-          className="w-9 h-9 bg-[#0b141a] rounded-full flex items-center justify-center text-gray-500 hover:text-blue-500 transition-all"
+          onClick={() => navigate("/employees")}
+          style={{ background: 'var(--bg-deep)', color: 'var(--text-muted)' }}
+          className="w-9 h-9 rounded-full flex items-center justify-center hover:text-blue-500 transition-all"
         >
           <i className="fas fa-arrow-right -rotate-45 text-xs"></i>
         </button>
@@ -79,9 +87,9 @@ const StatusPieChart = ({ data, totalCount, title, pieStripes }) => {
                 label={renderCustomizedLabel}
               >
                 {data.map((entry, index) => (
-                  <Cell 
-                    key={index} 
-                    fill={entry.name === pieStripes ? "url(#pieStripes)" : entry.color} 
+                  <Cell
+                    key={index}
+                    fill={entry.name === pieStripes ? "url(#pieStripes)" : entry.color}
                   />
                 ))}
               </Pie>
@@ -89,8 +97,8 @@ const StatusPieChart = ({ data, totalCount, title, pieStripes }) => {
           </ResponsiveContainer>
 
           <div className="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
-            <span className="text-3xl font-black text-white">{totalCount}</span>
-            <span className="text-[13px] text-gray-400">Total</span>
+            <span className="text-3xl font-black" style={{ color: 'var(--text-main)' }}>{totalCount}</span>
+            <span className="text-[13px]" style={{ color: 'var(--text-muted)' }}>Total</span>
           </div>
         </div>
 
@@ -100,8 +108,8 @@ const StatusPieChart = ({ data, totalCount, title, pieStripes }) => {
             <div key={i} className="flex items-center gap-3">
               <span className="w-2.5 h-2.5 rounded-full" style={{ background: item.color }} />
               <div>
-                <p className="text-gray-200 font-bold">{item.name}</p>
-                <p className="text-xs text-gray-500">
+                <p className="font-bold" style={{ color: 'var(--text-main)' }}>{item.name}</p>
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
                   {item.value} {item.label || "Count"}
                 </p>
               </div>
@@ -112,4 +120,5 @@ const StatusPieChart = ({ data, totalCount, title, pieStripes }) => {
     </div>
   );
 };
+
 export default StatusPieChart;

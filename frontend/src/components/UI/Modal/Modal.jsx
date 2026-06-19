@@ -5,7 +5,7 @@ const Modal = ({ open, onClose, children }) => {
     <AnimatePresence>
       {open && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
-          
+
           {/* overlay */}
           <motion.div
             onClick={onClose}
@@ -21,7 +21,8 @@ const Modal = ({ open, onClose, children }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
             transition={{ duration: 0.25 }}
-            className="relative w-full max-w-[420px] rounded-3xl bg-[#24272E] text-white shadow-2xl"
+            style={{ background: 'var(--modal-bg)', color: 'var(--text-main)' }}
+            className="relative w-full max-w-[420px] rounded-3xl shadow-2xl"
           >
             {children}
           </motion.div>

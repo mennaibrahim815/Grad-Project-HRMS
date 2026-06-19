@@ -68,21 +68,23 @@ export const applyToJob = createAsyncThunk(
     "careers/applyToJob",
     async ({ jobId, formData }, { rejectWithValue }) => {
         try {
-            // formData هنا هو FormData object مش object عادي
-            // عشان في resume file
             const response = await axiosPublic.post(`/applicants/apply/${jobId}`, formData, {
                 headers: { "Content-Type": "multipart/form-data" },
             });
             return response.data;
         } catch (err) {
-            console.log("API raw error:", err.response?.data);
+            // ✅ اطبعي كل حاجة عشان تشوفي الـ error الحقيقي
+            console.log("Full axios error:", err);
+            console.log("err.response:", err.response);
+            console.log("err.message:", err.message);
+            console.log("err.code:", err.code);
+
             const errData = err.response?.data;
             if (Array.isArray(errData)) return rejectWithValue(errData);
             return rejectWithValue(errData?.message || "Failed to submit application");
         }
     }
 );
-
 // ─────────────────────────────────────────────
 // Slice
 // ─────────────────────────────────────────────

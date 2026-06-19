@@ -31,17 +31,20 @@ const renderCustomizedLabel = ({
   );
 };
 
-const PayrollStatus = ({ data,pieStripes }) => {
+const PayrollStatus = ({ data, pieStripes }) => {
   const navigate = useNavigate();
 
   const { analytics } = useSelector((state) => state.dashboard);
-  const totalCount = data?.total_employees|| "0";
+  const totalCount = data?.total_employees || "0";
 
   // Error Handling
   if (!data || data.length === 0) {
     return (
-      <div className="bg-[#142129] p-8 rounded-[2.5rem] border border-gray-800/50 shadow-xl h-full flex items-center justify-center min-h-[420px]">
-        <div className="text-center text-gray-500">
+      <div
+        style={{ background: 'var(--bg-card)' }}
+        className="p-8 rounded-[2.5rem] shadow-xl h-full flex items-center justify-center min-h-[420px]"
+      >
+        <div className="text-center" style={{ color: 'var(--text-muted)' }}>
           <i className="fas fa-users text-4xl mb-3 opacity-30"></i>
           <p className="text-sm">No employee status data available</p>
         </div>
@@ -50,13 +53,19 @@ const PayrollStatus = ({ data,pieStripes }) => {
   }
 
   return (
-    <div className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] p-[20px] rounded-[2.5rem] border border-gray-800/50 shadow-xl h-full flex flex-col relative min-h-[420px] overflow-hidden">
+    <div
+      style={{
+        background: 'linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)',
+      }}
+      className="p-[20px] rounded-[2.5rem] shadow-xl h-full flex flex-col relative min-h-[420px] overflow-hidden"
+    >
       {/* الهيدر */}
       <div className="flex justify-between items-center mb-8">
-        <h3 className="text-xl font-bold text-white">Payroll status</h3>
+        <h3 className="text-xl font-bold" style={{ color: 'var(--text-main)' }}>Payroll status</h3>
         <button
           onClick={() => navigate("/employees")}
-          className="w-9 h-9 bg-[#0b141a] rounded-full flex items-center justify-center text-gray-500 hover:text-blue-500 transition-all border border-transparent hover:border-blue-500/30"
+          style={{ background: 'var(--bg-deep)', color: 'var(--text-muted)' }}
+          className="w-9 h-9 rounded-full flex items-center justify-center hover:text-blue-500 transition-all border border-transparent hover:border-blue-500/30"
           title="Go to Employees"
         >
           <i className="fas fa-arrow-right -rotate-45 text-xs"></i>
@@ -68,7 +77,6 @@ const PayrollStatus = ({ data,pieStripes }) => {
         <div className="w-56 h-56 relative flex-shrink-0">
           <ResponsiveContainer w-70 h-72>
             <PieChart>
-              {/* Pattern للخطوط المائلة (Part-time) */}
               <defs>
                 <pattern
                   id="pieStripes"
@@ -112,10 +120,10 @@ const PayrollStatus = ({ data,pieStripes }) => {
 
           {/* الرقم في منتصف الدائرة */}
           <div className="absolute inset-0 flex items-center justify-center flex-col pointer-events-none translate-y-[-2px]">
-            <span className="text-3xl font-black text-white tracking-tight leading-none">
+            <span className="text-3xl font-black tracking-tight leading-none" style={{ color: 'var(--text-main)' }}>
               {totalCount}
             </span>
-            <span className="text-[13px] text-gray-400 font-medium mt-1 uppercase tracking-wider">
+            <span className="text-[13px] font-medium mt-1 uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
               Employee
             </span>
           </div>
@@ -135,10 +143,10 @@ const PayrollStatus = ({ data,pieStripes }) => {
                 }}
               ></span>
               <div className="flex-1">
-                <p className="text-l font-bold text-gray-200 leading-none mb-1">
+                <p className="text-l font-bold leading-none mb-1" style={{ color: 'var(--text-main)' }}>
                   {item.name}
                 </p>
-                <p className="text-[11px] text-gray-500 font-medium">
+                <p className="text-[11px] font-medium" style={{ color: 'var(--text-muted)' }}>
                   {item.value}% Employees
                 </p>
               </div>
@@ -151,5 +159,3 @@ const PayrollStatus = ({ data,pieStripes }) => {
 };
 
 export default PayrollStatus;
-
-

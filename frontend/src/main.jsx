@@ -5,6 +5,9 @@ import store from "./store/appStore";
 import App from "./App"; // ✅ مهم
 import "./styles/index.css";
 
+// قبل ReactDOM.createRoot
+const savedTheme = localStorage.getItem("theme") || "dark";
+document.documentElement.setAttribute("data-theme", savedTheme);
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>

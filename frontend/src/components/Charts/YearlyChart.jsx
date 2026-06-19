@@ -7,23 +7,14 @@ import {
 } from "recharts";
 
 const YearlyChart = ({
-  // Data & Loading
   data = [],
   isLoading = false,
-
-  // Title
   title = "Yearly Overview",
-
-  // Year selector
   selectedYear,
   onYearChange,
-
-  // Bar 1 config
   bar1Key = "netSalaries",
   bar1Label = "Net Salaries",
   bar1Color = { start: "#00c6ff", end: "#0072ff" },
-
-  // Bar 2 config
   bar2Key = "deductions",
   bar2Label = "Deduction",
 }) => {
@@ -31,21 +22,26 @@ const YearlyChart = ({
   const years = [currentYear - 2, currentYear - 1, currentYear];
 
   return (
-    <div className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] p-[20px] rounded-[2.5rem] border border-gray-800/50 shadow-xl w-full mb-8 min-h-[420px] h-full">
+    <div
+      style={{
+        background: 'linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)',
+      }}
+      className="p-[20px] rounded-[2.5rem] shadow-xl w-full mb-8 min-h-[420px] h-full"
+    >
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
-        <h3 className="text-xl font-bold text-white mb-1">{title}</h3>
+        <h3 className="text-xl font-bold mb-1" style={{ color: 'var(--text-main)' }}>{title}</h3>
 
         <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-6 flex-wrap">
           {/* Legend */}
           <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
             <div className="flex items-center gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 shrink-0" />
-              <span className="text-slate-400 text-xs whitespace-nowrap">{bar1Label}</span>
+              <span className="text-xs whitespace-nowrap" style={{ color: 'var(--text-muted)' }}>{bar1Label}</span>
             </div>
             <div className="flex items-center gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-slate-500 shrink-0" />
-              <span className="text-slate-400 text-xs whitespace-nowrap">{bar2Label}</span>
+              <span className="text-xs whitespace-nowrap" style={{ color: 'var(--text-muted)' }}>{bar2Label}</span>
             </div>
           </div>
 
@@ -54,10 +50,11 @@ const YearlyChart = ({
             <select
               value={selectedYear}
               onChange={(e) => onYearChange(Number(e.target.value))}
-              className="px-3 py-1.5 bg-slate-700/60 border border-slate-600/50 rounded-lg text-slate-200 text-sm focus:outline-none focus:border-cyan-500/50 transition-all cursor-pointer shrink-0"
+              style={{ background: 'var(--tab-inactive-bg)', borderColor: 'var(--border-main)', color: 'var(--text-main)' }}
+              className="px-3 py-1.5 border rounded-lg text-sm focus:outline-none focus:border-cyan-500/50 transition-all cursor-pointer shrink-0"
             >
               {years.map((y) => (
-                <option key={y} value={y} className="bg-[#182731]">{y}</option>
+                <option key={y} value={y} style={{ background: 'var(--bg-card)', color: 'var(--text-main)' }}>{y}</option>
               ))}
             </select>
           )}
@@ -84,17 +81,17 @@ const YearlyChart = ({
                     <stop offset="100%" stopColor={bar1Color.end} />
                   </linearGradient>
                   <pattern id="deductionHatch" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(45 2 2)">
-                    <path d="M-1,2 l6,0" stroke="#374151" strokeWidth="2" />
+                    <path d="M-1,2 l6,0" stroke="var(--border-main)" strokeWidth="2" />
                   </pattern>
                 </defs>
 
-                <CartesianGrid vertical={false} stroke="#1f2937" strokeDasharray="3 3" opacity={0.3} />
+                <CartesianGrid vertical={false} stroke="var(--border-main)" strokeDasharray="3 3" opacity={0.3} />
 
                 <XAxis
                   dataKey="monthName"
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#4b5563", fontSize: 11 }}
+                  tick={{ fill: "var(--text-muted)", fontSize: 11 }}
                   dy={15}
                   tickFormatter={(val) => val.substring(0, 3)}
                 />
@@ -102,25 +99,28 @@ const YearlyChart = ({
                 <YAxis
                   axisLine={false}
                   tickLine={false}
-                  tick={{ fill: "#4b5563", fontSize: 11 }}
+                  tick={{ fill: "var(--text-muted)", fontSize: 11 }}
                   tickFormatter={(v) => v >= 1000 ? `${v / 1000}k` : v}
                 />
 
                 <Tooltip
-                  cursor={{ fill: "rgba(255,255,255,0.02)" }}
+                  cursor={{ fill: "rgba(128,128,128,0.08)" }}
                   content={({ active, payload }) => {
                     if (!active || !payload?.length) return null;
                     const d = payload[0].payload;
                     return (
-                      <div className="bg-[#0b141a] border border-gray-700 rounded-xl p-3 shadow-xl">
-                        <p className="text-xs text-gray-400 font-bold mb-2">
+                      <div
+                        style={{ background: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
+                        className="border rounded-xl p-3 shadow-xl"
+                      >
+                        <p className="text-xs font-bold mb-2" style={{ color: 'var(--text-muted)' }}>
                           {d.monthName} {selectedYear}
                         </p>
                         <div className="text-xs space-y-1">
                           <p className="text-cyan-400">
                             {bar1Label}: {d[bar1Key]?.toLocaleString()}
                           </p>
-                          <p className="text-slate-500">
+                          <p style={{ color: 'var(--text-muted)' }}>
                             {bar2Label}: {d[bar2Key]?.toLocaleString()}
                           </p>
                         </div>
@@ -142,7 +142,7 @@ const YearlyChart = ({
                   fill="url(#deductionHatch)"
                   radius={[4, 4, 0, 0]}
                   barSize={30}
-                  stroke="#374151"
+                  stroke="var(--border-main)"
                 />
               </BarChart>
             </ResponsiveContainer>

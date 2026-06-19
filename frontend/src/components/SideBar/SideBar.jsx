@@ -19,6 +19,7 @@ const Sidebar = () => {
     { name: "Dashboard", icon: "fas fa-th-large", path: "/dashboard" },
     { name: "Employees", icon: "fas fa-users", path: "/employees" },
     { name: "Project", icon: "fas fa-project-diagram", path: "/project" },
+    { name: "Tasks", icon: "fas fa-check-circle", path: "/Tasks" },
     {
       name: "Payroll",
       icon: "fas fa-wallet",
@@ -52,7 +53,7 @@ const Sidebar = () => {
     { name: "Payroll", icon: "fas fa-wallet", path: "/my-payroll" },
     { name: "My Leaves", icon: "fas fa-plane", path: "/my-leaves" },
     { name: "My Requests", icon: "fas fa-file-alt", path: "/my-requests" },
-    { name: "Tasks", icon: "fas fa-check-circle", path: "/tasks", badge: 3 },
+    { name: "My Tasks", icon: "fas fa-check-circle", path: "/my-tasks" },
     { name: "Notifications", icon: "fas fa-bell", path: "/notifications" },
   ];
 
