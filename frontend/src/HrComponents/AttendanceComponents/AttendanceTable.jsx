@@ -7,7 +7,6 @@ import {
 import { deleteEmployee } from "../../store/HrSlices/employeeSlice";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-// ✨ استدعاء السوكيت ✨
 import { io } from "socket.io-client";
 
 import DataTable from "../../components/table/DataTable";
@@ -81,7 +80,6 @@ const AttendanceTable = () => {
     });
   };
 
-  // جلب البيانات الأساسية
   useEffect(() => {
     if (searchQuery.trim()) {
       dispatch(
@@ -104,11 +102,7 @@ const AttendanceTable = () => {
     }
   }, [dispatch, tableDate, recordsPerPage, activeFilter, searchQuery]);
 
-  // ==========================================
-  // ✨ اللمسة السحرية: تفعيل السوكيت للريال تايم ✨
-  // ==========================================
   useEffect(() => {
-    // ⚠️ غير اللينك ده للينك الباك إند بتاعك على Railway لما ترفع، وسيبه كده في اللوكال
     const socket = io("https://grad-project-hrms-production.up.railway.app", {
       withCredentials: true,
     });
@@ -116,16 +110,13 @@ const AttendanceTable = () => {
     const handleNewCheckin = (newRecord) => {
       console.log("السيرفر بعت بصمة جديدة:", newRecord);
 
-      // الفلتر الذكي اللي اتفقنا عليه
       const isMatchingStatus =
         activeFilter === "All" || activeFilter === newRecord.status;
       const isFirstPage = pagination.currentPage === 1;
 
-      // مش هنضيفه في الشاشة إلا لو هو من نفس الفلتر اللي احنا فاتحينه وفي الصفحة الأولى
       if (isMatchingStatus && isFirstPage) {
         dispatch(addNewAttendanceRecord(newRecord));
       } else {
-        // ممكن بعدين تحطوا Toast notification هنا
         console.log(
           `موظف بصم: ${newRecord.employee?.firstName} وحالته ${newRecord.status}`,
         );
@@ -134,13 +125,11 @@ const AttendanceTable = () => {
 
     socket.on("new_checkin", handleNewCheckin);
 
-    // تنظيف الاتصال لما الشاشة تتقفل
     return () => {
       socket.off("new_checkin", handleNewCheckin);
       socket.disconnect();
     };
   }, [dispatch, activeFilter, pagination.currentPage]);
-  // ==========================================
 
   const columns = [
     {
@@ -157,8 +146,8 @@ const AttendanceTable = () => {
               style={{ imageRendering: "auto" }}
             />
             <div>
-              <p className="text-sm font-medium text-slate-100">{fullName}</p>
-              <p className="text-xs text-slate-500">{row.employeeId}</p>
+              <p className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>{fullName}</p>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{row.employeeId}</p>
             </div>
           </div>
         );
@@ -180,9 +169,9 @@ const AttendanceTable = () => {
       header: "Check In",
       accessor: "checkIn",
       render: (row) => {
-        if (!row.checkIn) return <span className="text-slate-500 text-xs">—</span>;
+        if (!row.checkIn) return <span className="text-xs" style={{ color: 'var(--text-muted)' }}>—</span>;
         return (
-          <span className="text-slate-300 text-sm font-medium">
+          <span className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>
             {new Date(row.checkIn).toLocaleTimeString("en-US", {
               hour: "2-digit",
               minute: "2-digit",
@@ -197,7 +186,7 @@ const AttendanceTable = () => {
       accessor: "status",
       render: (row) => <AttendanceBadge status={row.status} />,
     },
-    
+
   ];
 
   const handlePageChange = (newPage) => {
@@ -235,7 +224,8 @@ const AttendanceTable = () => {
             {tableDate && (
               <button
                 onClick={() => setTableDate("")}
-                className="text-xs text-slate-400 hover:text-slate-200 transition-colors"
+                style={{ color: 'var(--text-muted)' }}
+                className="text-xs hover:opacity-70 transition-colors"
               >
                 <i className="fas fa-times" />
               </button>

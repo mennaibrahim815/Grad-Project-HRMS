@@ -1,13 +1,12 @@
-// StatsCards.jsx
 import { motion } from "framer-motion";
 import { ClipboardList, CheckCircle2, Clock, XCircle } from "lucide-react";
 
 const DEFAULT_ICONS = [ClipboardList, CheckCircle2, Clock, XCircle];
 const DEFAULT_ICON_STYLES = [
-  { bg: "bg-[#013256]", color: "#62BDFE" },
-  { bg: "bg-[#00331E]", color: "#A8FFDA" },
-  { bg: "bg-[#673204]", color: "#FBCCA2" },
-  { bg: "bg-[#34141F]", color: "#F598B7" },
+  { bg: 'var(--icon-blue-bg)', color: 'var(--icon-blue-color)' },
+  { bg: 'var(--icon-green-bg)', color: 'var(--icon-green-color)' },
+  { bg: 'var(--icon-orange-bg)', color: 'var(--icon-orange-color)' },
+  { bg: 'var(--icon-pink-bg)', color: 'var(--icon-pink-color)' },
 ];
 
 const STATUS_BADGE_STYLES = {
@@ -31,13 +30,19 @@ const StatsCards = ({ cards, gridCols = "md:grid-cols-4" }) => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: i * 0.1 }}
             whileHover={{ scale: 1.02 }}
-            className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] p-5 sm:p-7 rounded-[2rem] border border-gray-800/50 relative group transition-all hover:border-blue-500/30 overflow-hidden"
+            style={{
+              background: 'linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)',
+            }}
+            className="p-5 sm:p-7 rounded-[2rem] relative group transition-all hover:border-blue-500/30 overflow-hidden"
           >
             <div className="flex items-center gap-3 mb-3">
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${iconStyle.bg}`}>
+              <div
+                style={{ background: iconStyle.bg }}
+                className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0"
+              >
                 <Icon size={16} color={iconStyle.color} />
               </div>
-              <p className="text-gray-500 text-xs sm:text-sm font-black uppercase tracking-widest truncate">
+              <p className="text-xs sm:text-sm font-black uppercase tracking-widest truncate" style={{ color: 'var(--text-muted)' }}>
                 {card.title}
               </p>
             </div>
@@ -70,7 +75,7 @@ const StatsCards = ({ cards, gridCols = "md:grid-cols-4" }) => {
               <div className={`text-xs font-bold flex items-center gap-1 flex-wrap mt-2 ${card.up ? "text-green-500" : "text-pink-500"}`}>
                 <i className={`fas fa-arrow-${card.up ? "up" : "down"}`}></i>
                 {card.change}%
-                <span className="text-gray-600 font-medium ml-1 text-[10px]">vs last month</span>
+                <span className="font-medium ml-1 text-[10px]" style={{ color: 'var(--text-muted)' }}>vs last month</span>
               </div>
             ) : null}
           </motion.div>

@@ -11,7 +11,7 @@ import ProfessionalInfoCard from "../../HrComponents/HiringComponents/HiringDeta
 import DocumentsCard from "../../HrComponents/HiringComponents/HiringDetails/cards/DocumentsCard";
 import SkillsCard from "../../HrComponents/HiringComponents/HiringDetails/cards/SkillsCard";
 import AdditionalInfoCard from "../../HrComponents/HiringComponents/HiringDetails/cards/AdditionalInfoCard";
-import { ATSScoreCard, AppliedJobCard } from "../../HrComponents/HiringComponents/HiringDetails/cards/ATSScoreCard"; // ✅
+import { ATSScoreCard, AppliedJobCard } from "../../HrComponents/HiringComponents/HiringDetails/cards/ATSScoreCard";
 
 function HiringDetail() {
     const navigate = useNavigate();
@@ -39,12 +39,13 @@ function HiringDetail() {
                 {/* Page title */}
                 <div className="flex items-center gap-3 mb-6">
                     <button
-                        className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
+                        style={{ color: 'var(--text-muted)' }}
+                        className="p-2 rounded-lg hover:opacity-70 transition-colors"
                         onClick={() => navigate(-1)}
                     >
-                        <ArrowLeft size={20} className="text-slate-400" />
+                        <ArrowLeft size={20} />
                     </button>
-                    <h1 className="text-white text-xl font-semibold">Detail candidate</h1>
+                    <h1 className="text-xl font-semibold" style={{ color: 'var(--text-main)' }}>Detail candidate</h1>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr_220px] gap-5">
@@ -62,7 +63,7 @@ function HiringDetail() {
                         <DocumentsCard applicant={selectedApplicant} />
                     </div>
 
-                    {/* Col 3 ✅ */}
+                    {/* Col 3 */}
                     <div className="flex flex-col gap-5">
                         <ATSScoreCard applicant={selectedApplicant} />
                         <AppliedJobCard applicant={selectedApplicant} />

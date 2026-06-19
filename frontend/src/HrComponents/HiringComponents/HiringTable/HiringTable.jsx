@@ -34,13 +34,12 @@ const StatusBadge = ({ status }) => {
 const ATSBar = ({ score }) => {
     const pct = Math.max(0, Math.min(100, score ?? 0));
 
-    // لون الـ gradient بناءً على الـ score
     const fillGradient =
         pct >= 70
-            ? "linear-gradient(90deg, #00A860, #4BFFB2)"   // أخضر — ممتاز
+            ? "linear-gradient(90deg, #00A860, #4BFFB2)"
             : pct >= 40
-            ? "linear-gradient(90deg, #1274F3, #4BFFB2)"   // أزرق — متوسط
-            : "linear-gradient(90deg, #EC3A76, #f97316)";  // أحمر — ضعيف
+            ? "linear-gradient(90deg, #1274F3, #4BFFB2)"
+            : "linear-gradient(90deg, #EC3A76, #f97316)";
 
     const textColor =
         pct >= 70 ? "#4BFFB2" : pct >= 40 ? "#4BFFB2" : "#EC3A76";
@@ -48,28 +47,28 @@ const ATSBar = ({ score }) => {
     return (
         <div className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between">
-                <span className="text-[11px] text-slate-500">ATS Score</span>
+                <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>ATS Score</span>
                 <span className="text-xs font-semibold" style={{ color: textColor }}>
                     {pct}%
                 </span>
             </div>
-            
-            {/* Track with Crisp Stripes like image_0.png */}
-            <div 
-                className="relative h-2 w-full rounded-full border border-slate-700 overflow-hidden"
+
+            {/* Track with Crisp Stripes */}
+            <div
+                className="relative h-2 w-full rounded-full border overflow-hidden"
                 style={{
-                    // استخدام خطوط قطرية حادة كخلفية (شبه الصورة المرفقة)
+                    borderColor: 'var(--border-main)',
                     backgroundImage: `linear-gradient(
-                        -45deg, 
-                        #1e293b 25%, 
-                        #273447 25%, 
-                        #273447 50%, 
-                        #1e293b 50%, 
-                        #1e293b 75%, 
-                        #273447 75%, 
-                        #273447
+                        -45deg,
+                        var(--bg-deep) 25%,
+                        var(--bg-card) 25%,
+                        var(--bg-card) 50%,
+                        var(--bg-deep) 50%,
+                        var(--bg-deep) 75%,
+                        var(--bg-card) 75%,
+                        var(--bg-card)
                     )`,
-                    backgroundSize: '8px 8px' // حجم الخطوط القطرية
+                    backgroundSize: '8px 8px'
                 }}
             >
                 {/* Fill */}
@@ -89,15 +88,15 @@ const ATSBar = ({ score }) => {
 
             {/* Legend */}
             <div className="flex items-center gap-4 mt-0.5">
-                <span className="flex items-center gap-1 text-[10px] text-slate-500">
+                <span className="flex items-center gap-1 text-[10px]" style={{ color: 'var(--text-muted)' }}>
                     <span className="w-2 h-2 rounded-full" style={{ background: "linear-gradient(90deg,#1274F3,#4BFFB2)" }} />
                     Active
                 </span>
-                <span className="flex items-center gap-1 text-[10px] text-slate-500">
-                    {/* تحديث لون الـ Legend ليعكس الشكل الجديد */}
-                    <span className="w-2 h-2 rounded-full border border-slate-700"
+                <span className="flex items-center gap-1 text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                    <span className="w-2 h-2 rounded-full border"
                         style={{
-                            backgroundImage: `linear-gradient(-45deg, #1e293b 25%, #273447 25%, #273447 50%, #1e293b 50%, #1e293b 75%, #273447 75%, #273447)`,
+                            borderColor: 'var(--border-main)',
+                            backgroundImage: `linear-gradient(-45deg, var(--bg-deep) 25%, var(--bg-card) 25%, var(--bg-card) 50%, var(--bg-deep) 50%, var(--bg-deep) 75%, var(--bg-card) 75%, var(--bg-card))`,
                             backgroundSize: '3px 3px'
                         }}
                     />
@@ -139,8 +138,8 @@ const ApplicantCard = ({ row, openMenuId, setOpenMenuId, navigate, setConfirmMod
                             className="w-10 h-10 rounded-full object-cover shrink-0"
                         />
                         <div className="min-w-0">
-                            <p className="text-sm font-semibold text-slate-100 truncate">{fullName || "—"}</p>
-                            <p className="text-[11px] text-slate-500">{row._id?.slice(-6)}</p>
+                            <p className="text-sm font-semibold truncate" style={{ color: 'var(--text-main)' }}>{fullName || "—"}</p>
+                            <p className="text-[11px]" style={{ color: 'var(--text-muted)' }}>{row._id?.slice(-6)}</p>
                         </div>
                     </div>
 
@@ -148,7 +147,7 @@ const ApplicantCard = ({ row, openMenuId, setOpenMenuId, navigate, setConfirmMod
                         <StatusBadge status={row.status || "Applied"} />
                         <button
                             onClick={() => setOpenMenuId(openMenuId === row._id ? null : row._id)}
-                            className="p-1.5 hover:bg-white/5 rounded-lg transition-colors text-[#0293FA]"
+                            className="p-1.5 hover:opacity-70 rounded-lg transition-colors text-[#0293FA]"
                         >
                             <EditIcon fontSize="small" />
                         </button>
@@ -164,7 +163,7 @@ const ApplicantCard = ({ row, openMenuId, setOpenMenuId, navigate, setConfirmMod
                 </div>
 
                 {/* Info grid */}
-                <div className="grid grid-cols-2 gap-2 text-xs text-slate-400">
+                <div className="grid grid-cols-2 gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
                     <div className="flex items-center gap-1.5 truncate">
                         <Building2 size={13} className="text-[#0293FA] shrink-0" />
                         <span className="truncate">{row.personalInfo?.department || "—"}</span>
@@ -186,13 +185,13 @@ const ApplicantCard = ({ row, openMenuId, setOpenMenuId, navigate, setConfirmMod
                 </div>
 
                 {/* ATS Score Bar */}
-                <div className="pt-3 border-t border-white/5">
+                <div className="pt-3 border-t" style={{ borderColor: 'var(--border-main)' }}>
                     <ATSBar score={row.atsScore} />
                 </div>
 
                 {/* Footer */}
                 <div className="flex items-center justify-between">
-                    <span className="text-[11px] text-slate-500">
+                    <span className="text-[11px]" style={{ color: 'var(--text-muted)' }}>
                         {row.createdAt ? new Date(row.createdAt).toLocaleDateString("en-GB") : "—"}
                     </span>
                     <button
@@ -267,22 +266,27 @@ const HiringTable = () => {
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 10 }}
                             transition={{ duration: 0.2 }}
-                            className="bg-gradient-to-br from-[#1e2a3a] to-[#162231] border border-slate-700 rounded-2xl p-6 w-full max-w-sm shadow-2xl"
+                            style={{
+                                background: 'linear-gradient(to bottom right, var(--menu-gradient-from), var(--menu-gradient-to))',
+                                borderColor: 'var(--border-main)',
+                            }}
+                            className="border rounded-2xl p-6 w-full max-w-sm shadow-2xl"
                         >
                             <div className="flex items-center justify-center w-12 h-12 rounded-full bg-red-500/15 mx-auto mb-4">
                                 <Trash2 size={22} className="text-pink-400" />
                             </div>
-                            <h3 className="text-white text-center font-semibold text-lg mb-1">Delete Applicant</h3>
-                            <p className="text-slate-400 text-center text-sm mb-6">
+                            <h3 className="text-center font-semibold text-lg mb-1" style={{ color: 'var(--text-main)' }}>Delete Applicant</h3>
+                            <p className="text-center text-sm mb-6" style={{ color: 'var(--text-muted)' }}>
                                 Are you sure you want to delete this applicant? This action cannot be undone.
                             </p>
                             <div className="flex gap-3">
                                 <button onClick={() => setConfirmModal({ open: false, userId: null })}
-                                    className="flex-1 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600 text-slate-300 text-sm font-medium transition-all">
+                                    style={{ background: 'var(--tab-inactive-bg)', color: 'var(--tab-inactive-text)' }}
+                                    className="flex-1 py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-80">
                                     Cancel
                                 </button>
                                 <button onClick={handleDelete} disabled={deleteLoading}
-                                    className="flex-1 py-2.5 rounded-xl bg-pink-400/12 text-pink-400 hover:bg-pink-400/10 text-sm font-medium transition-all disabled:opacity-60">
+                                    className="flex-1 py-2.5 rounded-xl bg-pink-400/12 text-pink-400 hover:bg-pink-400/20 text-sm font-medium transition-all disabled:opacity-60">
                                     {deleteLoading ? (
                                         <span className="flex items-center justify-center gap-2">
                                             <i className="fas fa-spinner fa-spin text-sm" />
@@ -312,7 +316,7 @@ const HiringTable = () => {
                     <i className="fas fa-spinner fa-spin text-4xl text-[#0293FA]" />
                 </div>
             ) : applicants.length === 0 ? (
-                <div className="flex items-center justify-center py-20 text-slate-500 text-sm">
+                <div className="flex items-center justify-center py-20 text-sm" style={{ color: 'var(--text-muted)' }}>
                     No applicants found
                 </div>
             ) : (

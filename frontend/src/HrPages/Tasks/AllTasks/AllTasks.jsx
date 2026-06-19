@@ -1,45 +1,52 @@
+
 import React, { useState, useEffect } from "react";
-import TasksTable from "@/HrComponents/TasksComponents/AllTasksTable.jsx"; // تأكدي من ضبط المسار الصحيح للمكون
-import API from "@/services/axios"; // مسار الـ axios الخاص بمشروعك
-import { ListTodo, Loader2, AlertCircle } from "lucide-react";
+import TasksTable from "@/HrComponents/TasksComponents/AllTasksTable.jsx";
+import EditTaskModal from "@/HrComponents/TasksComponents/EditTaskModal.jsx";
+import TasksStatsCards from "@/HrComponents/TasksComponents/TasksStatsCards.jsx";
+import API from "@/services/axios";
+import { ListTodo, AlertCircle } from "lucide-react";
 
 export default function HrAllTasksPage() {
   const [tasks, setTasks] = useState([]);
+  const [stats, setStats] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [statsLoading, setStatsLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // States الخاصة بالتحكم في الجدول (البحث والفلترة)
   const [searchTitle, setSearchTitle] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedTaskToEdit, setSelectedTaskToEdit] = useState(null);
+  const [pagination, setPagination] = useState({ currentPage: 1, totalPages: 1, limit: 5, totalRecords: 0 });
 
-  // State الـ Pagination المتوافق مع راجع الباكيند
-  const [pagination, setPagination] = useState({
-    currentPage: 1,
-    totalPages: 1,
-    limit: 5, // بناءً على الـ limit المرجع من الباكيند عندك
-    totalRecords: 0,
-  });
+  const fetchStats = async () => {
+    try {
+      setStatsLoading(true);
+      const response = await API.get("/tasks/stats");
+      if (response.data?.status === "success" && response.data?.data) setStats(response.data.data);
+    } catch (err) {
+      console.error("Error fetching task statistics:", err);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
 
-  // دالة جلب البيانات من السيرفر
-  const fetchTasks = async (page = 1, currentLimit = pagination.limit) => {
+  const fetchTasks = async (page = 1, currentLimit = pagination.limit, query = searchTitle, status = statusFilter) => {
     try {
       setLoading(true);
-      
-      // بناء الـ Query Parameters ديناميكياً
-      let url = `/tasks?page=${page}&limit=${currentLimit}`;
-      
-      // ملاحظة: إذا كان الباكيند يدعم الفلترة والسيرش في الـ الروت العام، نمررهم هنا
-      // لو الباكيند لسه مش ممهد السيرش على الروت ده، الفلترة بتتم تلقائياً في الـ Frontend
-      const response = await API.get(url);
+      const isSearching = query.trim() !== "";
+      let url = isSearching
+        ? `/tasks/search?title=${encodeURIComponent(query)}&page=${page}&limit=${currentLimit}`
+        : `/tasks?page=${page}&limit=${currentLimit}`;
+      if (status !== "All") url += `&status=${status}`;
 
+      const response = await API.get(url);
       if (response.data?.status === "success" && response.data?.data) {
-        setTasks(response.data.data.tasks || []);
-        setPagination({
-          currentPage: response.data.data.pagination.currentPage,
-          totalPages: response.data.data.pagination.totalPages,
-          limit: response.data.data.pagination.limit,
-          totalRecords: response.data.data.pagination.totalRecords,
-        });
+        const incomingTasks = isSearching ? response.data.data.results : response.data.data.tasks;
+        setTasks(incomingTasks || []);
+        setPagination(response.data.data.pagination
+          ? { currentPage: response.data.data.pagination.currentPage, totalPages: response.data.data.pagination.totalPages, limit: response.data.data.pagination.limit, totalRecords: response.data.data.pagination.totalRecords }
+          : { currentPage: page, totalPages: Math.ceil((incomingTasks?.length || 0) / currentLimit) || 1, limit: currentLimit, totalRecords: incomingTasks?.length || 0 }
+        );
       }
       setError(null);
     } catch (err) {
@@ -50,104 +57,78 @@ export default function HrAllTasksPage() {
     }
   };
 
-  // استدعاء الداتا عند فتح الصفحة لأول مرة
-  useEffect(() => {
-    fetchTasks(1);
-  }, []);
+  useEffect(() => { fetchStats(); }, []);
+  useEffect(() => { fetchTasks(1, pagination.limit, searchTitle, statusFilter); }, [statusFilter]);
 
-  // 1. أكشن قبول وتحديث التاسك لـ Completed (PATCH /api/tasks/:id)
-  const handleAcceptTask = async (id) => {
+  const handleSearchChange = (val) => { setSearchTitle(val); fetchTasks(1, pagination.limit, val, statusFilter); };
+  const handleEditClick = (task) => { setSelectedTaskToEdit(task); setIsEditModalOpen(true); };
+
+  const handleUpdateTask = async (id, updatedData) => {
     try {
-      const response = await API.patch(`/tasks/${id}`, {
-        acceptance: "accept" // بناءً على الـ business logic للباكيند لتحديث الحالة لـ Completed
-      });
-
-      if (response.data?.status === "success" || response.status === 200) {
-        // تحديث الستيت محلياً فوراً لجعل التاسك Completed بدون إعادة تحميل الصفحة بالكامل
-        setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task._id === id ? { ...task, done: true } : task
-          )
-        );
+      const response = await API.patch(`/tasks/${id}`, updatedData);
+      if (response.data?.status === "success" && response.data?.data?.task) {
+        setTasks(prev => prev.map(task => task._id === id ? { ...task, ...response.data.data.task } : task));
+        setIsEditModalOpen(false);
+        fetchStats();
       }
     } catch (err) {
-      console.error("Error accepting task:", err);
-      alert(err.response?.data?.message || "Failed to accept the task.");
+      alert(err.response?.data?.message || "Failed to update the task.");
     }
   };
 
-  // 2. أكشن حذف التاسك نهائياً (DELETE /api/tasks/:id)
   const handleCancelOrDeleteTask = async (id) => {
     try {
       const response = await API.delete(`/tasks/${id}`);
-
       if (response.data?.status === "success" || response.status === 200) {
-        // إزالة التاسك المحذوف من الستيت مباشرة
-        setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
+        setTasks(prev => prev.filter(task => task._id !== id));
+        fetchStats();
       }
     } catch (err) {
-      console.error("Error deleting task:", err);
       alert(err.response?.data?.message || "Failed to delete the task.");
     }
   };
 
-  // هندلة تغيير رقم الصفحة
-  const handlePageChange = (newPage) => {
-    fetchTasks(newPage, pagination.limit);
-  };
-
-  // هندلة تغيير عدد الريكوردز المعروضة في الصفحة الواحدة
-  const handleLimitChange = (newLimit) => {
-    fetchTasks(1, newLimit);
-  };
-
-  // 🔍 فلتَرة الداتا في الـ Frontend بناءً على قيمة البحث والفلتر المختار
-  const filteredTasks = tasks.filter((task) => {
-    const matchesSearch = task.title
-      ?.toLowerCase()
-      .includes(searchTitle.toLowerCase());
-
-    if (statusFilter === "Completed") {
-      return matchesSearch && task.done === true;
-    } else if (statusFilter === "Active") {
-      return matchesSearch && task.done === false;
-    }
-
-    return matchesSearch; // لو "All" بيرجع كله
-  });
-
   return (
-    <div >
-      {/* العنوان العلوي */}
-      <div className="flex flex-col gap-2 mb-8 mt-10">
-        <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-          <ListTodo className="text-cyan-400" size={26} /> All System Tasks
+    <div>
+      {/* Header */}
+      <div className="flex flex-col gap-2 mb-8">
+        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2 mt-10" style={{ color: 'var(--text-main)' }}>
+          <ListTodo size={26} style={{ color: 'var(--accent-cyan)' }} />
+          All System Tasks
         </h1>
-        <p className="text-slate-400 text-sm">
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
           Manage, track, complete, or remove tasks distributed across your organizational system.
         </p>
       </div>
 
+      <TasksStatsCards stats={stats} loading={statsLoading} />
+
       {error && (
-        <div className="flex items-center gap-2 bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl mb-6 text-sm">
+        <div className="flex items-center gap-2 p-4 rounded-xl mb-6 text-sm"
+          style={{ background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.2)', color: '#f87171' }}>
           <AlertCircle size={18} />
           <span>{error}</span>
         </div>
       )}
 
-      {/* رندرة الكومبوننت (الجدول والكنترولز) وتمرير الـ props المطلوبة */}
       <TasksTable
-        tasks={filteredTasks}
-        loading={loading}
-        onAcceptTask={handleAcceptTask}
+        tasks={tasks} loading={loading}
         onDeleteTask={handleCancelOrDeleteTask}
+        onEditClick={handleEditClick}
         searchTitle={searchTitle}
-        setSearchTitle={setSearchTitle}
+        setSearchTitle={handleSearchChange}
         statusFilter={statusFilter}
         setStatusFilter={setStatusFilter}
         pagination={pagination}
-        onPageChange={handlePageChange}
-        onLimitChange={handleLimitChange}
+        onPageChange={(p) => fetchTasks(p, pagination.limit, searchTitle, statusFilter)}
+        onLimitChange={(l) => fetchTasks(1, l, searchTitle, statusFilter)}
+      />
+
+      <EditTaskModal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        task={selectedTaskToEdit}
+        onSave={handleUpdateTask}
       />
     </div>
   );

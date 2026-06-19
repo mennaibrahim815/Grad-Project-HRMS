@@ -31,12 +31,17 @@ function HRApproval() {
       <BaseCard className=" flex flex-col h-full shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-white text-xl font-semibold tracking-tight">
+          <h1 className="text-xl font-semibold tracking-tight" style={{ color: 'var(--text-main)' }}>
             Leave application
           </h1>
-          <button className="w-10 h-10 rounded-xl bg-slate-700/60 hover:bg-slate-600/60 flex items-center justify-center transition-all duration-200 hover:scale-105" onClick={() => navigate("/leave-requests")}>
+          <button
+            style={{ background: 'var(--tab-inactive-bg)' }}
+            className="w-10 h-10 rounded-xl hover:opacity-80 flex items-center justify-center transition-all duration-200 hover:scale-105"
+            onClick={() => navigate("/leave-requests")}
+          >
             <svg
-              className="w-4 h-4 text-white"
+              className="w-4 h-4"
+              style={{ color: 'var(--text-main)' }}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -68,10 +73,18 @@ function HRApproval() {
                     className="w-9 h-9 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-slate-600/50 shrink-0"
                   />
                   <div className="min-w-0">
-                    <p className="text-white text-xs sm:text-sm font-medium leading-tight truncate">
+                    <p
+                      className="text-xs sm:text-sm font-medium leading-tight truncate"
+                      style={{ color: 'var(--text-main)' }}
+                    >
                       {request.employee?.firstName} {request.employee?.lastName}
                     </p>
-                    <p className="text-slate-400 text-[10px] sm:text-xs mt-0.5 truncate">{request.reason}</p>
+                    <p
+                      className="text-[10px] sm:text-xs mt-0.5 truncate"
+                      style={{ color: 'var(--text-muted)' }}
+                    >
+                      {request.reason}
+                    </p>
                   </div>
                 </div>
 
@@ -102,8 +115,12 @@ function HRApproval() {
                       <button
                         onClick={() => handleDecline(request._id)}
                         disabled={isRowLoading}
-                        className={`px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium rounded-full transition-all flex items-center justify-center min-w-[60px] sm:min-w-[75px]
-              ${isRowLoading ? "bg-slate-800 text-gray-500 cursor-not-allowed" : "text-slate-300 bg-slate-700/70 hover:bg-slate-600/70"}`}
+                        style={isRowLoading ? {} : {
+                          color: 'var(--tab-inactive-text)',
+                          background: 'var(--tab-inactive-bg)',
+                        }}
+                        className={`px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium rounded-full transition-all flex items-center justify-center min-w-[60px] sm:min-w-[75px] hover:opacity-80
+              ${isRowLoading ? "bg-slate-800 text-gray-500 cursor-not-allowed" : ""}`}
                       >
                         {isDeclineLoading ? (
                           <i className="fas fa-spinner fa-spin text-xs text-white"></i>

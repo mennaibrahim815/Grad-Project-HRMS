@@ -1,13 +1,12 @@
 import BaseCard from "../../../../components/UI/Card";
 
 const SkillsCard = ({ applicant}) => {
- 
 
   const skills = applicant?.professionalInfo?.skills || [];
 
   return (
     <BaseCard className="flex flex-col gap-4">
-      <p className="text-slate-400 text-xs font-medium uppercase tracking-wider">
+      <p className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
         Skills
       </p>
 
@@ -23,7 +22,7 @@ const SkillsCard = ({ applicant}) => {
           ))}
         </div>
       ) : (
-        <p className="text-slate-500 text-sm">No skills added.</p>
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>No skills added.</p>
       )}
     </BaseCard>
   );

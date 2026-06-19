@@ -26,7 +26,7 @@ export const ATSScoreCard = ({ applicant }) => {
         <BaseCard>
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
-                    <h3 className="text-slate-300 text-sm font-semibold">ATS Score</h3>
+                    <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>ATS Score</h3>
                     <span
                         className="text-xs font-medium px-2.5 py-1 rounded-full border"
                         style={{
@@ -44,26 +44,26 @@ export const ATSScoreCard = ({ applicant }) => {
                     <div
                         className="relative w-28 h-28 rounded-full flex items-center justify-center"
                         style={{
-                            background: `conic-gradient(${score >= 70 ? "#00A860" : score >= 40 ? "#0293FA" : "#EC3A76"} ${score * 3.6}deg, ...)`,
+                            background: `conic-gradient(${score >= 70 ? "#00A860" : score >= 40 ? "#0293FA" : "#EC3A76"} ${score * 3.6}deg, var(--border-main) 0deg)`,
                             boxShadow: `0 0 24px ${glowColor}`,
                         }}
                     >
-                        <div className="w-20 h-20 rounded-full bg-[#0d1b2a] flex flex-col items-center justify-center">
+                        <div style={{ background: 'var(--bg-deep)' }} className="w-20 h-20 rounded-full flex flex-col items-center justify-center">
                             <span className="text-2xl font-bold" style={{ color: labelColor }}>
                                 {score}
                             </span>
-                            <span className="text-[10px] text-slate-500">/ 100</span>
+                            <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>/ 100</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Progress Bar */}
                 <div className="flex flex-col gap-1.5">
-                    <div className="flex items-center justify-between text-[11px] text-slate-500">
+                    <div className="flex items-center justify-between text-[11px]" style={{ color: 'var(--text-muted)' }}>
                         <span>Match Rate</span>
                         <span style={{ color: labelColor }}>{score}%</span>
                     </div>
-                    <div className="relative h-2 w-full rounded-full bg-white/5 overflow-hidden">
+                    <div style={{ background: 'var(--tab-inactive-bg)' }} className="relative h-2 w-full rounded-full overflow-hidden">
                         <div
                             className="absolute inset-y-0 left-0 rounded-full transition-all duration-700"
                             style={{ width: `${score}%`, background: gradient }}
@@ -79,7 +79,7 @@ export const ATSScoreCard = ({ applicant }) => {
                 </div>
 
                 {/* Legend */}
-                <div className="grid grid-cols-3 gap-2 pt-1 border-t border-white/5">
+                <div className="grid grid-cols-3 gap-2 pt-1 border-t" style={{ borderColor: 'var(--border-main)' }}>
                     {[
                         { label: "Low",  range: "0–39",  color: "#EC3A76" },
                         { label: "Good", range: "40–69", color: "#0293FA" },
@@ -87,7 +87,7 @@ export const ATSScoreCard = ({ applicant }) => {
                     ].map((item) => (
                         <div key={item.label} className="flex flex-col items-center gap-1">
                             <span className="w-2 h-2 rounded-full" style={{ background: item.color }} />
-                            <span className="text-[10px] text-slate-500">{item.label}</span>
+                            <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{item.label}</span>
                             <span className="text-[10px]" style={{ color: item.color }}>{item.range}</span>
                         </div>
                     ))}
@@ -107,7 +107,7 @@ export const AppliedJobCard = ({ applicant }) => {
     return (
         <BaseCard>
             <div className="flex flex-col gap-3">
-                <h3 className="text-slate-300 text-sm font-semibold">Applied Job</h3>
+                <h3 className="text-sm font-semibold" style={{ color: 'var(--text-main)' }}>Applied Job</h3>
 
                 <div className="flex items-start gap-2">
                     <div
@@ -117,24 +117,24 @@ export const AppliedJobCard = ({ applicant }) => {
                         <Briefcase size={16} style={{ color: "#0293FA" }} />
                     </div>
                     <div className="min-w-0">
-                        <p className="text-slate-100 text-sm font-semibold truncate">{job.title || "—"}</p>
-                        <p className="text-slate-500 text-xs">{job.department || "—"}</p>
+                        <p className="text-sm font-semibold truncate" style={{ color: 'var(--text-main)' }}>{job.title || "—"}</p>
+                        <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{job.department || "—"}</p>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 text-xs text-slate-400">
+                <div className="grid grid-cols-2 gap-2 text-xs" style={{ color: 'var(--text-muted)' }}>
                     {job.jobType && (
-                        <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/8 truncate">
+                        <span style={{ background: 'var(--tab-inactive-bg)', borderColor: 'var(--border-main)' }} className="px-2.5 py-1 rounded-lg border truncate">
                             {job.jobType}
                         </span>
                     )}
                     {job.workLocation && (
-                        <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/8 truncate">
+                        <span style={{ background: 'var(--tab-inactive-bg)', borderColor: 'var(--border-main)' }} className="px-2.5 py-1 rounded-lg border truncate">
                             {job.workLocation}
                         </span>
                     )}
                     {job.experienceLevel && (
-                        <span className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/8 truncate col-span-2">
+                        <span style={{ background: 'var(--tab-inactive-bg)', borderColor: 'var(--border-main)' }} className="px-2.5 py-1 rounded-lg border truncate col-span-2">
                             {job.experienceLevel}
                         </span>
                     )}

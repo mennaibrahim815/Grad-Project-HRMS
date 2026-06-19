@@ -144,6 +144,7 @@ import HiringDetail from "../HrPages/HiringDetail/HiringDetail";
 import JobDetailPage from "../HrPages/JobDetailPage/JobDetailPage";
 import Attendance from "../HrPages/Attendance/Attendance";
 import Performance from "../HrPages/Performance/Performance";
+import PerformanceDetails from "../HrPages/PerformanceDetails/PerformanceDetails";
 import LeaveRequests from "../HrPages/Leave/LeaveRequests/LeaveRequests";
 import LeaveDetails from "../HrPages/Leave/LeaveDetails/LeaveDetails";
 import Requests from "../HrPages/Requests/Requests";
@@ -190,6 +191,7 @@ export const router = createBrowserRouter(
             { path: "/leave-requests", element: <LeaveRequests /> },
             { path: "/leave-details/:id", element: <LeaveDetails /> },
             { path: "/performance", element: <Performance /> },
+            { path: "/performance-details/:id", element: <PerformanceDetails /> },
             { path: "/Requests", element: <Requests /> },
             { path: "/Tasks/alltasks", element: <Tasks /> },
             { path: "/Tasks/ongoingTasks", element: <OngoingTasks /> },
