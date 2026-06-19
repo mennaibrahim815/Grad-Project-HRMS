@@ -170,3 +170,101 @@ export const getEmployeePerformanceHistory = asyncWraper(async (req, res, next) 
         },
     });
 });
+
+export const searchEmployeePerformance = asyncWraper(async (req, res, next) => {
+    const { name } = req.query;
+
+    if (!name) {
+        return res.status(200).json({ 
+            status: httpResponseText.SUCCESS, 
+            data: { performanceReport: [] } 
+        });
+    }
+
+    const startDate = req.query.startDate ? dayjs(req.query.startDate) : dayjs().subtract(30, "day");
+    const endDate = req.query.endDate ? dayjs(req.query.endDate) : dayjs();
+
+    const daysDifference = endDate.diff(startDate, "day") + 1;
+    const prevStartDate = startDate.subtract(daysDifference, "day");
+    const prevEndDate = endDate.subtract(daysDifference, "day");
+
+    const employees = await User.aggregate([
+        {
+            $match: {
+                "general.role": "EMPLOYEE",
+                $or: [
+                    { "general.firstName": { $regex: name, $options: "i" } },
+                    { "general.lastName": { $regex: name, $options: "i" } },
+                    {
+                        $expr: {
+                            $regexMatch: {
+                                input: {
+                                    $concat: [
+                                        "$general.firstName",
+                                        " ",
+                                        "$general.lastName",
+                                    ],
+                                },
+                                regex: name,
+                                options: "i",
+                            },
+                        },
+                    },
+                ],
+            },
+        },
+        {
+            $project: {
+                _id: 1,
+                "general.firstName": 1,
+                "general.lastName": 1,
+                "general.avatar": 1,
+                "general.email": 1,
+                "employee.jobTitle": 1,
+            },
+        },
+    ]);
+
+    const performanceReport = await Promise.all(
+        employees.map(async (emp) => {
+            const [currentScores, previousScores] = await Promise.all([
+                calculateKPI(emp._id, startDate, endDate),
+                calculateKPI(emp._id, prevStartDate, prevEndDate)
+            ]);
+
+            const performanceChange = calculatePercentageChange(currentScores.overallPerformance, previousScores.overallPerformance);
+
+            return {
+                employeeId: emp._id,
+                firstName: emp.general?.firstName,
+                lastName: emp.general?.lastName,
+                email: emp.general?.email,
+                avatar: emp.general?.avatar,
+                jobTitle: emp.employee?.jobTitle,
+                kpis: {
+                    attendanceScore: currentScores.attendanceScore,
+                    taskScore: currentScores.taskScore,
+                },
+                overallPerformance: currentScores.overallPerformance,
+                performanceStatus: getPerformanceLabel(currentScores.overallPerformance),
+                previousOverallPerformance: previousScores.overallPerformance,
+                percentageChange: performanceChange,
+            };
+        })
+    );
+
+    res.status(200).json({
+        status: httpResponseText.SUCCESS,
+        data: {
+            currentPeriod: {
+                from: startDate.format("YYYY-MM-DD"),
+                to: endDate.format("YYYY-MM-DD"),
+            },
+            previousPeriod: {
+                from: prevStartDate.format("YYYY-MM-DD"),
+                to: prevEndDate.format("YYYY-MM-DD"),
+            },
+            performanceReport
+        },
+    });
+});
