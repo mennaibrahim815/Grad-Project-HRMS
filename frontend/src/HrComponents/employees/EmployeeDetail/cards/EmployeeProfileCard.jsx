@@ -7,7 +7,7 @@ import {
   Mail,
   Phone,
 } from "lucide-react";
-import BaseCard from "../../../../Components/UI/Card";
+import BaseCard from "../../../../components/UI/Card";
 
 import { useDispatch, useSelector } from "react-redux";
 import { updateEmployee,fetchEmployeeById } from "../../../../store/HrSlices/employeeSlice";

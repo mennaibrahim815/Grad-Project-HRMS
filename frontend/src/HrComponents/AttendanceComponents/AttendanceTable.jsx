@@ -10,13 +10,14 @@ import { useEffect, useState } from "react";
 // ✨ استدعاء السوكيت ✨
 import { io } from "socket.io-client";
 
-import DataTable from "../../Components/table/DataTable";
-import TableControls from "../../Components/table/TableControls";
-import Pagination from "../../Components/table/Pagination";
+import DataTable from "../../components/table/DataTable";
+import TableControls from "../../components/table/TableControls";
+import Pagination from "../../components/table/Pagination";
 import EditIcon from "@mui/icons-material/Edit";
-import RowActionMenu from "../../Components/UI/RowActionMenu";
-import BaseCard from "../../Components/UI/Card";
+import RowActionMenu from "../../components/UI/RowActionMenu";
+import BaseCard from "../../components/UI/Card";
 import { Eye, Trash2 } from "lucide-react";
+import ReusableCalendar from "../../components/UI/ReusableCalendar";
 
 const getAvatarUrl = (name, background = "0D8ABC", color = "fff") =>
   `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${background}&color=${color}&size=80&bold=true&rounded=true`;
@@ -24,7 +25,7 @@ const getAvatarUrl = (name, background = "0D8ABC", color = "fff") =>
 const AttendanceBadge = ({ status }) => {
   const styles = {
     "On Time": "bg-emerald-500/15 text-emerald-400 border-emerald-400/40",
-    Late: "bg-sky-500/15 text-sky-400 border-sky-400/40",
+    Late: 'bg-[#0293FA]/15 text-[#0293FA] border-[#0293FA]/40',
     Absent: "bg-slate-500/20 text-slate-400 border-slate-400/40",
   };
 
@@ -153,6 +154,7 @@ const AttendanceTable = () => {
               src={row.employee?.avatar || getAvatarUrl(fullName)}
               alt={fullName}
               className="w-10 h-10 rounded-full"
+              style={{ imageRendering: "auto" }}
             />
             <div>
               <p className="text-sm font-medium text-slate-100">{fullName}</p>
@@ -163,12 +165,6 @@ const AttendanceTable = () => {
       },
     },
     {
-      header: "Email",
-      accessor: "email",
-      render: (row) => row.employee?.email,
-    },
-    { header: "Date", accessor: "date" },
-    {
       header: "Department",
       accessor: "department",
       render: (row) => row.employee?.department,
@@ -178,44 +174,30 @@ const AttendanceTable = () => {
       accessor: "jobType",
       render: (row) => row.employee?.jobType,
     },
+
+    { header: "Date", accessor: "date" },
     {
-      header: "Attendance",
+      header: "Check In",
+      accessor: "checkIn",
+      render: (row) => {
+        if (!row.checkIn) return <span className="text-slate-500 text-xs">—</span>;
+        return (
+          <span className="text-slate-300 text-sm font-medium">
+            {new Date(row.checkIn).toLocaleTimeString("en-US", {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            })}
+          </span>
+        );
+      },
+    },
+    {
+      header: "Status",
       accessor: "status",
       render: (row) => <AttendanceBadge status={row.status} />,
     },
-    {
-      header: "Action",
-      accessor: "action",
-      render: (row) => (
-        <div className="relative">
-          <button
-            onClick={() =>
-              setOpenMenuId(openMenuId === row._id ? null : row._id)
-            }
-            className="p-2 text-slate-400 hover:text-slate-200"
-          >
-            <EditIcon />
-          </button>
-          <RowActionMenu
-            isOpen={openMenuId === row._id}
-            onClose={() => setOpenMenuId(null)}
-            actions={[
-              {
-                label: "See Details",
-                icon: Eye,
-                onClick: () => navigate(`/employee/${row.employeeId}`),
-              },
-              {
-                label: "Delete",
-                variant: "danger",
-                icon: Trash2,
-                onClick: () => handleDelete(row.employeeId),
-              },
-            ]}
-          />
-        </div>
-      ),
-    },
+    
   ];
 
   const handlePageChange = (newPage) => {
@@ -235,33 +217,39 @@ const AttendanceTable = () => {
 
   return (
     <BaseCard padding="p-0">
-      <div className="px-6 pt-4">
-        <input
-          type="date"
-          value={tableDate}
-          onChange={(e) => setTableDate(e.target.value)}
-          className="px-3 py-2 bg-slate-700/50 border border-slate-600/50 rounded-xl text-slate-200 focus:outline-none focus:border-cyan-500/50"
-        />
-        {tableDate && (
-          <button
-            onClick={() => setTableDate("")}
-            className="ml-2 text-sm text-slate-400 hover:text-slate-200"
-          >
-            Clear
-          </button>
-        )}
-      </div>
+
       <TableControls
         searchTerm={searchQuery}
         setSearchTerm={setSearchQuery}
         filterValue={activeFilter}
         setFilterValue={setActiveFilter}
         filterOptions={["All", "On Time", "Late", "Absent"]}
-        setCurrentPage={() => {}}
+        setCurrentPage={() => { }}
+        extraRight={
+          <div className="flex items-center gap-2">
+            <ReusableCalendar
+              mode="single"
+              value={tableDate}
+              onSave={(date) => setTableDate(date)}
+            />
+            {tableDate && (
+              <button
+                onClick={() => setTableDate("")}
+                className="text-xs text-slate-400 hover:text-slate-200 transition-colors"
+              >
+                <i className="fas fa-times" />
+              </button>
+            )}
+          </div>
+        }
       />
-      <div className={loading ? "opacity-50 pointer-events-none" : ""}>
+      {loading ? (
+        <div className="flex items-center justify-center py-20">
+          <i className="fas fa-spinner fa-spin text-4xl text-blue-500"></i>
+        </div>
+      ) : (
         <DataTable columns={columns} data={attendanceList} />
-      </div>
+      )}
       <Pagination
         pagination={pagination}
         handlePageChange={handlePageChange}

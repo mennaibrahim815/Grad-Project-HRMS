@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Trash2, Eye } from "lucide-react";
+import { Trash2, Eye, MapPin, Briefcase, Clock, Building2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 import {
     fetchAllJobs,
@@ -9,19 +10,20 @@ import {
     deleteJob,
 } from "../../../store/HrSlices/Hiring/hiringSlice";
 
-import DataTable from "../../../components/table/DataTable";
 import TableControls from "../../../components/table/TableControls";
 import Pagination from "../../../components/table/Pagination";
 import RowActionMenu from "../../../components/UI/RowActionMenu";
 import BaseCard from "../../../components/UI/Card";
 import EditIcon from "@mui/icons-material/Edit";
 
+const ICON_COLOR = "#0293FA";
+
 // ── Status Badge ──────────────────────────────────────────────
 const StatusBadge = ({ status }) => {
     const styles =
         status === "Open"
             ? "bg-emerald-500/15 text-emerald-400 border-emerald-400/40"
-            : "bg-red-500/15 text-red-400 border-red-400/40";
+            : "bg-[#EC3A76]/20 text-[#EC3A76] border-[#EC3A76]/20"
 
     return (
         <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full
@@ -29,6 +31,125 @@ const StatusBadge = ({ status }) => {
             <span className="w-1.5 h-1.5 rounded-full bg-current" />
             {status}
         </span>
+    );
+};
+
+// ── Animation Variants ───────────────────────────────────────
+const containerVariants = {
+    hidden: {},
+    visible: {
+        transition: {
+            staggerChildren: 0.06,
+        },
+    },
+};
+
+const cardVariants = {
+    hidden: { opacity: 0, y: 20, scale: 0.97 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        transition: { duration: 0.3, ease: "easeOut" },
+    },
+    exit: {
+        opacity: 0,
+        scale: 0.95,
+        transition: { duration: 0.2 },
+    },
+};
+
+// ── Job Card ──────────────────────────────────────────────────
+const JobCard = ({ job, openMenuId, setOpenMenuId, navigate, setConfirmModal }) => {
+    return (
+        <motion.div
+            layout
+            variants={cardVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+            whileHover={{ y: -4 }}
+        >
+            <BaseCard className="flex flex-col gap-4 hover:border-blue-500/30 transition-colors h-full">
+                {/* Header */}
+                <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                        <p className="text-base font-semibold text-slate-100 truncate">
+                            {job.title || "—"}
+                        </p>
+                        <p className="text-xs text-slate-500 mt-0.5">{job._id?.slice(-6)}</p>
+                    </div>
+
+                    <div className="relative shrink-0">
+                        <button
+                            onClick={() => setOpenMenuId(openMenuId === job._id ? null : job._id)}
+                            className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+                            style={{ color: ICON_COLOR }}
+                        >
+                            <EditIcon fontSize="small" />
+                        </button>
+                        <RowActionMenu
+                            isOpen={openMenuId === job._id}
+                            onClose={() => setOpenMenuId(null)}
+                            actions={[
+                                {
+                                    label: "See Details",
+                                    icon: Eye,
+                                    onClick: () => navigate(`/hiring/jobs/${job._id}`),
+                                },
+                                {
+                                    label: "Delete",
+                                    variant: "danger",
+                                    icon: Trash2,
+                                    onClick: () => setConfirmModal({ open: true, jobId: job._id }),
+                                },
+                            ]}
+                        />
+                    </div>
+                </div>
+
+                {/* Status */}
+                <div>
+                    <StatusBadge status={job.status || "—"} />
+                </div>
+
+                {/* Details */}
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                    <div className="flex items-center gap-2 text-slate-400">
+                        <Building2 size={15} style={{ color: ICON_COLOR }} className="shrink-0" />
+                        <span className="truncate">{job.department || "—"}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-400">
+                        <Briefcase size={15} style={{ color: ICON_COLOR }} className="shrink-0" />
+                        <span className="truncate">{job.experienceLevel || "—"}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-400">
+                        <Clock size={15} style={{ color: ICON_COLOR }} className="shrink-0" />
+                        <span className="truncate">{job.jobType || "—"}</span>
+                    </div>
+                    <div className="flex items-center gap-2 text-slate-400">
+                        <MapPin size={15} style={{ color: ICON_COLOR }} className="shrink-0" />
+                        <span className="truncate">{job.workLocation || "—"}</span>
+                    </div>
+                </div>
+
+                {/* Footer */}
+                <div className="pt-3 border-t border-white/5 flex items-center justify-between">
+                    <span className="text-xs text-slate-500">
+                        {job.createdAt
+                            ? new Date(job.createdAt).toLocaleDateString("en-GB")
+                            : "—"}
+                    </span>
+                    <button
+                        onClick={() => navigate(`/hiring/jobs/${job._id}`)}
+                        className="text-xs font-medium transition-colors hover:opacity-80"
+                        style={{ color: ICON_COLOR }}
+                    >
+                        View Details →
+                    </button>
+                </div>
+            </BaseCard>
+        </motion.div>
     );
 };
 
@@ -42,7 +163,7 @@ const JobsTable = () => {
 
     const [searchQuery, setSearchQuery] = useState("");
     const [activeFilter, setActiveFilter] = useState("All");
-    const [recordsPerPage, setRecordsPerPage] = useState(5);
+    const [recordsPerPage, setRecordsPerPage] = useState(6);
     const [openMenuId, setOpenMenuId] = useState(null);
     const [confirmModal, setConfirmModal] = useState({ open: false, jobId: null });
 
@@ -81,153 +202,119 @@ const JobsTable = () => {
         });
     };
 
-    // ── Columns ───────────────────────────────────────────────
-    const columns = [
-        {
-            header: "Job Title",
-            accessor: "title",
-            render: (row) => (
-                <div>
-                    <p className="text-sm font-medium text-slate-100">{row.title || "—"}</p>
-                    <p className="text-xs text-slate-500">{row._id?.slice(-6)}</p>
-                </div>
-            ),
-        },
-        {
-            header: "Department",
-            accessor: "department",
-            render: (row) => row.department || "—",
-        },
-        {
-            header: "Experience",
-            accessor: "experienceLevel",
-            render: (row) => row.experienceLevel || "—",
-        },
-        {
-            header: "Job Type",
-            accessor: "jobType",
-            render: (row) => row.jobType || "—",
-        },
-        {
-            header: "Location",
-            accessor: "workLocation",
-            render: (row) => row.workLocation || "—",
-        },
-        {
-            header: "Posted At",
-            accessor: "createdAt",
-            render: (row) =>
-                row.createdAt
-                    ? new Date(row.createdAt).toLocaleDateString("en-GB")
-                    : "—",
-        },
-        {
-            header: "Status",
-            accessor: "status",
-            render: (row) => <StatusBadge status={row.status || "—"} />,
-        },
-        {
-            header: "Action",
-            accessor: "action",
-            render: (row) => (
-                <div className="relative">
-                    <button
-                        onClick={() => setOpenMenuId(openMenuId === row._id ? null : row._id)}
-                        className="p-2 text-slate-400 hover:text-slate-200"
-                    >
-                        <EditIcon />
-                    </button>
-                    <RowActionMenu
-                        isOpen={openMenuId === row._id}
-                        onClose={() => setOpenMenuId(null)}
-                        actions={[
-                            {
-                                label: "See Details",
-                                icon: Eye,
-                                onClick: () => navigate(`/hiring/jobs/${row._id}`),
-                            },
-                            {
-                                label: "Delete",
-                                variant: "danger",
-                                icon: Trash2,
-                                onClick: () => setConfirmModal({ open: true, jobId: row._id }),
-                            },
-                        ]}
-                    />
-                </div>
-            ),
-        },
-    ];
+    const jobsList = Array.isArray(jobs) ? jobs : [];
 
     return (
-        <BaseCard padding="p-0">
+        <div className="flex flex-col gap-5">
 
             {/* Delete Confirm Modal */}
-            {confirmModal.open && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-                    <div className="bg-gradient-to-br from-[#1e2a3a] to-[#162231] border border-slate-700
-                                    rounded-2xl p-6 w-full max-w-sm shadow-2xl">
-                        <div className="flex items-center justify-center w-12 h-12 rounded-full
-                                        bg-red-500/15 mx-auto mb-4">
-                            <Trash2 size={22} className="text-pink-400" />
-                        </div>
-                        <h3 className="text-white text-center font-semibold text-lg mb-1">Delete Job</h3>
-                        <p className="text-slate-400 text-center text-sm mb-6">
-                            Are you sure you want to delete this job post? This action cannot be undone.
-                        </p>
-                        <div className="flex gap-3">
-                            <button
-                                onClick={() => setConfirmModal({ open: false, jobId: null })}
-                                className="flex-1 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600
-                                           text-slate-300 text-sm font-medium transition-all"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                onClick={handleDelete}
-                                disabled={jobDeleteLoading}
-                                className="flex-1 py-2.5 rounded-xl bg-pink-400/12 text-pink-400
-                                           hover:bg-pink-400/10 text-sm font-medium transition-all
-                                           disabled:opacity-60"
-                            >
-                                {jobDeleteLoading ? (
-                                    <span className="flex items-center justify-center gap-2">
-                                        <i className="fas fa-spinner fa-spin text-sm" />
-                                        Deleting...
-                                    </span>
-                                ) : "Delete"}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
+            <AnimatePresence>
+                {confirmModal.open && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                    >
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                            transition={{ duration: 0.2 }}
+                            className="bg-gradient-to-br from-[#1e2a3a] to-[#162231] border border-slate-700
+                                        rounded-2xl p-6 w-full max-w-sm shadow-2xl"
+                        >
+                            <div className="flex items-center justify-center w-12 h-12 rounded-full
+                                            bg-red-500/15 mx-auto mb-4">
+                                <Trash2 size={22} className="text-pink-400" />
+                            </div>
+                            <h3 className="text-white text-center font-semibold text-lg mb-1">Delete Job</h3>
+                            <p className="text-slate-400 text-center text-sm mb-6">
+                                Are you sure you want to delete this job post? This action cannot be undone.
+                            </p>
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setConfirmModal({ open: false, jobId: null })}
+                                    className="flex-1 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600
+                                               text-slate-300 text-sm font-medium transition-all"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleDelete}
+                                    disabled={jobDeleteLoading}
+                                    className="flex-1 py-2.5 rounded-xl bg-pink-400/12 text-pink-400
+                                               hover:bg-pink-400/10 text-sm font-medium transition-all
+                                               disabled:opacity-60"
+                                >
+                                    {jobDeleteLoading ? (
+                                        <span className="flex items-center justify-center gap-2">
+                                            <i className="fas fa-spinner fa-spin text-sm" />
+                                            Deleting...
+                                        </span>
+                                    ) : "Delete"}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-            <TableControls
-                searchTerm={searchQuery}
-                setSearchTerm={setSearchQuery}
-                filterValue={activeFilter}
-                setFilterValue={setActiveFilter}
-                filterOptions={["All", "Full-time", "Part-time", "Contract", "Internship"]}
-                setCurrentPage={() => {}}
-            />
+            {/* Controls */}
+            
+                <TableControls
+                    searchTerm={searchQuery}
+                    setSearchTerm={setSearchQuery}
+                    filterValue={activeFilter}
+                    setFilterValue={setActiveFilter}
+                    filterOptions={["All", "Full-time", "Part-time", "Contract", "Internship"]}
+                    setCurrentPage={() => {}}
+                />
+            
 
+            {/* Cards Grid */}
             {jobsLoading || jobsSearchLoading ? (
                 <div className="flex items-center justify-center py-20">
-                    <i className="fas fa-spinner fa-spin text-4xl text-blue-500" />
+                    <i className="fas fa-spinner fa-spin text-4xl" style={{ color: ICON_COLOR }} />
+                </div>
+            ) : jobsList.length === 0 ? (
+                <div className="flex items-center justify-center py-20 text-slate-500 text-sm">
+                    No jobs found
                 </div>
             ) : (
-                <DataTable columns={columns} data={Array.isArray(jobs) ? jobs : []} />
+                <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+                >
+                    <AnimatePresence mode="popLayout">
+                        {jobsList.map((job) => (
+                            <JobCard
+                                key={job._id}
+                                job={job}
+                                openMenuId={openMenuId}
+                                setOpenMenuId={setOpenMenuId}
+                                navigate={navigate}
+                                setConfirmModal={setConfirmModal}
+                            />
+                        ))}
+                    </AnimatePresence>
+                </motion.div>
             )}
 
-            <Pagination
-                pagination={jobsPagination}
-                handlePageChange={handlePageChange}
-                handleRecordsPerPageChange={(newLimit) => setRecordsPerPage(newLimit)}
-                currentDataLength={jobs.length}
-                recordsPerPage={recordsPerPage}
-                entityName="jobs"
-            />
-        </BaseCard>
+            {/* Pagination */}
+            
+                <Pagination
+                    pagination={jobsPagination}
+                    handlePageChange={handlePageChange}
+                    handleRecordsPerPageChange={(newLimit) => setRecordsPerPage(newLimit)}
+                    currentDataLength={jobsList.length}
+                    recordsPerPage={recordsPerPage}
+                    entityName="jobs"
+                />
+    
+        </div>
     );
 };
 

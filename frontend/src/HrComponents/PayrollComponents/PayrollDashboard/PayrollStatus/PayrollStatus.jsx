@@ -53,7 +53,7 @@ const PayrollStatus = ({ data,pieStripes }) => {
     <div className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] p-[20px] rounded-[2.5rem] border border-gray-800/50 shadow-xl h-full flex flex-col relative min-h-[420px] overflow-hidden">
       {/* الهيدر */}
       <div className="flex justify-between items-center mb-8">
-        <h3 className="text-xl font-bold text-white">Employee status</h3>
+        <h3 className="text-xl font-bold text-white">Payroll status</h3>
         <button
           onClick={() => navigate("/employees")}
           className="w-9 h-9 bg-[#0b141a] rounded-full flex items-center justify-center text-gray-500 hover:text-blue-500 transition-all border border-transparent hover:border-blue-500/30"

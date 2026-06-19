@@ -112,7 +112,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import API from "@/services/axios";
-import { ArrowLeft, History, Calendar, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { ArrowLeft, History, Calendar, CheckCircle2, Clock, XCircle, Activity, AlertCircle } from "lucide-react";
 
 const LeaveDetails = () => {
   const { id } = useParams();
@@ -140,10 +140,9 @@ const LeaveDetails = () => {
   }, [id]);
 
   // دالة جلب سجل إجازات الموظف
-const fetchEmployeeHistory = async () => {
+  const fetchEmployeeHistory = async () => {
     console.log("Full Leave Object:", leave);
 
-    // إضافة علامة || للربط بين الاحتمالات
     const empId = 
       leave?.employeeId || 
       leave?.employee?._id || 
@@ -164,7 +163,6 @@ const fetchEmployeeHistory = async () => {
     try {
       setHistoryLoading(true);
       setShowHistory(true);
-      // تأكدي من استخدام backticks (`) في الـ URL
       const response = await API.get(`/leaves/employee/${empId}`); 
       setHistory(response.data.data || []);
     } catch (error) {
@@ -172,14 +170,16 @@ const fetchEmployeeHistory = async () => {
     } finally {
       setHistoryLoading(false);
     }
-};
+  };
 
   if (loading) return <div className="text-white p-10 text-center">Loading...</div>;
   if (!leave) return <div className="text-white p-10 text-center">No data found.</div>;
 
+  const empBalances = leave?.employee || {};
+
   return (
-    <div className="p-6 bg-[#0f172a] min-h-screen text-slate-200">
-      <div className="max-w-4xl mx-auto space-y-4">
+    <div>
+      <div className="max-w-4xl mx-auto space-y-4 mt-10">
         
         <div className="flex justify-between items-center">
           {/* زرار العودة */}
@@ -205,30 +205,63 @@ const fetchEmployeeHistory = async () => {
           </button>
         </div>
 
-        {/* الكارد الأساسي للتفاصيل */}
-        <div className="bg-slate-900/50 border border-slate-800 rounded-2xl overflow-hidden shadow-2xl">
-          <div className="p-8 border-b border-slate-800 flex items-center gap-6">
-            <img 
-              src={leave.employee?.avatar || `https://ui-avatars.com/api/?name=${leave.employee?.firstName || 'User'}&background=0D8ABC&color=fff`} 
-              className="w-24 h-24 rounded-full object-cover border-4 border-slate-800 shadow-lg"
-              alt="avatar"
-            />
-            <div className="text-left">
-              <h2 className="text-2xl font-bold text-white">
-                {leave.employee?.firstName} {leave.employee?.lastName}
-              </h2>
-              <p className="text-cyan-400 font-medium">{leave.employee?.jobTitle}</p>
-              <p className="text-slate-500 text-sm">{leave.employee?.email}</p>
+        {/*الكارد الأساسي للتفاصيلة) */}
+        <div className="
+        bg-gradient-to-br from-transparent/20 to-45% to-[#182731]
+        backdrop-blur-sm
+        rounded-[2rem] border border-slate-700/50">
+          
+          {/* الهيدر المطور: يجمع بين بيانات الموظف والـ Balances */}
+          <div className="p-8 border-b border-slate-800 flex flex-col md:flex-row items-start md:items-center gap-6 justify-between">
+            <div className="flex items-center gap-6">
+              <img 
+                src={leave.employee?.avatar || `https://ui-avatars.com/api/?name=${leave.employee?.firstName || 'User'}&background=0D8ABC&color=fff`} 
+                className="w-24 h-24 rounded-full object-cover border-4 border-slate-800 shadow-lg"
+                alt="avatar"
+              />
+              <div className="text-left">
+                <h2 className="text-2xl font-bold text-white">
+                  {leave.employee?.firstName} {leave.employee?.lastName}
+                </h2>
+                <p className="text-cyan-400 font-medium">{leave.employee?.jobTitle}</p>
+                <p className="text-slate-500 text-sm mb-2">{leave.employee?.email}</p>
+                
+                {/* حقل الـ Status تم نقله هنا بشكل أنيق تحت البيانات */}
+                <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold border ${
+                  leave.status === 'Approved' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 
+                  leave.status === 'Rejected' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
+                  'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
+                }`}>
+                  {leave.status}
+                </span>
+              </div>
             </div>
             
-            <div className="ml-auto text-right">
-              <span className={`px-4 py-1.5 rounded-full text-sm font-semibold border ${
-                leave.status === 'Approved' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 
-                leave.status === 'Rejected' ? 'bg-red-500/10 text-red-500 border-red-500/20' :
-                'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
-              }`}>
-                {leave.status}
-              </span>
+            {/* الأرصدة الثلاثة مدمجة داخل نفس الهيدر على اليمين */}
+            <div className="flex flex-wrap md:flex-nowrap gap-3 w-full md:w-auto border-t border-slate-800/60 md:border-t-0 pt-4 md:pt-0">
+              {/* Annual Balance */}
+              <div className="bg-cyan-500/5 border border-cyan-500/20 px-4 py-2.5 rounded-xl text-left min-w-[110px] flex-1 md:flex-none">
+                <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Annual</p>
+                <p className="text-lg font-black text-cyan-400 font-mono mt-0.5">
+                  {empBalances.annualLeaveBalance ?? 0}<span className="text-xs font-normal text-slate-500 ml-1">d</span>
+                </p>
+              </div>
+
+              {/* Sick Balance */}
+              <div className="bg-emerald-500/5 border border-emerald-500/20 px-4 py-2.5 rounded-xl text-left min-w-[110px] flex-1 md:flex-none">
+                <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Sick</p>
+                <p className="text-lg font-black text-emerald-400 font-mono mt-0.5">
+                  {empBalances.sickLeaveBalance ?? 0}<span className="text-xs font-normal text-slate-500 ml-1">d</span>
+                </p>
+              </div>
+
+              {/* Casual Balance */}
+              <div className="bg-amber-500/5 border border-amber-500/20 px-4 py-2.5 rounded-xl text-left min-w-[110px] flex-1 md:flex-none">
+                <p className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Casual</p>
+                <p className="text-lg font-black text-amber-400 font-mono mt-0.5">
+                  {empBalances.casualLeaveBalance ?? 0}<span className="text-xs font-normal text-slate-500 ml-1">d</span>
+                </p>
+              </div>
             </div>
           </div>
 
@@ -245,7 +278,7 @@ const fetchEmployeeHistory = async () => {
               </div>
               <div className="bg-slate-800/30 p-4 rounded-xl border border-slate-800 text-left">
                 <p className="text-sm text-slate-500">Date Range</p>
-                <p className="text-sm font-medium">
+                <p className="text-sm font-medium text-white">
                   {new Date(leave.startDate).toLocaleDateString()} - {new Date(leave.endDate).toLocaleDateString()}
                 </p>
               </div>
@@ -259,7 +292,7 @@ const fetchEmployeeHistory = async () => {
               </div>
               {leave.hrApprovedBy && (
                 <div className="p-4 border-l-4 border-cyan-500 bg-cyan-500/5 rounded-r-xl text-left">
-                  <p className="text-xs text-cyan-500 font-bold uppercase">Approved By HR</p>
+                  <p className="text-xs text-cyan-500 font-bold uppercase">Action By HR</p>
                   <p className="text-sm text-white font-medium">
                     {leave.hrApprovedBy.firstName} {leave.hrApprovedBy.lastName}
                   </p>
@@ -269,7 +302,7 @@ const fetchEmployeeHistory = async () => {
           </div>
         </div>
 
-        {/* قسم سجل الإجازات */}
+        {/* قسم سجل الإجازات التاريخي */}
         {showHistory && (
           <div className="mt-6 bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-2xl animate-in fade-in slide-in-from-top-4 duration-300">
             <div className="flex items-center gap-2 mb-6 border-b border-slate-800 pb-4">

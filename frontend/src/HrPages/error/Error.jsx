@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { NavLink } from "react-router-dom";
 
-import icon from "../../assets/icons/icon.svg";
+import icon from "../../assets/icons/Icon.svg";
 import ufoIcon from "../../assets/ufo/ufo.svg";
 
 const Error = () => {

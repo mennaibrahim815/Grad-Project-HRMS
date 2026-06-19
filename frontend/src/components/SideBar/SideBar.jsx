@@ -1,7 +1,7 @@
 import { NavLink, useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useRef } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import icon from "../../assets/icons/Icon.svg";
 import { logoutUser } from "../../store/HrSlices/auth/loginSlice";
 
@@ -38,20 +38,25 @@ const Sidebar = () => {
     },
     { name: "Attendance", icon: "fas fa-calendar-check", path: "/attendance" },
     { name: "Leave", icon: "fas fa-envelope-open-text", path: "/leave-requests" },
+    { name: "Requests", icon: "fas fa-file-alt", path: "/requests" },
     { name: "Performance", icon: "fas fa-chart-line", path: "/performance" },
   ];
 
+    if (userRole === "MANAGER") {
+    hrMenuItems.push({ name: "Manage HRs", icon: "fas fa-user-shield", path: "/manage-hrs" });
+  }
   const employeeMenuItems = [
     { name: "Dashboard", icon: "fas fa-th-large", path: "/my-dashboard" },
     { name: "My Profile", icon: "fas fa-user-circle", path: "/profile" },
-    { name: "Attendance", icon: "fas fa-calendar-alt", path: "/attendance" },
-    { name: "Leaves", icon: "fas fa-plane", path: "/leave" },
+    { name: "Attendance", icon: "fas fa-calendar-alt", path: "/my-attendance" },
+    { name: "Payroll", icon: "fas fa-wallet", path: "/my-payroll" },
+    { name: "My Leaves", icon: "fas fa-plane", path: "/my-leaves" },
     { name: "My Requests", icon: "fas fa-file-alt", path: "/my-requests" },
     { name: "Tasks", icon: "fas fa-check-circle", path: "/tasks", badge: 3 },
     { name: "Notifications", icon: "fas fa-bell", path: "/notifications" },
   ];
 
-  const menuItems = userRole === "HR" ? hrMenuItems : employeeMenuItems;
+  const menuItems = userRole === "HR" || userRole === "MANAGER" ? hrMenuItems : employeeMenuItems;
 
   const handleMouseEnter = (e, itemName) => {
     if (!isCollapsed) return;
@@ -67,11 +72,11 @@ const Sidebar = () => {
   };
 
   return (
-    <motion.aside
-      animate={{ width: isCollapsed ? 80 : 175 }}
-      className="h-screen bg-[#0b161d] text-gray-400 flex flex-col border-r border-gray-900 sticky top-0 z-50"
-    >
-      {/* Logo */}
+<motion.aside
+  animate={{ width: isCollapsed ? 80 : 175 }}
+  className="fixed h-screen bg-[#0b161d] text-gray-400 flex flex-col border-r border-gray-900  top-0 overflow-hidden z-50"
+>
+     {/* Logo */}
       <NavLink
         to={userRole === "HR" ? "/dashboard" : "/my-dashboard"}
         className={`h-20 flex items-center px-6 mb-4 ${isCollapsed ? "justify-center" : "justify-start gap-3"
@@ -88,7 +93,7 @@ const Sidebar = () => {
       </NavLink>
 
       {/* Menu */}
-      <div className="flex-1 px-3 space-y-2 overflow-y-auto">
+      <div className="flex-1 px-3 space-y-2 overflow-hidden">
         <p className="text-[10px] text-gray-600 font-black uppercase mb-4 ml-3 tracking-widest">
           {/* {isCollapsed ? "•••" : "Main Menu"} */}
         </p>
@@ -112,7 +117,7 @@ const Sidebar = () => {
                   isCollapsed ? "justify-center" : ""
                 ].join(" ")}
               >
-                {/* 👇 المحتوى اللي اتمسح */}
+              
                 <i className={`${item.icon} text-lg`}></i>
                 {!isCollapsed && (
                   <>
@@ -147,32 +152,50 @@ const Sidebar = () => {
               </NavLink>
             )}
 
-            {/* Dropdown العادي لما مش Collapsed */}
-            {item.children && openDropdown === item.name && !isCollapsed && (
-              <div className="ml-4 mt-1 space-y-1 border-l border-slate-700/50 pl-3">
-                {item.children.map((child) => (
-                  <NavLink
-                    key={child.name}
-                    to={child.path}
-                    className={({ isActive }) => [
-                      "flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all",
-                      isActive
-                        ? "bg-[#182731] text-white"
-                        : "text-gray-400 hover:bg-[#142129] hover:text-white"
-                    ].join(" ")}
+         
+            {item.children && !isCollapsed && (
+              <AnimatePresence>
+                {openDropdown === item.name && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0, y: -10 }}
+                    animate={{ opacity: 1, height: "auto", y: 0 }}
+                    exit={{ opacity: 0, height: 0, y: -10 }}
+                    transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
+                    className="overflow-hidden"
                   >
-                    <span className="w-1.5 h-1.5 rounded-full bg-current" />
-                    {child.name}
-                  </NavLink>
-                ))}
-              </div>
+                    <div className="ml-4 mt-1 space-y-1 border-l border-slate-700/50 pl-3">
+                      {item.children.map((child, index) => (
+                        <motion.div
+                          key={child.name}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.07, duration: 0.2 }}
+                        >
+                          <NavLink
+                            to={child.path}
+                            className={({ isActive }) => [
+                              "flex items-center gap-2 px-3 py-2.5 rounded-xl text-sm transition-all",
+                              isActive
+                                ? "bg-[#182731] text-white"
+                                : "text-gray-400 hover:bg-[#142129] hover:text-white"
+                            ].join(" ")}
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-current" />
+                            {child.name}
+                          </NavLink>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             )}
           </div>
         ))}
       </div>
 
       {/* Logout */}
-      <div className="p-3 border-t border-gray-900/50">
+      {/* <div className="p-3 border-t border-gray-900/50">
         <button
           onClick={() => dispatch(logoutUser())}
           className={[
@@ -183,7 +206,7 @@ const Sidebar = () => {
           <i className="fas fa-sign-out-alt text-lg"></i>
           {!isCollapsed && <span className="text-sm font-bold">Logout</span>}
         </button>
-      </div>
+      </div> */}
 
       {/* Flyout */}
       {isCollapsed && flyoutPos.visible && (() => {

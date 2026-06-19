@@ -74,9 +74,24 @@ export const fetchAttendanceByEmployee = createAsyncThunk(
     }
   },
 );
+// Fetch Attendance Stats
+export const fetchAttendanceStats = createAsyncThunk(
+  "attendance/fetchAttendanceStats",
+  async ({ month, year }, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`/attendance/stats/monthly`, {
+        params: { month, year }
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Failed to fetch payroll summary");
+    }
+  }
+);
 
 const initialState = {
   attendanceList: [],
+  analytics: null,
   pagination: {
     totalRecords: 0,
     totalPages: 1,
@@ -92,6 +107,7 @@ const initialState = {
   selectedMonth: new Date().toISOString().slice(0, 7),
   selectedDate: new Date().toISOString().split("T")[0],
   loading: false,
+  statsLoading: false,
   error: null,
 };
 
@@ -138,10 +154,10 @@ const attendanceSlice = createSlice({
       })
       .addCase(fetchMonthlyAttendance.fulfilled, (state, action) => {
         state.loading = false;
-        const statsRoot = action.payload.data?.monthlyAttendenceStats?.[0];
+        const statsRoot = action.payload.data;
         if (statsRoot) {
           state.chartData = statsRoot.monthlyStats || [];
-          const overall = statsRoot.overallStats?.[0];
+          const overall = statsRoot.overallStats;
           state.totals = {
             onTime: overall?.totalOnTime || 0,
             late: overall?.totalLate || 0,
@@ -176,13 +192,27 @@ const attendanceSlice = createSlice({
       })
       .addCase(fetchAttendanceByEmployee.fulfilled, (state, action) => {
         state.loading = false;
-        state.attendanceList = action.payload.data.attendance || [];
-        state.pagination = action.payload.pagination || initialState.pagination;
+        const { attendance, pagination } = action.payload.data;
+        state.attendanceList = attendance || [];
+        state.pagination = pagination || initialState.pagination;
       })
       .addCase(fetchAttendanceByEmployee.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
-      });
+      })
+      // Attendance stats
+      .addCase(fetchAttendanceStats.pending, (state) => {
+        state.statsLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchAttendanceStats.fulfilled, (state, action) => {
+        state.statsLoading = false;
+        state.analytics = action.payload;
+      })
+      .addCase(fetchAttendanceStats.rejected, (state, action) => {
+        state.statsLoading = false;
+        state.error = action.payload;
+      })
   },
 });
 

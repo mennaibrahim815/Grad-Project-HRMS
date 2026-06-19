@@ -11,15 +11,18 @@ export const getTasks = asyncWraper(async (req, res, next) => {
     const limit = parseInt(req.query.limit) || 10;
     const skip = (page - 1) * limit;
 
+    const { status } = req.query;
     let matchQuery = {};
 
     if (req.params.id) {
         matchQuery._id = req.params.id;
     }
-
+    if (status) {
+        matchQuery.status = status;
+    }
     const [totalRecords, tasks] = await Promise.all([
         Task.countDocuments(matchQuery),
-        Task.find(matchQuery).sort({ createdAt: -1 }).skip(skip).limit(limit),
+        Task.find(matchQuery,"-__v").populate("projectId", "general.name").sort({ createdAt: -1 }).skip(skip).limit(limit),
     ]);
 
     if (req.params.id && tasks.length === 0) {
@@ -45,6 +48,58 @@ export const getTasks = asyncWraper(async (req, res, next) => {
 });
 
 export const getTaskStatistics = asyncWraper(async (req, res, next) => {
+    const stats = await Task.aggregate([
+        {
+            $group: {
+                _id: null,
+                total: { $sum: 1 },
+                ongoing: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$status", "On-going"] },
+                            1,
+                            0,
+                        ],
+                    },
+                },
+                pending: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$status", "Pending"] },
+                            1,
+                            0,
+                        ],
+                    },
+                },
+                completed: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$status", "Completed"] },
+                            1,
+                            0,
+                        ],
+                    },
+                },
+            },
+        },
+    ]);
+
+    const data = stats[0] || { total: 0, ongoing: 0, pending: 0, completed: 0 };
+
+    const headers = [
+        { title: "All Tasks", value: data.total },
+        { title: "On-going", value: data.ongoing },
+        { title: "Pending", value: data.pending },
+        { title: "Completed", value: data.completed },
+    ];
+
+    res.status(200).json({
+        status: httpResponseText.SUCCESS,
+        data: headers,
+    });
+});
+
+export const getEmployeeTaskStatistics = asyncWraper(async (req, res, next) => {
     const userId = req.currentUser.userId;
 
     const startOfToday = new Date();
@@ -327,6 +382,20 @@ export const searchTasks = asyncWraper(async (req, res, next) => {
 
     const results = await Task.aggregate([
         { $match: { title: { $regex: title, $options: "i" } } },
+        
+        {
+            $lookup: {
+                from: "projects",
+                localField: "projectId",
+                foreignField: "_id",
+                as: "projectDetails"
+            }
+        },
+        {
+            $addFields: {
+                projectDetails: { $arrayElemAt: ["$projectDetails", 0] }
+            }
+        },
         {
             $project: {
                 _id: 1,
@@ -335,6 +404,7 @@ export const searchTasks = asyncWraper(async (req, res, next) => {
                 priority: 1,
                 deadline: 1,
                 assignedTo: 1,
+                projectName: "$projectDetails.general.name"
             },
         },
     ]);

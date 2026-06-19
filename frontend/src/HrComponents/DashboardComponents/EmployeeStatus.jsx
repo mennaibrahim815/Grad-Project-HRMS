@@ -30,6 +30,9 @@ const renderCustomizedLabel = ({
     </g>
   );
 };
+
+
+
 const EmployeeStatus = ({ pieStripes, title }) => {
   const navigate = useNavigate();
   const { analytics } = useSelector((state) => state.dashboard);
@@ -88,7 +91,7 @@ const EmployeeStatus = ({ pieStripes, title }) => {
         </button>
       </div>
 
-      <div className="flex flex-col lg:flex-row items-center gap-6 flex-1">
+      <div className="flex justify-center lg:flex-row items-center gap-6 flex-1">
 
         {/* Chart */}
         <div className="w-56 h-56 relative flex-shrink-0">

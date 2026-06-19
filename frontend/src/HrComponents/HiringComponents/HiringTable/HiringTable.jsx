@@ -20,13 +20,13 @@ const AttendanceBadge = ({ status }) => {
   const getStatusStyles = () => {
     switch (status) {
       case 'Applied':
-        return 'bg-slate-800 text-cyan-400 border-cyan-400/20'
+        return  'bg-slate-800 text-[#B0B4B4] border-[#B0B4B4]/20'
 
       case 'Interviewing':
-        return 'bg-sky-500/15 text-sky-400 border-sky-400/40'
+        return  'bg-[#0293FA]/15 text-[#0293FA] border-[#0293FA]/40'
 
       case 'Rejected':
-        return 'text-red-400 bg-red-500/20 rounded-full'
+        return "bg-[#EC3A76]/20 text-[#EC3A76] border-[#EC3A76]/20"
 
       case 'Hired':
         return 'bg-emerald-500/15 text-emerald-400 border-emerald-400/40'

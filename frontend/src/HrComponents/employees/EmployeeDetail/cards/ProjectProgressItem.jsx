@@ -1,4 +1,4 @@
-import BaseCard from "../../../../Components/UI/Card"
+import BaseCard from "../../../../components/UI/Card"
 
 const ProjectProgressItem = ({ name, progress, color }) => (
   <div className="mb-4 last:mb-0">

@@ -32,7 +32,7 @@ import dashboardRouter from "./routes/dashboard.routes.js";
 import chatbotRouter from "./routes/chatbot.routes.js";
 import notificationRouter from "./routes/notification.routes.js";
 import employeeDashboardRouter from "./routes/employeeDashboard.routes.js";
-import employeePerformanceRouter from "./routes/employeePerformance.routes.js";
+import PerformanceRouter from "./routes/Performance.routes.js";
 import { socketAuthMiddleware } from "./guards/socketAuth.middleware.js";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -121,7 +121,7 @@ app.use("/api/dashboard", dashboardRouter);
 app.use("/api/chatbot", chatbotRouter);
 app.use("/api/notifications", notificationRouter);
 app.use("/api/employeeDashboard", employeeDashboardRouter);
-app.use("/api/employeePerformance", employeePerformanceRouter);
+app.use("/api/employeePerformance", PerformanceRouter);
 
 app.all(/(.*)/, (req, res, next) => {
     const error = appErrors.create(404, "the route is not handeld", "Fail");

@@ -51,8 +51,13 @@ const ResetPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#0f172a] text-white font-sans overflow-hidden relative">
-      
+<div className="min-h-screen flex bg-[#0f172a] text-white font-sans overflow-hidden relative z-0">
+  
+  {/* الإضاءة البيضاء المتمركزة في النص */}
+  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[70%] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.15)_0%,rgba(255,255,255,0.05)_5%,transparent_70%)] blur-[100px] -z-10 pointer-events-none"></div>
+
+  {/* باقي المحتوى بتاعك يتحط هنا */}
+  <div className="relative w-full z-10 flex">      
       <motion.div 
         initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}
         className="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 overflow-y-auto"
@@ -153,6 +158,25 @@ const ResetPassword = () => {
         <div className="w-full h-full rounded-[2.5rem] bg-cover bg-center flex flex-col justify-end p-12 relative overflow-hidden shadow-2xl" style={{ backgroundImage: `linear-gradient(to bottom, transparent, #000000dd), url(${loginSide})` }}>
            <h2 className="text-4xl font-bold mb-4 z-10 leading-tight">Secure Your Account</h2>
            <p className="text-gray-300 z-10 max-w-sm mb-6 font-light">Your new password should be unique and strong to protect your sensitive data.</p>
+           <div className="flex gap-1.5 z-10">
+            {/* <div className="h-1.5 w-2 bg-gray-700 rounded-full"></div> */}
+            <motion.div
+              animate={{ width: [8, 24, 8] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+            ></motion.div>
+            <motion.div
+              animate={{ width: [8, 24, 8] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+            ></motion.div>
+            {/* <div className="h-1.5 w-2 bg-gray-700 rounded-full"></div> */}
+            <motion.div
+              animate={{ width: [8, 24, 8] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              className="h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+            ></motion.div>
+          </div>
         </div>
       </div>
 
@@ -177,6 +201,7 @@ const ResetPassword = () => {
           </div>
         )}
       </AnimatePresence>
+    </div>
     </div>
   );
 };

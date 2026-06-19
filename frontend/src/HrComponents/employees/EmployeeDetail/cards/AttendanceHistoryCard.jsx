@@ -1,12 +1,12 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { fetchAttendanceByEmployee, setSelectedMonth } from "../../../../store/HrSlices/attendance/attendanceSlice";
-import DataTable from "../../../../Components/table/DataTable";
-import Pagination from "../../../../Components/table/Pagination";
+import DataTable from "../../../../components/table/DataTable";
+import Pagination from "../../../../components/table/Pagination";
 import EditIcon from "@mui/icons-material/Edit";
-import RowActionMenu from "../../../../Components/UI/RowActionMenu";
-import BaseCard from "../../../../Components/UI/Card";
-import ReusableCalendar from "../../../../Components/UI/ReusableCalendar";
+import RowActionMenu from "../../../../components/UI/RowActionMenu";
+import BaseCard from "../../../../components/UI/Card";
+import ReusableCalendar from "../../../../components/UI/ReusableCalendar";
 import { Eye, Trash2 } from "lucide-react";
 console.log("fetchAttendanceByEmployee:", fetchAttendanceByEmployee); // ← مش undefined؟
 const AttendanceBadge = ({ status }) => {

@@ -11,6 +11,7 @@ import {
     CheckCircle2,
     XCircle,
 } from "lucide-react";
+import BaseCard from "../../../../components/UI/Card";
 import {
     generateDraft,
     approvePayroll,
@@ -111,13 +112,15 @@ function monthLabel(month, year) {
 export function PayrollActionModal({ action, onClose, targetId }) {
     const dispatch = useDispatch();
 
-    const { managementSelectedMonth, managementSelectedYear, actionState } = useSelector(
+
+    const { managementSelectedMonth, actionState } = useSelector(
         (state) => state.payroll
     );
 
     // managementSelectedMonth stored as "YYYY-MM"
-    const month = parseInt(managementSelectedMonth.split("-")[1], 10);
-    const year = managementSelectedYear;
+    const [yearStr, monthStr] = managementSelectedMonth.split("-");
+    const month = parseInt(monthStr, 10);
+    const year = parseInt(yearStr, 10);
 
     const config = ACTION_CONFIGS[action];
 
@@ -144,14 +147,14 @@ export function PayrollActionModal({ action, onClose, targetId }) {
     const { Icon } = config;
     const handleConfirm = () => {
         if (action === "singlePay") {
-          
+
             dispatch(config.thunk({
                 id: targetId,
                 month,
                 year
             }));
         } else {
-           
+
             dispatch(config.thunk({ month, year }));
         }
     };
@@ -160,7 +163,10 @@ export function PayrollActionModal({ action, onClose, targetId }) {
             className="fixed inset-0 z-50 flex items-center justify-center bg-[#121417]/75 backdrop-blur-sm"
             onClick={(e) => e.target === e.currentTarget && onClose()}
         >
-            <div className="w-[400px] max-w-[calc(100vw-2rem)] rounded-2xl border border-[#383D47] bg-[#1B1E22] overflow-hidden">
+            <BaseCard
+                padding="p-0"
+                className="w-[400px] max-w-[calc(100vw-2rem)] overflow-hidden"
+            >
 
                 {/* ── Header ── */}
                 <div className="flex items-center justify-between px-5 py-4 border-b border-[#383D47]">
@@ -231,8 +237,8 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                     <>
                         <div
                             className={`flex gap-3 px-5 py-4 border-y ${result.ok
-                                    ? "bg-[#00331E] border-[#00522F]"
-                                    : "bg-[#34141F] border-[#6B0A2B]"
+                                ? "bg-[#00331E] border-[#00522F]"
+                                : "bg-[#34141F] border-[#6B0A2B]"
                                 }`}
                         >
                             <div
@@ -271,7 +277,7 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                         </div>
                     </>
                 )}
-            </div>
+            </BaseCard>
         </div>
     );
 }
