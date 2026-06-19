@@ -5,10 +5,10 @@ import { useDispatch } from "react-redux";
 import { updateApplicantStatus } from "../../../../store/HrSlices/Hiring/hiringSlice";
 
 const statusOptions = {
-  Applied:      ["Interviewing", "Rejected"],
+  Applied: ["Interviewing", "Rejected"],
   Interviewing: ["Hired", "Rejected"],
-  Hired:        [],
-  Rejected:     [],
+  Hired: [],
+  Rejected: [],
 };
 
 const CandidateProfileCard = ({ applicant, loading }) => {
@@ -16,6 +16,7 @@ const CandidateProfileCard = ({ applicant, loading }) => {
   const [open, setOpen] = useState(false);
   const [pos, setPos] = useState({ top: 0, left: 0 });
   const btnRef = useRef(null);
+  const menuRef = useRef(null);
 
   const { personalInfo, status, _id } = applicant || {};
   const fullName = `${personalInfo?.firstName || ""} ${personalInfo?.lastName || ""}`.trim();
@@ -24,21 +25,26 @@ const CandidateProfileCard = ({ applicant, loading }) => {
   const handleOpen = () => {
     const rect = btnRef.current.getBoundingClientRect();
     setPos({
-      top:  rect.bottom + window.scrollY + 8,
+      top: rect.bottom + window.scrollY + 8,
       left: rect.left + rect.width / 2 + window.scrollX,
     });
     setOpen((prev) => !prev);
   };
-
   useEffect(() => {
     const close = (e) => {
-      if (btnRef.current && !btnRef.current.contains(e.target)) setOpen(false);
+      if (
+        btnRef.current && !btnRef.current.contains(e.target) &&
+        menuRef.current && !menuRef.current.contains(e.target)
+      ) {
+        setOpen(false);
+      }
     };
     document.addEventListener("mousedown", close);
     return () => document.removeEventListener("mousedown", close);
   }, []);
 
   const handleStatusChange = (newStatus) => {
+    console.log("clicked", newStatus, _id);
     dispatch(updateApplicantStatus({ id: _id, status: newStatus }));
     setOpen(false);
   };
@@ -76,13 +82,15 @@ const CandidateProfileCard = ({ applicant, loading }) => {
           </button>
 
           {open && createPortal(
-            <div style={{
-              position: "absolute",
-              top: pos.top,
-              left: pos.left,
-              transform: "translateX(-50%)",
-              zIndex: 9999,
-            }}
+            <div
+              ref={menuRef}
+              style={{
+                position: "absolute",
+                top: pos.top,
+                left: pos.left,
+                transform: "translateX(-50%)",
+                zIndex: 9999,
+              }}
               className="bg-[#1e2a3a] border border-white/10 rounded-xl overflow-hidden shadow-2xl min-w-[160px]"
             >
               {options.map((opt) => (
@@ -100,8 +108,8 @@ const CandidateProfileCard = ({ applicant, loading }) => {
         </>
       ) : (
         <span className={`px-4 py-1.5 rounded-full text-xs font-medium border
-          ${status === "Hired"    ? 'bg-emerald-500/15 text-emerald-400 border-emerald-400/40'    : ""}
-          ${status === "Rejected" ? 'text-red-400 bg-red-500/20 rounded-full'     : ""}
+          ${status === "Hired" ? 'bg-emerald-500/15 text-emerald-400 border-emerald-400/40' : ""}
+          ${status === "Rejected" ? 'text-red-400 bg-red-500/20 rounded-full' : ""}
         `}>
           {status}
         </span>

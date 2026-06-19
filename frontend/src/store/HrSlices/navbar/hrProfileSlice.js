@@ -192,13 +192,18 @@ export const fetchMyHRProfile = createAsyncThunk(
 // 2. تحديث بيانات الـ HR
 export const updateHRProfile = createAsyncThunk(
   "hrProfile/update",
-  async (formData, { rejectWithValue }) => {
+  async ({ userId, formData }, { rejectWithValue }) => {
     try {
-      // 💡 الروت ده لازم يكون موجود في الباك بتاعك
-      const response = await axios.patch("/hr-profile/update-me", formData);
-      return response.data.updatedUser;
+      const response = await axios.patch(
+        `/users/${userId}`,
+        formData
+      );
+
+      return response.data.data.user;
     } catch (err) {
-      return rejectWithValue(err.response?.data?.message || "Update failed");
+      return rejectWithValue(
+        err.response?.data?.message || "Update failed"
+      );
     }
   }
 );

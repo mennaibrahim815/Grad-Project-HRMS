@@ -336,7 +336,6 @@ export const getEmployeesPayroll = asyncWraper(async (req, res, next) => {
     if (status) {
         searchQuery.status = status;
     }
-
     const limitNumber = Number(limit) || 10;
     const pageNumber = Number(page) || 1;
     const skip = (pageNumber - 1) * limitNumber;
@@ -460,12 +459,8 @@ const fetchPayrollHistoryLogic = async (req, res, next, targetEmployeeId) => {
     const pageNumber = Number(page) || 1;
     const skip = (pageNumber - 1) * limitNumber;
 
-    // 1. يفضل دايماً تحويل الـ String لـ ObjectId في الـ Find عشان تتفادى أي مشاكل
-    const searchQuery = {
-        employeeId: new mongoose.Types.ObjectId(targetEmployeeId),
-    };
+    const searchQuery = { employeeId: targetEmployeeId };
 
-    // 2. تحويل الـ Strings لـ Numbers عشان الـ Database تفهمهم
     if (month && year) {
         searchQuery.month = parseInt(month);
         searchQuery.year = parseInt(year);

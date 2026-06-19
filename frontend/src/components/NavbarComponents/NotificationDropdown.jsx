@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 import {
-  markAsRead,
-  handleNotificationAction,
-  markAllAsRead,
-  fetchNotifications,
+markAsRead,
+markAllAsRead,
+fetchNotifications,
+fetchUnreadCount,
+
 } from "../../store/HrSlices/navbar/notificationSlice";
 import { updateLeaveStatus } from "../../store/HrSlices/leaveSlice";
 
@@ -137,9 +138,11 @@ const NotificationDropdown = ({ isOpen, setIsOpen, notifRef }) => {
     (state) => state.notifications,
   );
 
-  useEffect(() => {
-    dispatch(fetchNotifications());
-  }, [dispatch]);
+useEffect(() => {
+dispatch(fetchNotifications());
+dispatch(fetchUnreadCount());
+}, [dispatch]);
+
 
   return (
     <div className="relative" ref={notifRef}>

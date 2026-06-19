@@ -23,4 +23,4 @@ const BaseCard = ({
   )
 }
 
-export default BaseCard
+export default BaseCard;

@@ -69,11 +69,6 @@ function PayrollTable() {
       },
     },
     {
-      header: "Department",
-      accessor: "employee.department",
-      render: (row) => row.employee?.department
-    },
-    {
       header: "Period",
       accessor: "month",
       render: (row) => {
@@ -88,11 +83,11 @@ function PayrollTable() {
       accessor: "baseSalary",
       render: (row) => `$${row.baseSalary?.toLocaleString()}`
     },
-    // { 
-    //   header: "Deductions", 
-    //   accessor: "deductions",
-    //   render: (row) => `$${row.deductions?.toLocaleString()}`
-    // },
+    { 
+      header: "Deductions", 
+      accessor: "deductions",
+      render: (row) => `$${row.deductions?.toLocaleString()}`
+    },
     {
       header: "Net Salary",
       accessor: "netSalary",

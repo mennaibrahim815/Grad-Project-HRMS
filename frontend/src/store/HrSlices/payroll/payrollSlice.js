@@ -73,7 +73,7 @@ export const fetchYearlyPayroll = createAsyncThunk(
   }
 );
 // ─── New Action Thunks ────────────────────────────────────────────────────────
- 
+
 export const generateDraft = createAsyncThunk(
   "payroll/generateDraft",
   async ({ month, year }, { rejectWithValue }) => {
@@ -87,7 +87,7 @@ export const generateDraft = createAsyncThunk(
     }
   }
 );
- 
+
 export const approvePayroll = createAsyncThunk(
   "payroll/approve",
   async ({ month, year }, { rejectWithValue }) => {
@@ -101,7 +101,7 @@ export const approvePayroll = createAsyncThunk(
     }
   }
 );
- 
+
 export const bulkPayPayroll = createAsyncThunk(
   "payroll/bulkPay",
   async ({ month, year }, { rejectWithValue }) => {
@@ -120,15 +120,33 @@ export const paySinglePayroll = createAsyncThunk(
   "payroll/paySingle",
   async ({ id, month, year }, { rejectWithValue }) => {
     try {
-      
-      const response = await axios.patch(`/payroll/pay/${id}`, { 
-        month, 
-        year 
+
+      const response = await axios.patch(`/payroll/pay/${id}`, {
+        month,
+        year
       });
       return response.data;
     } catch (error) {
       return rejectWithValue(
         error.response?.data || { message: "Failed to process payment." }
+      );
+    }
+  }
+);
+
+export const editDraftPayroll = createAsyncThunk(
+  "payroll/editDraft",
+  async ({ id, manualAdditions, manualDeductions, adjustmentReason }, { rejectWithValue }) => {
+    try {
+      const response = await axios.patch(`/payroll/draft/${id}/edit`, {
+        manualAdditions,
+        manualDeductions,
+        adjustmentReason,
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data || { message: "Failed to update draft." }
       );
     }
   }
@@ -153,7 +171,7 @@ const payrollSlice = createSlice({
     tableLoading: false,
     yearlyLoading: false,
     error: null,
-     // State for payroll actions (Generate / Approve / Pay)
+    // State for payroll actions (Generate / Approve / Pay)
     actionState: {
       loading: false,
       // After the API call resolves, we store the full response here.
@@ -174,7 +192,7 @@ const payrollSlice = createSlice({
     setManagementYear: (state, action) => {
       state.managementSelectedYear = action.payload;
     },
-       // Call this when the modal is closed so the result is cleared for next time
+    // Call this when the modal is closed so the result is cleared for next time
     clearActionResult: (state) => {
       state.actionState = { loading: false, result: null };
     },
@@ -268,7 +286,7 @@ const payrollSlice = createSlice({
           result: { ok: false, message: action.payload?.message || "Something went wrong.", data: null },
         };
       })
- 
+
       // ── Approve Payroll ────────────────────────────────────────────────────
       .addCase(approvePayroll.pending, (state) => {
         state.actionState = { loading: true, result: null };
@@ -285,7 +303,7 @@ const payrollSlice = createSlice({
           result: { ok: false, message: action.payload?.message || "Something went wrong.", data: null },
         };
       })
- 
+
       // ── Bulk Pay ───────────────────────────────────────────────────────────
       .addCase(bulkPayPayroll.pending, (state) => {
         state.actionState = { loading: true, result: null };
@@ -317,11 +335,28 @@ const payrollSlice = createSlice({
           loading: false,
           result: { ok: false, message: action.payload?.message || "Something went wrong.", data: null },
         };
+      })
+      // ── Edit Draft payroll───────────────────────────────────────────────────────────
+      .addCase(editDraftPayroll.pending, (state) => {
+        state.actionState = { loading: true, result: null };
+      })
+      .addCase(editDraftPayroll.fulfilled, (state, action) => {
+        state.actionState = {
+          loading: false,
+          result: { ok: true, message: action.payload.message, data: action.payload.data },
+        };
+      })
+      .addCase(editDraftPayroll.rejected, (state, action) => {
+        state.actionState = {
+          loading: false,
+          result: { ok: false, message: action.payload?.message || "Something went wrong.", data: null },
+        };
       });
-      
+
+
 
   },
 });
 
-export const { setPayrollMonth,setPayrollYear,clearActionResult,setManagementMonth,setManagementYear, } = payrollSlice.actions;
+export const { setPayrollMonth, setPayrollYear, clearActionResult, setManagementMonth, setManagementYear } = payrollSlice.actions;
 export default payrollSlice.reducer;
