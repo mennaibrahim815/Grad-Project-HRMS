@@ -117,9 +117,9 @@ export default function HrAllTasksPage() {
   });
 
   return (
-    <div className="p-6 bg-[#0f172a] min-h-screen text-slate-100">
+    <div >
       {/* العنوان العلوي */}
-      <div className="flex flex-col gap-2 mb-8">
+      <div className="flex flex-col gap-2 mb-8 mt-10">
         <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
           <ListTodo className="text-cyan-400" size={26} /> All System Tasks
         </h1>
