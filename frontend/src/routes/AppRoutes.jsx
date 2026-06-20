@@ -144,7 +144,8 @@ import PerformanceDetails from "../HrPages/PerformanceDetails/PerformanceDetails
 import LeaveRequests from "../HrPages/Leave/LeaveRequests/LeaveRequests";
 import LeaveDetails from "../HrPages/Leave/LeaveDetails/LeaveDetails";
 import Requests from "../HrPages/Requests/Requests";
-import Tasks from "../HrPages/Tasks/Tasks";
+import Tasks from "../HrPages/Tasks/AllTasks/AllTasks";
+import OngoingTasks from "../HrPages/Tasks/OngoingTasks/OngoingTasks";
 import MyDashBourd from "../EmployeePages/MyDashboard/MyDashboard";
 import Myleaves from "../EmployeePages/Myleaves/Myleaves";
 import EmployeeLeaveDetails from "../EmployeePages/Myleaves/EmployeeLeaveDetails";
@@ -153,6 +154,7 @@ import MyRequests from "../EmployeePages/MyRequests/MyRequests";
 import MyTasks from "../EmployeePages/MyTasks/MyTasks";
 import Myparoll from "../EmployeePages/MyPayroll/Mypayroll";
 import MyPerformance from "../EmployeePages/MyPerformance/MyPerformance";
+import MyProfile from "../EmployeePages/MyProfile/MyProfile ";
 import Settings from "../HrPages/sett/Settings";
 
 export const router = createBrowserRouter(
@@ -219,7 +221,7 @@ export const router = createBrowserRouter(
           ),
           children: [
             { path: "/my-dashboard", element: <MyDashBourd /> },
-            { path: "/profile", element: <EmployeeDetail /> },
+            { path: "/profile", element: <MyProfile/> },
             { path: "/my-leaves", element: <Myleaves /> },
             { path: "/my-attendance", element: <MyAttendance /> },
             { path: "/my-requests", element: <MyRequests /> },

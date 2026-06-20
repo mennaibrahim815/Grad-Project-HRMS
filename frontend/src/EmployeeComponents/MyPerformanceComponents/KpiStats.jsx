@@ -18,7 +18,7 @@ function KpiStatItem({ icon, label, score }) {
         </div>
       </div>
 
-      <span className="text-3xl font-extrabold" style={{ color: "var(--text-stat)" }}>
+      <span className="text-3xl font-extrabold" className="text-3xl font-extrabold" style={{ color }}>
         {score}%
       </span>
 

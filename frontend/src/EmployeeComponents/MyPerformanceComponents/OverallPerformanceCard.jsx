@@ -25,7 +25,7 @@ function OverallPerformanceCard({ overallPerformance = 0, performanceStatus = "P
       </div>
 
       <div className="flex items-end justify-between flex-wrap gap-3">
-        <span className="text-5xl font-extrabold" style={{ color: "var(--text-stat)" }}>
+        <span className="text-5xl font-extrabold" style={{ color: colors.text }}>
           {overallPerformance}%
         </span>
 

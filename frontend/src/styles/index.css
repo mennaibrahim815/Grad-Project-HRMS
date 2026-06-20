@@ -30,7 +30,8 @@
 :root {
   --bg-main: #121417;
   --bg-deep: #0f172a;
-  --bg-card: #1e293b; /* ← ناقصة، ده slate-800 */
+  --bg-card: #1e293b;
+  /* ← ناقصة، ده slate-800 */
 
   --text-main: #fcfcfd;
   --text-muted: #7e889a;
@@ -48,18 +49,21 @@
   --border-subtle: rgba(30, 41, 59, 0.6);
 
   /* ناقصين للـ Pagination */
-  --hover-bg: rgba(71, 85, 105, 0.5); /* slate-600/50 */
-  --dropdown-bg: #1e293b; /* slate-800 */
-  --dropdown-hover: rgba(51, 65, 85, 0.5); /* slate-700/50 */
+  --hover-bg: rgba(71, 85, 105, 0.5);
+  /* slate-600/50 */
+  --dropdown-bg: #1e293b;
+  /* slate-800 */
+  --dropdown-hover: rgba(51, 65, 85, 0.5);
+  /* slate-700/50 */
   --accent-cyan: #22d3ee;
-    --menu-gradient-from: #1e2a3a;
+  --menu-gradient-from: #1e2a3a;
   --menu-gradient-to: #162231;
   --menu-border: rgba(255, 255, 255, 0.08);
   --menu-hover: rgba(255, 255, 255, 0.08);
 
   --text-stat: #fcfcfd;
   --modal-bg: #24272E;
- --pill-blue-bg: #0E2A45;
+  --pill-blue-bg: #0E2A45;
   --pill-blue-border: #1A4870;
   --pill-blue-text: #62BDFE;
 
@@ -75,7 +79,7 @@
   --pill-red-border: #4D1428;
   --pill-red-text: #F598B7;
 
-   --icon-blue-bg: #013256;
+  --icon-blue-bg: #013256;
   --icon-blue-color: #62BDFE;
 
   --icon-green-bg: #00331E;
@@ -119,7 +123,7 @@
   --text-stat: #334155;
   --modal-bg: #ffffff;
 
-   --pill-blue-bg: #E6F1FB;
+  --pill-blue-bg: #E6F1FB;
   --pill-blue-border: #B5D4F4;
   --pill-blue-text: #185FA5;
 
@@ -135,7 +139,7 @@
   --pill-red-border: #F0A8A8;
   --pill-red-text: #791F1F;
 
-   --icon-blue-bg: #013256;
+  --icon-blue-bg: #013256;
   --icon-blue-color: #62BDFE;
 
   --icon-green-bg: #00331E;
