@@ -1,8 +1,7 @@
 import PropTypes from "prop-types";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { TrendingUp } from "lucide-react";
-import BaseCard from "../UI/Card";
-import { getPerformanceColors } from "../../EmployeeComponents/MyPerformanceComponents/performanceUtils"
+import { getPerformanceColors } from "../../EmployeeComponents/MyPerformanceComponents/performanceUtils";
 
 const buildChartData = (previousPeriods = [], currentPeriod, overallPerformance, performanceStatus) => {
   const formattedPrevious = [...previousPeriods].reverse().map((item) => ({
@@ -59,20 +58,15 @@ const PerformanceTrendChart = ({
 }) => {
   const chartData = buildChartData(previousPeriods, currentPeriod, overallPerformance, performanceStatus);
 
-  if (isLoading) {
-    return (
-      <div
-        className="h-64 flex items-center justify-center text-xs font-medium font-mono"
-        style={{ color: "var(--text-muted)" }}
-      >
-        Loading analytics trend...
-      </div>
-    );
-  }
-
   return (
-    <BaseCard padding="p-6" className="w-full mt-6 mb-10 text-left">
-      <div className="flex justify-between items-center mb-6">
+    <div
+      style={{
+        background: 'linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)',
+        borderColor: 'var(--card-border)',
+      }}
+      className="p-6 rounded-[2.5rem] border shadow-xl w-full h-full min-h-[420px] flex flex-col"
+    >
+      <div className="flex justify-between items-center mb-6 shrink-0">
         <div className="flex items-center gap-3">
           <div
             className="p-2 rounded-xl"
@@ -91,43 +85,49 @@ const PerformanceTrendChart = ({
         </div>
       </div>
 
-      <div className="w-full">
-        <ResponsiveContainer width="100%" height={260}>
-          <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-            <defs>
-              <linearGradient id="neonBluePerformance" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#0095ff" stopOpacity={0.25} />
-                <stop offset="95%" stopColor="#0095ff" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="var(--border-main)" opacity={0.4} vertical={false} />
-            <XAxis
-              dataKey="period"
-              tick={{ fill: "var(--text-muted)", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <YAxis
-              tick={{ fill: "var(--text-muted)", fontSize: 10, fontFamily: "monospace" }}
-              axisLine={false}
-              tickLine={false}
-              allowDecimals={false}
-              domain={[0, 100]}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Area
-              type="monotone"
-              dataKey="Score"
-              stroke="#0095ff"
-              strokeWidth={2.5}
-              fillOpacity={1}
-              fill="url(#neonBluePerformance)"
-              activeDot={{ r: 6, stroke: "var(--bg-deep)", strokeWidth: 2, fill: "#0095ff" }}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
+      <div className="w-full flex-1 min-h-0">
+        {isLoading ? (
+          <div className="h-full flex items-center justify-center text-xs font-medium font-mono" style={{ color: "var(--text-muted)" }}>
+            Loading analytics trend...
+          </div>
+        ) : (
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+              <defs>
+                <linearGradient id="neonBluePerformance" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#0095ff" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#0095ff" stopOpacity={0} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--border-main)" opacity={0.4} vertical={false} />
+              <XAxis
+                dataKey="period"
+                tick={{ fill: "var(--text-muted)", fontSize: 10, fontFamily: "monospace", fontWeight: "bold" }}
+                axisLine={false}
+                tickLine={false}
+              />
+              <YAxis
+                tick={{ fill: "var(--text-muted)", fontSize: 10, fontFamily: "monospace" }}
+                axisLine={false}
+                tickLine={false}
+                allowDecimals={false}
+                domain={[0, 100]}
+              />
+              <Tooltip content={<CustomTooltip />} />
+              <Area
+                type="monotone"
+                dataKey="Score"
+                stroke="#0095ff"
+                strokeWidth={2.5}
+                fillOpacity={1}
+                fill="url(#neonBluePerformance)"
+                activeDot={{ r: 6, stroke: "var(--bg-deep)", strokeWidth: 2, fill: "#0095ff" }}
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        )}
       </div>
-    </BaseCard>
+    </div>
   );
 };
 

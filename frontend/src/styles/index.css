@@ -81,7 +81,7 @@
 
   --performance-poor-bg: rgba(124, 45, 18, 0.3);
   --performance-poor-border: rgba(194, 65, 12, 0.5);
-  --performance-poor-text: #fb923c;
+  --performance-poor-text: #B0B4B4;
 
   --icon-blue-bg: #013256;
   --icon-blue-color: #62BDFE;
@@ -157,9 +157,12 @@
   --icon-pink-bg: #34141F;
   --icon-pink-color: #F598B7;
 
-  --performance-poor-bg: #FFEDD5;
-  --performance-poor-border: #FDBA74;
-  --performance-poor-text: #9A3412;
+  --performance-poor-bg: #F1F5F9;
+  /* slate-100 */
+  --performance-poor-border: #CBD5E1;
+  /* slate-300 */
+  --performance-poor-text: #475569;
+  /* slate-600 — واضح على الأبيض */
 }
 
 @keyframes flash-animation {

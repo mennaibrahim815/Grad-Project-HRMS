@@ -17,9 +17,9 @@ export const getPerformanceColors = (status) => {
       text: "var(--pill-orange-text)",
     },
     Poor: {
-      bg: "var(--pill-red-bg)",
-      border: "var(--pill-red-border)",
-      text: "var(--pill-red-text)",
+      bg: "var(--performance-poor-bg)",
+      border: "var(--performance-poor-border)",
+      text: "var(--performance-poor-text)",
     },
   };
   return map[status] || map.Poor;
@@ -30,10 +30,11 @@ export const getPerformanceIconColors = (status) => {
     Excellent: { bg: "var(--icon-green-bg)", color: "var(--icon-green-color)" },
     Good: { bg: "var(--icon-blue-bg)", color: "var(--icon-blue-color)" },
     Average: { bg: "var(--icon-orange-bg)", color: "var(--icon-orange-color)" },
-    Poor: { bg: "var(--icon-pink-bg)", color: "var(--icon-pink-color)" },
+    Poor: { bg: "var(--performance-poor-bg)", color: "var(--performance-poor-text)" },
   };
   return map[status] || map.Poor;
 };
+
 export const getPerformanceMessage = (status) => {
   const map = {
     Excellent: "Outstanding work! Keep up the great momentum.",
@@ -43,9 +44,10 @@ export const getPerformanceMessage = (status) => {
   };
   return map[status] || map.Poor;
 };
+
 export const getScoreColor = (score) => {
   if (score >= 90) return "var(--pill-green-text)";
   if (score >= 75) return "var(--pill-blue-text)";
   if (score >= 50) return "var(--pill-orange-text)";
-  return "var(--pill-red-text)";
+  return "var(--performance-poor-text)";
 };
