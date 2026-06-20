@@ -6,11 +6,13 @@ import {
     CreditCard,
     X,
     Check,
+    Info,
     AlertTriangle,
     Loader2,
     CheckCircle2,
     XCircle,
 } from "lucide-react";
+import BaseCard from "../../../../components/UI/Card";
 import {
     generateDraft,
     approvePayroll,
@@ -20,76 +22,77 @@ import {
     clearActionResult,
 } from "../../../../store/HrSlices/payroll/payrollSlice";
 
-// ─── Per-action config ────────────────────────────────────────────────────────
-// Colors reference your palette:
-//   Draft  → Blue  500 #0293FA / Blue  900 #013256
-//   Approve→ Orange 600 #F68018 / Orange 900 #673204
-//   Pay    → Green 500 #4BFFB2 / Green 900 #00331E
-
 const ACTION_CONFIGS = {
     draft: {
         Icon: FileText,
-        title: "Generate payroll draft",
+        actionLabel: "Generate draft",
+        title: "Payroll draft",
         description:
-            "This will calculate net salaries for all active employees based on attendance, delays, and approved leaves.",
+            "Calculates net salaries for all active employees based on attendance, delays, and approved leaves.",
         warning:
-            "If a draft already exists for this month, the system will return a message — no duplicate will be created.",
+            "If a draft already exists for this month, the system returns a message — no duplicate will be created.",
+        WarningIcon: Info,
         confirmText: "Generate draft",
         thunk: generateDraft,
-        // icon wrapper
-        iconWrapCls: "bg-[#013256]",
-        iconColor: "#62BDFE",
-        // confirm button
-        confirmCls: "bg-[#0293FA] text-[#121417] hover:bg-[#35AAFD]",
-        // result
+        pillVar: "blue",
+        confirmStyle: { background: '#0293FA', color: '#0D1117' },
         successTitle: "Draft generated successfully",
         errorTitle: "Could not generate draft",
     },
     approve: {
         Icon: CircleCheck,
+        actionLabel: "Approve",
         title: "Approve payroll",
         description:
-            "This will approve all draft payrolls and mark attendance records as processed.",
+            "Approves all draft payrolls and marks attendance records as processed.",
         warning:
-            "Approval cannot be executed before the cutoff day. This action cannot be undone.",
+            "Cannot be executed before the cutoff day. This action cannot be undone.",
+        WarningIcon: AlertTriangle,
         confirmText: "Approve",
         thunk: approvePayroll,
-        iconWrapCls: "bg-[#673204]",
-        iconColor: "#FBCCA2",
-        confirmCls: "bg-[#F68018] text-[#FCFCFD] hover:bg-[#FAB97F]",
+        pillVar: "orange",
+        confirmStyle: { background: '#F89B49', color: '#0D1117' },
         successTitle: "Payroll approved",
         errorTitle: "Approval failed",
     },
     pay: {
         Icon: CreditCard,
+        actionLabel: "Pay all",
         title: "Bulk pay employees",
         description:
-            'This will mark all "Pending" payroll records as Paid for the selected month.',
+            'Marks all "Pending" payroll records as Paid for the selected month.',
         warning:
             "Only payrolls with status Pending will be processed. Already paid records are skipped.",
+        WarningIcon: Info,
         confirmText: "Pay all",
         thunk: bulkPayPayroll,
-        iconWrapCls: "bg-[#00331E]",
-        iconColor: "#A8FFDA",
-        confirmCls: "bg-[#4BFFB2] text-[#121417] hover:bg-[#80FFC8]",
+        pillVar: "green",
+        confirmStyle: { background: '#4BFFB2', color: '#0D1117' },
         successTitle: "Payment processed",
         errorTitle: "Payment failed",
     },
     singlePay: {
         Icon: CreditCard,
-        title: "Process employee payment",
+        actionLabel: "Confirm payment",
+        title: "Process payment",
         description: "You are about to mark this specific employee's payroll as Paid.",
-        warning: "This action will update the status to 'Paid' and cannot be reversed easily.",
-        confirmText: "Confirm Payment",
-        thunk: paySinglePayroll, // الأكشن الجديد
-        iconWrapCls: "bg-[#00331E]",
-        iconColor: "#A8FFDA",
-        confirmCls: "bg-[#4BFFB2] text-[#121417] hover:bg-[#80FFC8]",
+        warning: "This will update the status to 'Paid' and cannot be reversed easily.",
+        WarningIcon: AlertTriangle,
+        confirmText: "Confirm payment",
+        thunk: paySinglePayroll,
+        pillVar: "green",
+        confirmStyle: { background: '#4BFFB2', color: '#0D1117' },
         successTitle: "Payment successful",
         errorTitle: "Payment failed",
     },
-
 };
+
+// helper بيرجع الـ style بتاع أي pill variant
+const pillStyle = (variant) => ({
+    background: `var(--pill-${variant}-bg)`,
+    borderColor: `var(--pill-${variant}-border)`,
+    color: `var(--pill-${variant}-text)`,
+});
 
 function monthLabel(month, year) {
     return new Date(year, month - 1).toLocaleString("en-US", {
@@ -98,41 +101,27 @@ function monthLabel(month, year) {
     });
 }
 
-// ─── Component ────────────────────────────────────────────────────────────────
-/**
- * PayrollActionModal
- *
- * @param {("draft"|"approve"|"pay")} action
- * @param {() => void} onClose
- *
- * Reads month & year from Redux — no prop drilling needed.
- * After a successful action, auto-dispatches fetchAllPayrolls.
- */
 export function PayrollActionModal({ action, onClose, targetId }) {
     const dispatch = useDispatch();
 
-    const { managementSelectedMonth, managementSelectedYear, actionState } = useSelector(
+    const { managementSelectedMonth, actionState } = useSelector(
         (state) => state.payroll
     );
 
-    // managementSelectedMonth stored as "YYYY-MM"
-    const month = parseInt(managementSelectedMonth.split("-")[1], 10);
-    const year = managementSelectedYear;
+    const [yearStr, monthStr] = managementSelectedMonth.split("-");
+    const month = parseInt(monthStr, 10);
+    const year = parseInt(yearStr, 10);
 
     const config = ACTION_CONFIGS[action];
 
     const isLoading = actionState.loading;
-    const result = actionState.result; // null | { ok: bool, message: string, data: any }
+    const result = actionState.result;
     const phase = isLoading ? "loading" : result ? "result" : "confirm";
 
-    // Clear result on unmount so next open is always fresh
     useEffect(() => {
-        return () => {
-            dispatch(clearActionResult());
-        };
+        return () => { dispatch(clearActionResult()); };
     }, [dispatch]);
 
-    // After success → refresh table
     useEffect(() => {
         if (result?.ok) {
             dispatch(fetchAllPayrolls({ month, year }));
@@ -141,77 +130,87 @@ export function PayrollActionModal({ action, onClose, targetId }) {
 
     if (!config) return null;
 
-    const { Icon } = config;
+    const { Icon, WarningIcon } = config;
+
     const handleConfirm = () => {
         if (action === "singlePay") {
-          
-            dispatch(config.thunk({
-                id: targetId,
-                month,
-                year
-            }));
+            dispatch(config.thunk({ id: targetId, month, year }));
         } else {
-           
             dispatch(config.thunk({ month, year }));
         }
     };
+
     return (
         <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#121417]/75 backdrop-blur-sm"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm"
             onClick={(e) => e.target === e.currentTarget && onClose()}
         >
-            <div className="w-[400px] max-w-[calc(100vw-2rem)] rounded-2xl border border-[#383D47] bg-[#1B1E22] overflow-hidden">
-
+            <BaseCard
+                padding="p-0"
+                style={{ background: 'var(--modal-bg)', borderColor: 'var(--border-main)' }}
+                className="w-[400px] max-w-[calc(100vw-2rem)] overflow-hidden border rounded-2xl"
+            >
                 {/* ── Header ── */}
-                <div className="flex items-center justify-between px-5 py-4 border-b border-[#383D47]">
-                    <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 ${config.iconWrapCls}`}>
-                            <Icon size={18} color={config.iconColor} />
-                        </div>
+                <div className="flex items-center justify-between px-4 py-3.5 border-b" style={{ borderColor: 'var(--border-main)' }}>
+                    <div className="flex items-center gap-2.5">
+                        <span
+                            style={pillStyle(config.pillVar)}
+                            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border"
+                        >
+                            <Icon size={12} />
+                            {config.actionLabel}
+                        </span>
                         <div>
-                            <p className="text-sm font-medium text-[#FCFCFD] m-0">{config.title}</p>
-                            <p className="text-xs text-[#697386] mt-0.5 m-0">{monthLabel(month, year)}</p>
+                            <p className="text-[13px] font-medium m-0 leading-none" style={{ color: 'var(--text-main)' }}>
+                                {config.title}
+                            </p>
+                            <p className="text-[11px] mt-0.5 m-0 leading-none" style={{ color: 'var(--text-muted)' }}>
+                                {monthLabel(month, year)}
+                            </p>
                         </div>
                     </div>
                     <button
                         onClick={onClose}
                         aria-label="Close modal"
-                        className="flex items-center justify-center w-8 h-8 rounded-lg border border-[#383D47] text-[#A1A7B5] hover:bg-[#383D47] transition-colors cursor-pointer bg-transparent"
+                        style={{ borderColor: 'var(--border-main)', color: 'var(--text-muted)' }}
+                        className="flex items-center justify-center w-7 h-7 rounded-lg border hover:opacity-70 transition-colors cursor-pointer bg-transparent"
                     >
-                        <X size={15} />
+                        <X size={13} />
                     </button>
                 </div>
 
                 {/* ── Confirm phase ── */}
                 {phase === "confirm" && (
                     <>
-                        <div className="px-5 py-4 space-y-3">
-                            <p className="text-sm text-[#A1A7B5] leading-relaxed m-0">
+                        <div className="px-4 pt-3.5 pb-0 space-y-2.5">
+                            <p className="text-[12.5px] leading-relaxed m-0" style={{ color: 'var(--text-muted)' }}>
                                 {config.description}
                             </p>
-                            <div className="flex gap-2 rounded-xl border border-[#984A06] bg-[#673204] px-3 py-2.5">
-                                <AlertTriangle
-                                    size={15}
-                                    color="#F68018"
-                                    className="flex-shrink-0 mt-0.5"
-                                />
-                                <p className="text-xs text-[#FBCCA2] leading-relaxed m-0">
+                            {/* Inline warning strip */}
+                            <div
+                                style={pillStyle(config.pillVar)}
+                                className="flex items-start gap-2 px-2.5 py-2 rounded-lg border"
+                            >
+                                <WarningIcon size={13} className="flex-shrink-0 mt-0.5" />
+                                <p className="text-[11.5px] leading-snug m-0">
                                     {config.warning}
                                 </p>
                             </div>
                         </div>
-                        <div className="flex justify-end gap-2 px-5 py-3 border-t border-[#383D47]">
+                        <div className="flex justify-end gap-2 px-4 py-3 border-t mt-3.5" style={{ borderColor: 'var(--border-main)' }}>
                             <button
                                 onClick={onClose}
-                                className="px-4 py-2 rounded-lg text-sm border border-[#383D47] text-[#A1A7B5] bg-transparent hover:bg-[#383D47] transition-colors cursor-pointer"
+                                style={{ borderColor: 'var(--border-main)', color: 'var(--text-muted)' }}
+                                className="px-3.5 py-1.5 rounded-lg text-[12.5px] border bg-transparent hover:opacity-70 transition-colors cursor-pointer"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleConfirm}
-                                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer border-0 ${config.confirmCls}`}
+                                style={config.confirmStyle}
+                                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-[12.5px] font-medium transition-colors cursor-pointer border-0 hover:opacity-90"
                             >
-                                <Check size={14} />
+                                <Check size={13} />
                                 {config.confirmText}
                             </button>
                         </div>
@@ -221,8 +220,8 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                 {/* ── Loading phase ── */}
                 {phase === "loading" && (
                     <div className="flex flex-col items-center justify-center py-10 gap-3">
-                        <Loader2 size={26} color="#A1A7B5" className="animate-spin" />
-                        <p className="text-sm text-[#697386] m-0">Processing request…</p>
+                        <Loader2 size={22} color="#5C6370" className="animate-spin" />
+                        <p className="text-[12.5px] m-0" style={{ color: 'var(--text-muted)' }}>Processing request…</p>
                     </div>
                 )}
 
@@ -230,48 +229,48 @@ export function PayrollActionModal({ action, onClose, targetId }) {
                 {phase === "result" && result && (
                     <>
                         <div
-                            className={`flex gap-3 px-5 py-4 border-y ${result.ok
-                                    ? "bg-[#00331E] border-[#00522F]"
-                                    : "bg-[#34141F] border-[#6B0A2B]"
-                                }`}
+                            style={pillStyle(result.ok ? "green" : "red")}
+                            className="flex gap-3 px-4 py-3.5 border-y"
                         >
                             <div
-                                className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${result.ok ? "bg-[#00522F]" : "bg-[#6B0A2B]"
-                                    }`}
+                                style={{
+                                    background: result.ok ? 'var(--pill-green-border)' : 'var(--pill-red-border)',
+                                }}
+                                className="w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0"
                             >
                                 {result.ok ? (
-                                    <CheckCircle2 size={18} color="#4BFFB2" />
+                                    <CheckCircle2 size={16} color="#4BFFB2" />
                                 ) : (
-                                    <XCircle size={18} color="#EC3A76" />
+                                    <XCircle size={16} color="#EC3A76" />
                                 )}
                             </div>
                             <div>
                                 <p
-                                    className={`text-sm font-medium m-0 mb-1 ${result.ok ? "text-[#A8FFDA]" : "text-[#F598B7]"
-                                        }`}
+                                    style={{ color: result.ok ? 'var(--pill-green-text)' : 'var(--pill-red-text)' }}
+                                    className="text-[13px] font-medium m-0 mb-1"
                                 >
                                     {result.ok ? config.successTitle : config.errorTitle}
                                 </p>
-                                {/* Backend message shown as-is */}
                                 <p
-                                    className={`text-xs leading-relaxed m-0 ${result.ok ? "text-[#4BFFB2]" : "text-[#EC3A76]"
-                                        } opacity-85`}
+                                    style={{ color: result.ok ? 'var(--pill-green-text)' : 'var(--pill-red-text)', opacity: 0.85 }}
+                                    className="text-[11.5px] leading-relaxed m-0"
                                 >
                                     {result.message}
                                 </p>
                             </div>
                         </div>
-                        <div className="flex justify-end px-5 py-3">
+                        <div className="flex justify-end px-4 py-3">
                             <button
                                 onClick={onClose}
-                                className="px-5 py-2 rounded-lg text-sm border border-[#383D47] text-[#A1A7B5] bg-transparent hover:bg-[#383D47] transition-colors cursor-pointer"
+                                style={{ borderColor: 'var(--border-main)', color: 'var(--text-muted)' }}
+                                className="px-4 py-1.5 rounded-lg text-[12.5px] border bg-transparent hover:opacity-70 transition-colors cursor-pointer"
                             >
                                 Close
                             </button>
                         </div>
                     </>
                 )}
-            </div>
+            </BaseCard>
         </div>
     );
 }

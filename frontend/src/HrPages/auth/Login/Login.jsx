@@ -80,7 +80,29 @@ const Login = () => {
         )}
       </AnimatePresence>
 
-      <div className="min-h-screen flex bg-[#0f172a] text-white font-sans overflow-hidden relative">
+<div className="min-h-screen flex bg-[#0f172a] text-white font-sans overflow-hidden relative z-0">
+  
+  {/* الإضاءة البيضاء المتمركزة في النص */}
+  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[70%] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.15)_0%,rgba(255,255,255,0.05)_5%,transparent_70%)] blur-[100px] -z-10 pointer-events-none"></div>
+
+  {/* باقي المحتوى بتاعك يتحط هنا */}
+  <div className="relative w-full z-10 flex">
+                {/* <div className=" w-[90%] md:w-[70%] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.15)_0%,rgba(255,255,255,0.05)_5%,transparent_70%)] blur-[100px]"></div> */}
+
+        {/* Navigation Button - Go to Hiring Page */}
+<Link
+  to="/apply-job" // 👈 لو عايزة تغيّري باث صفحة الهايرينج عدلي هنا
+  className="absolute top-8 left-6 flex items-center gap-2 px-4 py-2 rounded-xl
+                               border border-white/10 bg-white/5 hover:bg-white/10
+                               text-slate-300 text-sm font-medium transition-all"
+>
+  {/* small badge like the UI */}
+  <span className="w-6 h-6 flex items-center justify-center rounded-full rgba(59,130,246,0.15) text-xs font-bold">
+    <i className="font-bold text-xl pb-1">←</i>
+  </span>
+
+  Go to Hiring
+</Link>
         <motion.div
           initial={{ opacity: 0, x: -50 }}
           animate={{ opacity: 1, x: 0 }}
@@ -223,9 +245,20 @@ const Login = () => {
               Manage attendance, leave, employee data, and payroll all in one
               simple and reliable app.
             </p>
+            <div className="flex gap-1.5 z-10">
+                        <motion.div
+                          animate={{ width: [8, 24, 8] }}
+                          transition={{ repeat: Infinity, duration: 2 }}
+                          className="h-1.5 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.5)]"
+                        ></motion.div>
+                        <div className="h-1.5 w-2 bg-gray-700 rounded-full"></div>
+                        <div className="h-1.5 w-2 bg-gray-700 rounded-full"></div>
+                      </div>
           </div>
         </motion.div>
       </div>
+      </div>
+
     </>
   );
 };

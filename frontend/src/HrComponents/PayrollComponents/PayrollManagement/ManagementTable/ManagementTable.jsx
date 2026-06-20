@@ -7,15 +7,17 @@ import Pagination from "../../../../components/table/Pagination";
 import TableControls from "../../../../components/table/TableControls";
 import RowActionMenu from "../../../../components/UI/RowActionMenu";
 import BaseCard from "../../../../components/UI/Card";
-import { Eye, Trash2, CreditCard } from "lucide-react";
+import { Eye, Trash2, CreditCard, Download, Search, FileText } from "lucide-react";
 import EditIcon from "@mui/icons-material/Edit";
 import { PayrollActionModal } from '../PayrollActionModal/PayrollActionModal';
 import { PayrollDetailsModal } from '../PayrollDetailsModal/PayrollDetailsModal';
+import { EditDraftModal } from '../EditDraftModal/EditDraftModal';
+import { generatePayslip } from "../../../../services/Generatepayslip";
 
 // Generate avatar URL using UI Avatars
 const getAvatarUrl = (name, background = '0D8ABC', color = 'fff') => {
     return `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=${background}&color=${color}&size=80&bold=true&rounded=true`
-}
+};
 
 const AttendanceBadge = ({ status }) => {
     const getStatusStyles = () => {
@@ -28,7 +30,6 @@ const AttendanceBadge = ({ status }) => {
 
             case 'Draft,':
                 return 'bg-slate-500/20 text-slate-400 border-slate-400/40'
-
 
         }
     }
@@ -52,9 +53,25 @@ function ManagementTable() {
     const [activeModal, setActiveModal] = useState(null);
     const [selectedEmployeeId, setSelectedEmployeeId] = useState(null);
     const [detailsId, setDetailsId] = useState(null);
+    const [editRow, setEditRow] = useState(null);
+    const [editFormValues, setEditFormValues] = useState({});
     const handlePayAction = (row) => {
         setSelectedEmployeeId(row._id);
         setActiveModal("singlePay");
+    };
+
+    const handleOpenEdit = (row) => {
+        setEditRow(row);
+        if (!editFormValues[row._id]) {
+            setEditFormValues(prev => ({
+                ...prev,
+                [row._id]: {
+                    manualAdditions: row.manualAdditions ?? 0,
+                    manualDeductions: row.manualDeductions ?? 0,
+                    adjustmentReason: row.adjustmentReason ?? "",
+                }
+            }));
+        }
     };
     const columns = [
         {
@@ -70,26 +87,19 @@ function ManagementTable() {
                             className="w-10 h-10 rounded-full object-cover"
                         />
                         <div>
-                            <p className="text-sm font-medium text-slate-100">{fullName}</p>
-                            <p className="text-xs text-slate-500">{row._id?.slice(-6)}</p>
+                            <p className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>{fullName}</p>
+                            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{row._id?.slice(-6)}</p>
                         </div>
                     </div>
                 );
             },
         },
         {
-            header: "Department",
-            accessor: "employee.department",
-            render: (row) => row.employee?.department
-        },
-        {
             header: "Period",
             accessor: "month",
             render: (row) => {
-
                 const date = new Date(row.year, row.month - 1);
                 return date.toLocaleString("en-US", { month: "long", year: "numeric" });
-
             }
         },
         {
@@ -97,11 +107,11 @@ function ManagementTable() {
             accessor: "baseSalary",
             render: (row) => `$${row.baseSalary?.toLocaleString()}`
         },
-        // { 
-        //   header: "Deductions", 
-        //   accessor: "deductions",
-        //   render: (row) => `$${row.deductions?.toLocaleString()}`
-        // },
+        {
+            header: "Deductions",
+            accessor: "deductions",
+            render: (row) => `$${row.deductions?.toLocaleString()}`
+        },
         {
             header: "Net Salary",
             accessor: "netSalary",
@@ -129,39 +139,74 @@ function ManagementTable() {
         {
             header: "Action",
             accessor: "action",
-            render: (row) => (
-                <div className="relative">
-                    <button
-                        onClick={() => setOpenMenuId(openMenuId === row._id ? null : row._id)}
-                        className="p-2 text-slate-400 hover:text-slate-200"
-                    >
-                        <EditIcon />
-                    </button>
-                    <RowActionMenu
-                        isOpen={openMenuId === row._id}
-                        onClose={() => setOpenMenuId(null)}
-                        actions={[
-                            {
-                                label: "See Details",
-                                icon: Eye,
-                                onClick: () => setDetailsId(row._id)
-                            },
-                            {
-                                label: "Process Payment",
-                                icon: CreditCard,
-                                variant: "success",
-                                onClick: () => handlePayAction(row),
-                            },
-                            // {
-                            //   label: "Delete",
-                            //   variant: "danger",
-                            //   icon: Trash2,
-                            //   onClick: () => console.log("Delete", row._id),
-                            // },
-                        ]}
-                    />
-                </div>
-            ),
+            render: (row) => {
+                const getStatusActions = (status) => {
+                    const baseActions = [
+                        {
+                            label: "See Details",
+                            icon: Eye,
+                            onClick: () => setDetailsId(row._id),
+                        },
+                    ];
+
+                    switch (status) {
+                        case "Draft":
+                            return [
+                                ...baseActions,
+                                {
+                                    label: "Edit",
+                                    icon: EditIcon,
+                                    variant: "danger",
+                                    onClick: () => handleOpenEdit(row)
+                                },
+                            ];
+
+                        case "Paid":
+                            return [
+                                ...baseActions,
+                                {
+                                    label: "Download Payslip",
+                                    icon: Download,
+                                    variant: "success",
+                                    onClick: () => generatePayslip(row),
+                                },
+                            ];
+
+                        case "Pending":
+                            return [
+                                ...baseActions,
+                                {
+                                    label: "Process Payment",
+                                    icon: CreditCard,
+                                    variant: "success",
+                                    onClick: () => handlePayAction(row),
+                                },
+                            ];
+
+                        default:
+                            return baseActions;
+                    }
+                };
+
+                return (
+                    <div className="relative">
+                        <button
+                            onClick={() =>
+                                setOpenMenuId(openMenuId === row._id ? null : row._id)
+                            }
+                            style={{ color: 'var(--text-muted)' }}
+                            className="p-2 hover:opacity-70 transition-opacity"
+                        >
+                            <EditIcon />
+                        </button>
+                        <RowActionMenu
+                            isOpen={openMenuId === row._id}
+                            onClose={() => setOpenMenuId(null)}
+                            actions={getStatusActions(row.status)}
+                        />
+                    </div>
+                );
+            },
         },
     ];
     const dispatch = useDispatch();
@@ -175,6 +220,18 @@ function ManagementTable() {
         const [year, month] = managementSelectedMonth.split("-");
         return { month: parseInt(month), year: parseInt(year) };
     };
+
+    useEffect(() => {
+        setActiveFilter("All");
+        setSearchQuery("");
+    }, [managementSelectedMonth]);
+
+    useEffect(() => {
+        if (editRow) {
+            const updatedRow = payrollList.find((r) => r._id === editRow._id);
+            if (updatedRow) setEditRow(updatedRow);
+        }
+    }, [payrollList]);
 
     useEffect(() => {
         const { month, year } = getMonthYear();
@@ -220,42 +277,112 @@ function ManagementTable() {
             }));
         }
     };
-    return (
-        <BaseCard padding="p-0" >
-            <TableControls
-                searchTerm={searchQuery}
-                setSearchTerm={setSearchQuery}
-                filterValue={activeFilter}
-                setFilterValue={setActiveFilter}
-                filterOptions={["All", "Paid", "Pending", "Draft"]}
-                setCurrentPage={() => { }}
 
-            />
+    const NoDataCard = () => (
+        <div
+            style={{
+                background: 'linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)',
+            }}
+            className="p-7 rounded-[2rem] relative group transition-all hover:border-blue-500/30 flex flex-col items-center justify-center gap-5 py-16"
+        >
+            <div
+                style={{ background: 'var(--tab-inactive-bg)', borderColor: 'var(--border-main)' }}
+                className="w-16 h-16 rounded-2xl border flex items-center justify-center"
+            >
+                <FileText size={28} style={{ color: 'var(--text-muted)' }} />
+            </div>
+            <div className="text-center">
+                <p className="font-semibold text-base mb-1" style={{ color: 'var(--text-main)' }}>
+                    No payroll draft for this month
+                </p>
+                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
+                    Generate a draft first to see payroll data
+                </p>
+            </div>
+            <button
+                onClick={() => setActiveModal("draft")}
+                className="bg-[#0095ff] hover:bg-[#0081dd] text-white px-6 py-2.5 rounded-xl flex items-center gap-2 font-bold shadow-lg transition-all active:scale-95 disabled:opacity-50"
+            >
+                <FileText size={15} />
+                <span>Generate Draft</span>
+            </button>
+        </div>
+    );
+
+    // Empty State
+    const NoFilterResults = () => (
+        <div className="flex flex-col items-center justify-center py-14 gap-3">
+            <div style={{ background: 'var(--tab-inactive-bg)' }} className="w-12 h-12 rounded-xl flex items-center justify-center">
+                <Search size={20} style={{ color: 'var(--text-muted)' }} />
+            </div>
+            <div className="text-center">
+                <p className="font-medium text-sm mb-1" style={{ color: 'var(--text-main)' }}>No results found</p>
+                <p className="text-xs" style={{ color: 'var(--text-muted)' }}>
+                    No employees with{" "}
+                    <span className="font-medium" style={{ color: 'var(--text-main)' }}>"{activeFilter}"</span>{" "}
+                    status this month
+                </p>
+            </div>
+            <button
+                onClick={() => { setActiveFilter("All"); setSearchQuery(""); }}
+                style={{ borderColor: 'var(--border-main)', color: 'var(--text-muted)' }}
+                className="px-4 py-2 border hover:opacity-80 text-sm rounded-xl transition-colors"
+            >
+                Clear filters
+            </button>
+        </div>
+    );
+    const hasNoData = payrollList.length === 0 && activeFilter === "All" && !searchQuery.trim();
+    const hasNoFilterResults = payrollList.length === 0 && (activeFilter !== "All" || searchQuery.trim());
+
+    return (
+        <>
             {tableLoading ? (
-                <div className="flex items-center justify-center py-20">
-                    <i className="fas fa-spinner fa-spin text-4xl text-blue-500"></i>
-                </div>
+                <BaseCard padding="p-0">
+                    <div className="flex items-center justify-center py-20">
+                        <i className="fas fa-spinner fa-spin text-4xl text-blue-500"></i>
+                    </div>
+                </BaseCard>
+
+            ) : hasNoData ? (
+
+                <NoDataCard />
+
             ) : (
-                <DataTable columns={columns} data={payrollList || []} />
+
+                <BaseCard padding="p-0">
+                    <TableControls
+                        searchTerm={searchQuery}
+                        setSearchTerm={setSearchQuery}
+                        filterValue={activeFilter}
+                        setFilterValue={setActiveFilter}
+                        filterOptions={["All", "Paid", "Pending", "Draft"]}
+                        setCurrentPage={() => { }}
+                    />
+
+                    {hasNoFilterResults ? (
+                        <NoFilterResults />
+                    ) : (
+                        <DataTable columns={columns} data={payrollList} />
+                    )}
+
+                    <Pagination
+                        pagination={pagination}
+                        handlePageChange={handlePageChange}
+                        handleRecordsPerPageChange={(newLimit) => setRecordsPerPage(newLimit)}
+                        currentDataLength={payrollList.length}
+                        recordsPerPage={recordsPerPage}
+                        entityName="payrolls"
+                    />
+                </BaseCard>
             )}
 
-        
-            <Pagination
-                pagination={pagination}
-                handlePageChange={handlePageChange}
-                handleRecordsPerPageChange={(newLimit) => setRecordsPerPage(newLimit)}
-                currentDataLength={payrollList.length}
-                recordsPerPage={recordsPerPage}
-                entityName="payrolls"
-            />
+            {/* Modals */}
             {activeModal && (
                 <PayrollActionModal
                     action={activeModal}
                     targetId={selectedEmployeeId}
-                    onClose={() => {
-                        setActiveModal(null);
-                        setSelectedEmployeeId(null);
-                    }}
+                    onClose={() => { setActiveModal(null); setSelectedEmployeeId(null); }}
                 />
             )}
             {detailsId && (
@@ -264,8 +391,17 @@ function ManagementTable() {
                     onClose={() => setDetailsId(null)}
                 />
             )}
-        </BaseCard>
-
+            {editRow && (
+                <EditDraftModal
+                    payrollRow={editRow}
+                    formValues={editFormValues[editRow._id]}
+                    onFormChange={(values) =>
+                        setEditFormValues(prev => ({ ...prev, [editRow._id]: values }))
+                    }
+                    onClose={() => setEditRow(null)}
+                />
+            )}
+        </>
     );
 }
 

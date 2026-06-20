@@ -1,37 +1,33 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const ReusableCalendar = ({ 
-  mode = "single", 
-  value,           
-  onSave           
+const ReusableCalendar = ({
+  mode = "single",
+  value,
+  onSave,
+  align = "right"
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  
-  // دالة لتحديد تاريخ العرض المبدئي
-const getInitialViewDate = () => {
-  // 1. لو في وضع الـ Range والـ value عبارة عن Object
-  if (mode === "range" && value && typeof value === 'object' && value.start) {
-    const date = new Date(value.start);
+
+  const getInitialViewDate = () => {
+    if (mode === "range" && value && typeof value === 'object' && value.start) {
+      const date = new Date(value.start);
+      return isNaN(date.getTime()) ? new Date() : date;
+    }
+
+    if (mode === "month" && typeof value === 'string' && value.includes('-')) {
+      const [y, m] = value.split("-");
+      return new Date(y, m - 1, 1);
+    }
+
+    const date = new Date(value && typeof value === 'string' ? value : new Date());
     return isNaN(date.getTime()) ? new Date() : date;
-  }
-
-  // 2. لو في وضع الـ Month
-  if (mode === "month" && typeof value === 'string' && value.includes('-')) {
-    const [y, m] = value.split("-");
-    return new Date(y, m - 1, 1);
-  }
-
-  // 3. الوضع العادي (Single) أو لو الـ value لسه مفيهاش داتا
-  const date = new Date(value && typeof value === 'string' ? value : new Date());
-  return isNaN(date.getTime()) ? new Date() : date;
-};
+  };
 
   const [viewDate, setViewDate] = useState(getInitialViewDate());
   const [tempDate, setTempDate] = useState(value);
   const dropdownRef = useRef(null);
 
-  // إغلاق عند الضغط بالخارج
   useEffect(() => {
     const handler = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -43,7 +39,6 @@ const getInitialViewDate = () => {
     return () => document.removeEventListener("mousedown", handler);
   }, [value]);
 
-  // التنقل بالأسهم
   const handleNavigation = (direction) => {
     const newDate = new Date(viewDate);
     if (mode === "month") {
@@ -54,7 +49,6 @@ const getInitialViewDate = () => {
     setViewDate(newDate);
   };
 
-  // وظيفة الزرار "Return to Today" الذكية
   const handleReturnToToday = () => {
     const today = new Date();
     const y = today.getFullYear();
@@ -80,35 +74,31 @@ const getInitialViewDate = () => {
     const m = String(viewDate.getMonth() + 1).padStart(2, "0");
     const d = String(day).padStart(2, "0");
     const dateStr = `${y}-${m}-${d}`;
-      if (mode === "range") {
-    // لو لسه مفيش تاريخ بداية أو لو الموظف اختار فترة كاملة وعايز يغيرها
-    if (!tempDate?.start || (tempDate.start && tempDate.end)) {
-      setTempDate({ start: dateStr, end: null });
-    } else {
-      // لو اختار تاريخ قبل البداية، اعكسيهم عشان الـ Range يبقى صح
-      if (new Date(dateStr) < new Date(tempDate.start)) {
-        setTempDate({ start: dateStr, end: tempDate.start });
+    if (mode === "range") {
+      if (!tempDate?.start || (tempDate.start && tempDate.end)) {
+        setTempDate({ start: dateStr, end: null });
       } else {
-        setTempDate({ ...tempDate, end: dateStr });
+        if (new Date(dateStr) < new Date(tempDate.start)) {
+          setTempDate({ start: dateStr, end: tempDate.start });
+        } else {
+          setTempDate({ ...tempDate, end: dateStr });
+        }
       }
+    } else {
+      setTempDate(dateStr);
     }
-  } else {
-    // الوضع القديم (Single)
-    setTempDate(dateStr);
-  }
-};
-  
+  };
 
   const getDisplayText = () => {
     if (!value) return "Select Date";
     try {
       if (mode === "range") {
-      if (!value.start) return "Select Period";
-      const start = new Date(value.start).toLocaleDateString("en-US", { month: "short", day: "numeric" });
-      if (!value.end) return `${start} - ...`;
-      const end = new Date(value.end).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
-      return `${start} - ${end}`;
-    }
+        if (!value.start) return "Select Period";
+        const start = new Date(value.start).toLocaleDateString("en-US", { month: "short", day: "numeric" });
+        if (!value.end) return `${start} - ...`;
+        const end = new Date(value.end).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+        return `${start} - ${end}`;
+      }
       if (mode === "month") {
         const [y, m] = value.split("-");
         return new Date(y, m - 1).toLocaleString("en-US", { month: "short", year: "numeric" });
@@ -117,7 +107,6 @@ const getInitialViewDate = () => {
     } catch (e) { return "Select Date"; }
   };
 
-  // حسابات الأيام
   const daysInMonth = (y, m) => new Date(y, m + 1, 0).getDate();
   const firstDay = (y, m) => { const d = new Date(y, m, 1).getDay(); return d === 0 ? 6 : d - 1; };
 
@@ -126,28 +115,30 @@ const getInitialViewDate = () => {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="bg-[#142129] border border-gray-800 px-5 py-2.5 rounded-xl flex items-center gap-3 text-gray-300 hover:bg-[#1c2e38] transition-all min-w-[160px]"
+        style={{ background: 'var(--bg-card)', borderColor: 'var(--border-main)', color: 'var(--text-muted)' }}
+        className="border w-10 h-10 sm:w-auto sm:h-auto sm:px-5 sm:py-2.5 rounded-full sm:rounded-xl flex items-center justify-center sm:justify-start sm:gap-3 hover:opacity-80 transition-all sm:min-w-[160px] shrink-0"
       >
-        <i className="far fa-calendar-alt text-blue-500"></i>
-        <span className="text-sm font-semibold">{getDisplayText()}</span>
-        <i className={`fas fa-chevron-down text-[10px] transition-transform ${isOpen ? "rotate-180" : ""}`}></i>
+        <i className="far fa-calendar-alt text-blue-500 text-lg sm:text-base"></i>
+        <span className="hidden sm:inline text-sm font-semibold">{getDisplayText()}</span>
       </button>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="absolute top-full right-0 mt-2 w-72 bg-[#142129] border border-gray-800 rounded-3xl p-4 z-[100] shadow-2xl 
-             max-h-[80vh] overflow-y-auto scrollbar-hide" 
-          >
+            className={`fixed sm:absolute top-1/2 sm:top-full left-1/2 -translate-x-1/2 -translate-y-1/2 sm:translate-y-0 sm:mt-2 w-[calc(100vw-2rem)] sm:w-72 max-w-72 border rounded-3xl p-4 shadow-2xl max-h-[80vh] overflow-y-auto scrollbar-hide z-[999]
+            ${align === "left" ? "sm:left-0 sm:right-auto sm:translate-x-0" : "sm:right-0 sm:left-auto sm:translate-x-0"}`}
+            style={{ background: 'var(--bg-card)', borderColor: 'var(--border-main)' }}>
+            
+          
             <div className="flex justify-between items-center mb-4">
-              <button onClick={() => handleNavigation(-1)} className="text-gray-500 hover:text-white p-2 transition-colors">
+              <button onClick={() => handleNavigation(-1)} style={{ color: 'var(--text-muted)' }} className="hover:opacity-70 p-2 transition-colors">
                 <i className="fas fa-chevron-left"></i>
               </button>
-              <span className="font-bold text-gray-200 text-sm">
+              <span className="font-bold text-sm" style={{ color: 'var(--text-main)' }}>
                 {mode === "month" ? viewDate.getFullYear() : viewDate.toLocaleString("default", { month: "long", year: "numeric" })}
               </span>
-              <button onClick={() => handleNavigation(1)} className="text-gray-500 hover:text-white p-2 transition-colors">
+              <button onClick={() => handleNavigation(1)} style={{ color: 'var(--text-muted)' }} className="hover:opacity-70 p-2 transition-colors">
                 <i className="fas fa-chevron-right"></i>
               </button>
             </div>
@@ -160,7 +151,8 @@ const getInitialViewDate = () => {
                     <button
                       key={m}
                       onClick={() => handleMonthSelect(i)}
-                      className={`py-3 text-xs rounded-xl transition-all ${isSelected ? "bg-blue-600 text-white font-bold" : "text-gray-400 hover:bg-gray-800"}`}
+                      style={isSelected ? { background: '#2563eb', color: '#fff' } : { color: 'var(--text-muted)' }}
+                      className={`py-3 text-xs rounded-xl transition-all font-bold ${isSelected ? "" : "hover:opacity-70"}`}
                     >
                       {m}
                     </button>
@@ -170,35 +162,41 @@ const getInitialViewDate = () => {
             ) : (
               <div className="grid grid-cols-7 gap-1 text-center mb-6">
                 {["M", "T", "W", "T", "F", "S", "S"].map((d, index) => (
-                  <div key={index} className="text-[10px] text-gray-600 font-bold mb-2 uppercase">{d}</div>
+                  <div key={index} className="text-[10px] font-bold mb-2 uppercase" style={{ color: 'var(--text-muted)' }}>{d}</div>
                 ))}
                 {[...Array(firstDay(viewDate.getFullYear(), viewDate.getMonth()))].map((_, i) => <div key={`e-${i}`} />)}
-               {[...Array(daysInMonth(viewDate.getFullYear(), viewDate.getMonth()))].map((_, i) => {
-              const day = i + 1;
-              const dateStr = `${viewDate.getFullYear()}-${String(viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-  
-            // حسابات الحالات الجديدة
-            const isSelected = mode !== "range" && tempDate === dateStr;
-            const isStart = mode === "range" && tempDate?.start === dateStr;
-            const isEnd = mode === "range" && tempDate?.end === dateStr;
-            const inRange = mode === "range" && tempDate?.start && tempDate?.end && 
-            dateStr > tempDate.start && dateStr < tempDate.end;
+                {[...Array(daysInMonth(viewDate.getFullYear(), viewDate.getMonth()))].map((_, i) => {
+                  const day = i + 1;
+                  const dateStr = `${viewDate.getFullYear()}-${String(viewDate.getMonth() + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
 
-            return (
-           <button
-           key={day}
-           onClick={() => handleCellClick(day)}
-           className={`h-9 w-9 text-xs flex items-center justify-center transition-all relative
-        ${isSelected || isStart || isEnd ? "bg-blue-600 text-white font-bold rounded-xl z-10 shadow-lg" : "text-gray-400"}
-        ${inRange ? "bg-blue-600/20 text-blue-400 !rounded-none" : "hover:bg-gray-800 rounded-xl"}
+                  const isSelected = mode !== "range" && tempDate === dateStr;
+                  const isStart = mode === "range" && tempDate?.start === dateStr;
+                  const isEnd = mode === "range" && tempDate?.end === dateStr;
+                  const inRange = mode === "range" && tempDate?.start && tempDate?.end &&
+                    dateStr > tempDate.start && dateStr < tempDate.end;
+
+                  return (
+                    <button
+                      key={day}
+                      onClick={() => handleCellClick(day)}
+                      style={
+                        isSelected || isStart || isEnd
+                          ? { background: '#2563eb', color: '#fff' }
+                          : inRange
+                          ? { background: 'rgba(37, 99, 235, 0.2)', color: '#60a5fa' }
+                          : { color: 'var(--text-muted)' }
+                      }
+                      className={`h-9 w-9 text-xs flex items-center justify-center transition-all relative font-bold
+        ${isSelected || isStart || isEnd ? "rounded-xl z-10 shadow-lg" : ""}
+        ${inRange ? "!rounded-none" : "hover:opacity-70 rounded-xl"}
         ${isStart && tempDate.end ? "rounded-r-none" : ""} 
         ${isEnd ? "rounded-l-none" : ""}
       `}
-    >
-      {day}
-    </button>
-  );
-})}
+                    >
+                      {day}
+                    </button>
+                  );
+                })}
               </div>
             )}
 

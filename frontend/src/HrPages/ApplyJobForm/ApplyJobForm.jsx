@@ -5,11 +5,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { applyToJob } from "../../store/HrSlices/careersSlice/careersSlice";
 import icon from "../../assets/icons/Icon.svg";
 
-import FormProgress from "../../HrComponents/HiringComponents/apply-job/FormProgress";
-import Step1PersonalInfo from "../../HrComponents/HiringComponents/apply-job/steps/Step1PersonalInfo";
-import Step2ProfessionalInfo from "../../HrComponents/HiringComponents/apply-job/steps/Step2ProfessionalInfo";
-import Step3Documents from "../../HrComponents/HiringComponents/apply-job/steps/Step3Documents";
-import Step4Success from "../../HrComponents/HiringComponents/apply-job/steps/Step4Success";
+import FormProgress from "../../HrComponents/HiringComponents/apply-job/Formprogress";
+import Step1PersonalInfo from "../../HrComponents/HiringComponents/apply-job/steps/Step1personalinfo";
+import Step2ProfessionalInfo from "../../HrComponents/HiringComponents/apply-job/steps/Step2professionalinfo";
+import Step3Documents from "../../HrComponents/HiringComponents/apply-job/steps/Step3documents";
+import Step4Success from "../../HrComponents/HiringComponents/apply-job/steps/Step4success";
 
 const validate = (formData, step) => {
     const errors = {};

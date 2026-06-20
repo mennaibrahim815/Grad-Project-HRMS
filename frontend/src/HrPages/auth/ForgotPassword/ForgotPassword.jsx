@@ -41,8 +41,13 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="min-h-screen flex bg-[#0f172a] text-white font-sans overflow-hidden">
-      {/* الجانب الأيسر - الفورم */}
+<div className="min-h-screen flex bg-[#0f172a] text-white font-sans overflow-hidden relative z-0">
+  
+  {/* الإضاءة البيضاء المتمركزة في النص */}
+  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[70%] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.15)_0%,rgba(255,255,255,0.05)_5%,transparent_70%)] blur-[100px] -z-10 pointer-events-none"></div>
+
+  {/* باقي المحتوى بتاعك يتحط هنا */}
+  <div className="relative w-full z-10 flex">      {/* الجانب الأيسر - الفورم */}
       <motion.div
         initial={{ opacity: 0, x: -50 }}
         animate={{ opacity: 1, x: 0 }}
@@ -198,6 +203,7 @@ const ForgotPassword = () => {
           </div>
         </div>
       </motion.div>
+    </div>
     </div>
   );
 };

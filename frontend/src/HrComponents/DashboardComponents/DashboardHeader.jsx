@@ -333,12 +333,12 @@ const DashboardHeader = ({ printRef }) => {
   };
 
   return (
-    <div className="flex justify-between items-center mb-4 bg-transparent p-4 rounded-2xl">
-      <h1 className="text-2xl font-bold text-white tracking-tight">
+    <div className="flex md:flex-row flex-col justify-between items-center mb-4 bg-transparent p-4 rounded-2xl">
+      <h1 className="text-2xl mb-4 font-bold text-white tracking-tight">
         Dashboard
       </h1>
 
-      <div className="flex items-center gap-3 relative">
+      <div className="flex   sm:flex-row flex-col items-center gap-3 relative">
         {/* تم استبدال كل كود التقويم القديم بهذا المكون السحري */}
         <ReusableCalendar
           mode="single"

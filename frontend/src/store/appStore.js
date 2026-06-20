@@ -11,6 +11,7 @@ import notificationReducer from "./HrSlices/navbar/notificationSlice";
 import uiReducer from "./HrSlices/navbar/sideMenuSlice";
 import searchReducer from "./HrSlices/navbar/searchSlice";
 import hrProfileReducer from "./HrSlices/navbar/hrProfileSlice";
+import settingsReducer  from "./HrSlices/navbar/settingsSlice";
 
 // Dashboard
 import dashboardReducer from "./HrSlices/HrDashboard/dashboardSlice";
@@ -23,8 +24,14 @@ import leaveReducer from "./HrSlices/leaveSlice";
 import attendanceReducer from "./HrSlices/attendance/attendanceSlice";
 import payrollReducer from "./HrSlices/payroll/payrollSlice";
 
+// // Employee Side
+import empAttendanceReducer from "./EmployeeSlices/attendance/empAttendanceSlice";
+import empPayrollReducer from "./EmployeeSlices/payroll/empPayrollSlice";
+
+import themeReducer from "./themeSlice";
 export const store = configureStore({
   reducer: {
+    theme: themeReducer,
     // Authentication
     auth: loginReducer,
     forgotPassword: forgotPasswordReducer,
@@ -32,12 +39,13 @@ export const store = configureStore({
     resetPassword: resetPasswordReducer, 
     
 
-
     // Navbar Features
     ui: uiReducer,
     search: searchReducer,
     notifications: notificationReducer,
     hrProfile: hrProfileReducer,
+    
+    settings: settingsReducer ,
 
     // Dashboard
     dashboard: dashboardReducer,
@@ -50,6 +58,8 @@ export const store = configureStore({
     attendance: attendanceReducer,
     payroll:payrollReducer,
     careers: careersReducer,
+    empAttendance: empAttendanceReducer,
+    empPayroll: empPayrollReducer,
     
   },
 });

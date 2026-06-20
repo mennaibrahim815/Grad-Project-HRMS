@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
-import JobCard from "./JobCard";
+import { motion } from "framer-motion";
+import JobCard from "./Jobcard";
 
-// ── Skeleton لكارد واحد ───────────────────────────
 const CardSkeleton = () => (
     <div className="flex flex-col gap-4 p-5 rounded-2xl bg-[#111c2b] border border-white/8 animate-pulse">
         <div className="h-5 w-20 bg-white/10 rounded-md" />
@@ -22,17 +22,32 @@ const CardSkeleton = () => (
     </div>
 );
 
+// ← stagger container للـ cards
+const gridVariants = {
+    hidden: {},
+    visible: {
+        transition: { staggerChildren: 0.08 }
+    }
+};
+
+// ← كل card بتيجي من تحت مع fade
+const cardVariants = {
+    hidden: { opacity: 0, y: 24 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { duration: 0.4, ease: "easeOut" }
+    }
+};
+
 const JobGrid = () => {
     const { jobs, searchResults, isSearchMode, loading, searchLoading, error } = useSelector(
         (state) => state.careers
     );
 
     const isLoading = loading || searchLoading;
-
-    // الـ jobs اللي هتتعرض: search results أو الـ list العادية
     const displayedJobs = isSearchMode ? searchResults : jobs;
 
-    // ── Loading ────────────────────────────────────
     if (isLoading) {
         return (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
@@ -41,7 +56,6 @@ const JobGrid = () => {
         );
     }
 
-    // ── Error ──────────────────────────────────────
     if (error) {
         return (
             <div className="flex flex-col items-center gap-3 py-16 text-center">
@@ -51,7 +65,6 @@ const JobGrid = () => {
         );
     }
 
-    // ── Empty search ───────────────────────────────
     if (isSearchMode && searchResults?.length === 0) {
         return (
             <div className="flex flex-col items-center gap-3 py-16 text-center">
@@ -61,7 +74,6 @@ const JobGrid = () => {
         );
     }
 
-    // ── Empty list ─────────────────────────────────
     if (!displayedJobs || displayedJobs.length === 0) {
         return (
             <div className="flex flex-col items-center gap-3 py-16 text-center">
@@ -71,13 +83,21 @@ const JobGrid = () => {
         );
     }
 
-    // ── Grid ───────────────────────────────────────
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        // ← motion.div مع gridVariants عشان الـ stagger يشتغل
+        <motion.div
+            variants={gridVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
+        >
             {displayedJobs.map((job) => (
-                <JobCard key={job._id} job={job} />
+                // ← كل card بتاخد cardVariants من الـ parent
+                <motion.div key={job._id} variants={cardVariants}>
+                    <JobCard job={job} />
+                </motion.div>
             ))}
-        </div>
+        </motion.div>
     );
 };
 

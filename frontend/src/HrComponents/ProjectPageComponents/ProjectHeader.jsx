@@ -20,8 +20,9 @@ export default function ProjectHeader({ onProjectAdded, stats, onSearch }) {
   return (
     <>
       <div className="flex justify-between items-center flex-wrap mb-4 gap-4">
-        <h1 className="text-2xl font-bold text-white tracking-tight">Projects</h1>
-
+        <h1 style={{ color: 'var(--text-main)' }} className="text-2xl font-bold tracking-tight">
+          Projects
+        </h1>
         <div className="flex gap-3 items-center flex-wrap">
           {displayStats.map((s) => (
             <StatCard key={s.title} title={s.title} value={s.value} />

@@ -232,6 +232,7 @@ export const searchEmployees = asyncWraper(async (req, res, next) => {
         // },
         {
             $match: {
+                "general.role": "EMPLOYEE",
                 $or: [
                     { "general.firstName": { $regex: name, $options: "i" } },
                     { "general.lastName": { $regex: name, $options: "i" } },

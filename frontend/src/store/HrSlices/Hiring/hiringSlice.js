@@ -95,9 +95,12 @@ export const createJob = createAsyncThunk(
 // 7. Update Applicant Status
 export const updateApplicantStatus = createAsyncThunk(
   "hiring/updateStatus",
-  async ({ id, status }, { rejectWithValue }) => {
+  async ({ id, status, rejectionReason }, { rejectWithValue }) => {
     try {
-      const response = await axios.patch(`/applicants/${id}`, { status });
+      const response = await axios.patch(`/applicants/${id}`, {
+        status,
+        ...(rejectionReason && { rejectionReason }),
+      });
       return response.data;
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Failed to update status");
@@ -376,7 +379,7 @@ const hiringSlice = createSlice({
         state.jobApplicantsLoading = false;
         state.jobApplicants = action.payload.data?.applicants || [];
       })
-      .addCase(fetchApplicantsByJob.rejected, (state) => { state.jobApplicantsLoading = false;state.jobApplicants = []; })
+      .addCase(fetchApplicantsByJob.rejected, (state) => { state.jobApplicantsLoading = false; state.jobApplicants = []; })
   },
 });
 

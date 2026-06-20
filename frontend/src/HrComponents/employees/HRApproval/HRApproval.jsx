@@ -6,12 +6,14 @@ import {
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import BaseCard from "../../../Components/UI/Card";
+import BaseCard from "../../../components/UI/Card";
 
 function HRApproval() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { list, loading } = useSelector((state) => state.leaves);
+
+  const { list, loading, updatingItem } = useSelector((state) => state.leaves);
+
   useEffect(() => {
     dispatch(fetchAllLeaves());
   }, [dispatch]);
@@ -29,12 +31,17 @@ function HRApproval() {
       <BaseCard className=" flex flex-col h-full shadow-2xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-white text-xl font-semibold tracking-tight">
+          <h1 className="text-xl font-semibold tracking-tight" style={{ color: 'var(--text-main)' }}>
             Leave application
           </h1>
-          <button className="w-10 h-10 rounded-xl bg-slate-700/60 hover:bg-slate-600/60 flex items-center justify-center transition-all duration-200 hover:scale-105" onClick={() => navigate("/leave-requests")}>
+          <button
+            style={{ background: 'var(--tab-inactive-bg)' }}
+            className="w-10 h-10 rounded-xl hover:opacity-80 flex items-center justify-center transition-all duration-200 hover:scale-105"
+            onClick={() => navigate("/leave-requests")}
+          >
             <svg
-              className="w-4 h-4 text-white"
+              className="w-4 h-4"
+              style={{ color: 'var(--text-main)' }}
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -50,50 +57,84 @@ function HRApproval() {
         </div>
 
         {/* Leave Requests List */}
-        {list.map((request) => (
-  <div key={request._id} className="flex items-center justify-between group"> 
-    <div className="flex items-center gap-3">
-      <img
-        src={request.employee?.avatar}
-        alt={request.employee?.firstName}
-        className="w-11 h-11 rounded-full object-cover ring-2 ring-slate-600/50 mb-3"
-      />
-      <div>
-        <p className="text-white text-sm font-medium leading-tight">
-          {request.employee?.firstName} {request.employee?.lastName} 
-        </p>
-        <p className="text-slate-400 text-xs mt-0.5">{request.reason}</p>
-      </div>
-    </div>
+        <div className="flex flex-col gap-4">
+          {list.map((request) => {
 
-    <div className="flex items-center gap-2">
-      {request.status === "Approved" ? (
-        <span className="px-4 py-2 text-xs font-medium text-emerald-400 bg-emerald-500/20 rounded-full">
-          Accepted
-        </span>
-      ) : request.status === "Rejected" ? (
-        <span className="px-4 py-2 text-xs font-medium text-red-400 bg-red-500/20 rounded-full">
-          Declined
-        </span>
-      ) : (
-        <>
-          <button
-            onClick={() => handleAccept(request._id)}
-            className="px-4 py-2 text-xs font-medium text-white bg-[#0095ff] hover:bg-[#0052cc] rounded-full transition-all"
-          >
-            Accept
-          </button>
-          <button
-            onClick={() => handleDecline(request._id)} 
-            className="px-4 py-2 text-xs font-medium text-slate-300 bg-slate-700/70 hover:bg-slate-600/70 rounded-full transition-all"
-          >
-            Decline
-          </button>
-        </>
-      )}
-    </div>
-  </div>
-))}
+            const isAcceptLoading = updatingItem.id === request._id && updatingItem.status === "Approved";
+            const isDeclineLoading = updatingItem.id === request._id && updatingItem.status === "Rejected";
+            const isRowLoading = updatingItem.id === request._id;
+
+            return (
+              <div key={request._id} className="flex items-center justify-between gap-2 group">
+                <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+                  <img
+                    src={request.employee?.avatar}
+                    alt={request.employee?.firstName}
+                    className="w-9 h-9 sm:w-11 sm:h-11 rounded-full object-cover ring-2 ring-slate-600/50 shrink-0"
+                  />
+                  <div className="min-w-0">
+                    <p
+                      className="text-xs sm:text-sm font-medium leading-tight truncate"
+                      style={{ color: 'var(--text-main)' }}
+                    >
+                      {request.employee?.firstName} {request.employee?.lastName}
+                    </p>
+                    <p
+                      className="text-[10px] sm:text-xs mt-0.5 truncate"
+                      style={{ color: 'var(--text-muted)' }}
+                    >
+                      {request.reason}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                  {request.status === "Approved" ? (
+                    <span className="px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium text-emerald-400 bg-emerald-500/20 rounded-full">
+                      Accepted
+                    </span>
+                  ) : request.status === "Rejected" ? (
+                    <span className="px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium text-red-400 bg-red-500/20 rounded-full">
+                      Declined
+                    </span>
+                  ) : (
+                    <>
+                      <button
+                        onClick={() => handleAccept(request._id)}
+                        disabled={isRowLoading}
+                        className={`px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium text-white rounded-full transition-all flex items-center justify-center min-w-[60px] sm:min-w-[75px]
+              ${isRowLoading ? "bg-gray-600 cursor-not-allowed opacity-60" : "bg-[#0095ff] hover:bg-[#0052cc]"}`}
+                      >
+                        {isAcceptLoading ? (
+                          <i className="fas fa-spinner fa-spin text-xs text-white"></i>
+                        ) : (
+                          "Accept"
+                        )}
+                      </button>
+
+                      <button
+                        onClick={() => handleDecline(request._id)}
+                        disabled={isRowLoading}
+                        style={isRowLoading ? {} : {
+                          color: 'var(--tab-inactive-text)',
+                          background: 'var(--tab-inactive-bg)',
+                        }}
+                        className={`px-3 sm:px-4 py-1.5 sm:py-2 text-[10px] sm:text-xs font-medium rounded-full transition-all flex items-center justify-center min-w-[60px] sm:min-w-[75px] hover:opacity-80
+              ${isRowLoading ? "bg-slate-800 text-gray-500 cursor-not-allowed" : ""}`}
+                      >
+                        {isDeclineLoading ? (
+                          <i className="fas fa-spinner fa-spin text-xs text-white"></i>
+                        ) : (
+                          "Decline"
+                        )}
+                      </button>
+                    </>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </BaseCard>
     </div>
   );

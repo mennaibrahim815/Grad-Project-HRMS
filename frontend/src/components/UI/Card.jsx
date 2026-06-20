@@ -1,26 +1,20 @@
-/**
- * BaseCard - A generic card component with minimal shared UI styles.
- * Extended using composition and Tailwind utility classes.
- */
-const BaseCard = ({
-  children,
-  className = '',
-  padding = 'p-5',
-}) => {
+const BaseCard = ({ children, className = '', padding = 'p-5' }) => {
   return (
     <div
+      style={{
+        background: 'linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)',
+        borderColor: 'var(--card-border)',
+      }}
       className={`
-        bg-gradient-to-br from-transparent/20 to-45% to-[#182731]
         backdrop-blur-sm
-        rounded-[2rem] border border-gray-800/50
-        border border-slate-700/50
+        rounded-[2rem] border
         ${padding}
         ${className}
       `}
     >
       {children}
     </div>
-  )
-}
+  );
+};
 
-export default BaseCard
+export default BaseCard;

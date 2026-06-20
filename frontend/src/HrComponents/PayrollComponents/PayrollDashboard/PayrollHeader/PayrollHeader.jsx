@@ -13,7 +13,9 @@ function PayrollHeader() {
   return (
     <div className="flex justify-between items-center mb-4 bg-transparent p-4 rounded-2xl">
       {/* Title */}
-      <h1 className="text-2xl font-bold text-white tracking-tight">Payroll</h1>
+       <h1 className="text-lg sm:text-2xl font-bold tracking-tight shrink-0" style={{ color: 'var(--text-main)' }}>
+          Payroll
+      </h1>
       <div className="flex items-center gap-3 relative">
         {/* Calender button */}
         <ReusableCalendar

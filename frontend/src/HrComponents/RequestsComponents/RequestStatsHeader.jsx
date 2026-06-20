@@ -1,0 +1,92 @@
+
+import React, { useState, useEffect } from "react";
+import instance from "@/services/axios";
+import BaseCard from "@/components/UI/Card.jsx";
+import ReusableCalendar from "@/components/UI/ReusableCalendar.jsx";
+import { FileText, CheckCircle2, Clock, XCircle } from "lucide-react";
+
+const RequestStatsHeader = ({ onStatsUpdated, month, year, setMonth, setYear }) => {
+  const [stats, setStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  const calendarValue = `${year}-${String(month).padStart(2, "0")}`;
+
+  const fetchMonthlyStats = async () => {
+    try {
+      setStatsLoading(true);
+      const response = await instance.get(`/requests/monthly-stats`, { params: { month, year } });
+      setStats(response.data?.data);
+    } catch (error) {
+      console.error("Error fetching request stats:", error);
+    } finally {
+      setStatsLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchMonthlyStats(); }, [month, year]);
+  useEffect(() => { if (onStatsUpdated) onStatsUpdated(() => fetchMonthlyStats); }, [onStatsUpdated]);
+
+  const handleCalendarSave = (selectedMonthYear) => {
+    if (selectedMonthYear && typeof selectedMonthYear === "string") {
+      const [y, m] = selectedMonthYear.split("-");
+      setYear(Number(y));
+      setMonth(Number(m));
+    }
+  };
+
+  const statCards = [
+    { title: "Total Requests",    value: stats?.totalRequests  || 0, icon: <FileText    size={20} style={{ color: 'var(--text-muted)' }} />, valueColor: 'var(--text-main)' },
+    { title: "Approved Requests", value: stats?.approvedCount  || 0, icon: <CheckCircle2 size={20} style={{ color: '#00E583' }} />,          valueColor: '#4BFFB2' },
+    { title: "Pending Requests",  value: stats?.pendingCount   || 0, icon: <Clock       size={20} style={{ color: '#F68018' }} />,          valueColor: '#F89B49' },
+    { title: "Rejected Requests", value: stats?.rejectedCount  || 0, icon: <XCircle     size={20} style={{ color: '#DF165A' }} />,          valueColor: '#EC3A76' },
+  ];
+
+  return (
+    <div className="w-full space-y-8 mb-10 text-left">
+      {/* Page Title */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div>
+          <div className="text-2xl font-bold tracking-tight mt-10" style={{ color: 'var(--text-main)' }}>
+            Employee Requests
+          </div>
+          <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
+            Review, filter, and respond to general employee requests and operations
+          </p>
+        </div>
+        <div className="z-50">
+          <ReusableCalendar mode="month" value={calendarValue} onSave={handleCalendarSave} />
+        </div>
+      </div>
+
+      {/* Stat Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {statCards.map((card, index) => (
+          <BaseCard
+            key={index}
+            padding="p-5"
+            className="flex flex-col justify-between min-h-[145px] transition-all duration-300 shadow-xl text-left"
+          >
+            <div className="flex justify-between items-start mb-3">
+              <span className="text-[10px] font-bold uppercase tracking-[0.1em]" style={{ color: 'var(--text-muted)' }}>
+                {card.title}
+              </span>
+              <div className="p-2 rounded-xl" style={{ background: 'var(--input-bg)', border: '1px solid var(--border-subtle)' }}>
+                {card.icon}
+              </div>
+            </div>
+            <div className="space-y-0.5">
+              <h2 className="text-2xl font-extrabold tracking-tight" style={{ color: card.valueColor }}>
+                {statsLoading ? "..." : card.value.toLocaleString()}
+              </h2>
+              <span className="text-[10px] font-medium italic" style={{ color: 'var(--text-muted)' }}>
+                this month
+              </span>
+            </div>
+          </BaseCard>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+export default RequestStatsHeader;

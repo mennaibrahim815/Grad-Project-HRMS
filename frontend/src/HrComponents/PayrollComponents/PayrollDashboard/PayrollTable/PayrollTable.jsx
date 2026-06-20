@@ -27,7 +27,6 @@ const AttendanceBadge = ({ status }) => {
       case 'Draft,':
         return 'bg-slate-500/20 text-slate-400 border-slate-400/40'
 
-
     }
   }
 
@@ -61,26 +60,19 @@ function PayrollTable() {
               className="w-10 h-10 rounded-full object-cover"
             />
             <div>
-              <p className="text-sm font-medium text-slate-100">{fullName}</p>
-              <p className="text-xs text-slate-500">{row._id?.slice(-6)}</p>
+              <p className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>{fullName}</p>
+              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{row._id?.slice(-6)}</p>
             </div>
           </div>
         );
       },
     },
     {
-      header: "Department",
-      accessor: "employee.department",
-      render: (row) => row.employee?.department
-    },
-    {
       header: "Period",
       accessor: "month",
       render: (row) => {
-        // دمج month و year مع بعض
         const date = new Date(row.year, row.month - 1);
         return date.toLocaleString("en-US", { month: "long", year: "numeric" });
-
       }
     },
     {
@@ -88,11 +80,11 @@ function PayrollTable() {
       accessor: "baseSalary",
       render: (row) => `$${row.baseSalary?.toLocaleString()}`
     },
-    // { 
-    //   header: "Deductions", 
-    //   accessor: "deductions",
-    //   render: (row) => `$${row.deductions?.toLocaleString()}`
-    // },
+    {
+      header: "Deductions",
+      accessor: "deductions",
+      render: (row) => `$${row.deductions?.toLocaleString()}`
+    },
     {
       header: "Net Salary",
       accessor: "netSalary",
@@ -185,7 +177,6 @@ function PayrollTable() {
         setFilterValue={setActiveFilter}
         filterOptions={["All", "Paid", "Pending", "Draft"]}
         setCurrentPage={() => { }}
-
       />
 
       {tableLoading ? (
@@ -195,7 +186,6 @@ function PayrollTable() {
       ) : (
         <DataTable columns={columns} data={payrollList || []} />
       )}
-
 
       <Pagination
         pagination={pagination}

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useSelector } from "react-redux";
-import EditJobModal from "./EditJobModal";
+import EditJobModal from "./Editjobmodal";
+import BaseCard from "../../../../components/UI/Card";
 
 const InfoRow = ({ label, value }) => (
     <div className="flex flex-col gap-1">
@@ -12,7 +13,7 @@ const InfoRow = ({ label, value }) => (
 const StatusBadge = ({ status }) => {
     const styles = status === "Open"
         ? "bg-emerald-500/15 text-emerald-400 border-emerald-400/40"
-        : "bg-red-500/15 text-red-400 border-red-400/40";
+        :"bg-[#EC3A76]/20 text-[#EC3A76] border-[#EC3A76]/20";
 
     return (
         <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full
@@ -37,7 +38,7 @@ const JobInfoCard = () => {
                 job={selectedJob}
             />
 
-            <div className="bg-white/3 border border-white/8 rounded-2xl p-6">
+            <BaseCard padding="p-6">
 
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6">
@@ -67,7 +68,7 @@ const JobInfoCard = () => {
                             ? new Date(selectedJob.createdAt).toLocaleDateString("en-GB")
                             : "—"}
                     />
-                    <div className="flex flex-col gap-1">
+                    <div className="flex flex-col gap-1 items-start">
                         <span className="text-slate-500 text-xs uppercase tracking-wider">Status</span>
                         <StatusBadge status={selectedJob.status} />
                     </div>
@@ -84,7 +85,7 @@ const JobInfoCard = () => {
                         </p>
                     </div>
                 )}
-            </div>
+            </BaseCard>
         </>
     );
 };
