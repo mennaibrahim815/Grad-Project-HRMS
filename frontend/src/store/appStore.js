@@ -23,7 +23,7 @@ import hiringReducer from "./HrSlices/Hiring/hiringSlice";
 import leaveReducer from "./HrSlices/leaveSlice";
 import attendanceReducer from "./HrSlices/attendance/attendanceSlice";
 import payrollReducer from "./HrSlices/payroll/payrollSlice";
-
+import employeeDashboardReducer  from "./EmployeeSlices/dashBoard/employeeDashBoardSlice"
 // // Employee Side
 import empAttendanceReducer from "./EmployeeSlices/attendance/empAttendanceSlice";
 import empPayrollReducer from "./EmployeeSlices/payroll/empPayrollSlice";
@@ -61,6 +61,7 @@ export const store = configureStore({
     empAttendance: empAttendanceReducer,
     empPayroll: empPayrollReducer,
     
+    employeeDashboard: employeeDashboardReducer,
   },
 });
 
