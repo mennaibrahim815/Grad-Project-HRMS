@@ -11,6 +11,8 @@ import {
   Globe,
   Users,
 } from "lucide-react";
+import ThemeToggle from "../../components/NavbarComponents/ThemeToggle";
+
 
 const SplashPage = () => {
   const navigate = useNavigate();
@@ -80,7 +82,10 @@ const SplashPage = () => {
   };
 
   return (
-    <div className="bg-[#0f172a] text-white font-sans selection:bg-blue-500/30 relative overflow-x-hidden z-0">
+    <div 
+      style={{ backgroundColor: 'var(--bg-deep)', color: 'var(--text-main)' }}
+      className="font-sans selection:bg-blue-500/30 relative overflow-x-hidden z-0"
+    >
       
       {/* --- إضاءة خلفية بيضاء فخمة (White Light Gradients) --- */}
       <div className="fixed inset-0 pointer-events-none -z-20 overflow-hidden">
@@ -98,7 +103,8 @@ const SplashPage = () => {
         initial={{ y: -100 }}
         animate={{ y: 0 }}
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed top-0 left-0 w-full z-50 bg-[#0b141a]/60 backdrop-blur-md border-b border-white/5"
+        style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
+        className="fixed top-0 left-0 w-full z-50 bg-opacity-60 backdrop-blur-md border-b"
       >
         <div className="flex items-center justify-between px-8 py-4 max-w-7xl mx-auto">
           {/* اللوجو */}
@@ -112,10 +118,12 @@ const SplashPage = () => {
               <img src={icon} alt="Logo" className="w-8 h-8" />
             </motion.div>
 
-            <span className="text-xl text-white font-bold italic">
+            <span className="text-xl font-bold italic" style={{ color: 'var(--text-main)' }}>
               Staf<span className="text-blue-500">fly</span>
             </span>
           </div>
+                    
+
 
           {/* روابط التنقل */}
           <div className="hidden md:flex items-center gap-10">
@@ -125,11 +133,8 @@ const SplashPage = () => {
                 <button
                   key={id}
                   onClick={() => scrollToSection(id)}
-                  className={`relative text-sm font-medium transition-all duration-300 pb-1 ${
-                    activeSection === id
-                      ? "text-blue-500"
-                      : "text-gray-400 hover:text-white"
-                  }`}
+                  style={{ color: activeSection === id ? '#0095ff' : 'var(--text-muted)' }}
+                  className={`relative text-sm font-medium transition-all duration-300 pb-1 hover:opacity-80`}
                 >
                   {item}
                   {activeSection === id && (
@@ -140,15 +145,16 @@ const SplashPage = () => {
                   )}
                 </button>
               );
-            })}
+            })}<ThemeToggle />
           </div>
-
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => navigate("/login")}
-            className="px-6 py-2 border border-white/10 rounded-lg text-sm font-semibold text-blue-500 hover:bg-white/5 transition-all"
+            style={{ borderColor: 'var(--border-main)', color: 'var(--accent-cyan)' }}
+            className="px-6 py-2 border rounded-lg text-sm font-semibold hover:bg-white/5 transition-all"
           >
+
             Portal Login
           </motion.button>
         </div>
@@ -169,7 +175,8 @@ const SplashPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="inline-flex items-center gap-4 pl-1.5 pr-6 py-1.5 mb-11 rounded-full bg-[#0B1220]/90 border border-white/10 shadow-[0_0_30px_rgba(59,130,246,0.15)] backdrop-blur-md relative z-10"
+          style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
+          className="inline-flex items-center gap-4 pl-1.5 pr-6 py-1.5 mb-11 rounded-full bg-opacity-90 border shadow-[0_0_30px_rgba(59,130,246,0.15)] backdrop-blur-md relative z-10"
         >
           <div className="w-7 h-7 rounded-full border border-cyan-500/30 flex items-center justify-center relative overflow-hidden">
             <motion.div 
@@ -179,7 +186,7 @@ const SplashPage = () => {
             ></motion.div>
             <i className="fas fa-shield-alt text-[12px] text-cyan-500 z-10"></i>
           </div>
-          <span className="text-[10px] text-gray-300 font-bold uppercase tracking-[0.25em]">
+          <span className="text-[10px] font-bold uppercase tracking-[0.25em]" style={{ color: 'var(--text-muted)' }}>
             The Future of Workforce Management
           </span>
         </motion.div>
@@ -188,6 +195,7 @@ const SplashPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
+          style={{ color: 'var(--text-main)' }}
           className="text-3xl md:text-6xl font-bold max-w-6xl mx-auto leading-tight mb-8 relative z-10"
         >
           Next-Gen HR &{" "}
@@ -198,7 +206,8 @@ const SplashPage = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-gray-400 max-w-3xl mx-auto mb-12 text-xl leading-relaxed relative z-10"
+          style={{ color: 'var(--text-muted)' }}
+          className="max-w-3xl mx-auto mb-12 text-xl leading-relaxed relative z-10"
         >
           Streamline your entire employee lifecycle with precision. From
           AI-driven talent acquisition to automated payroll and real-time
@@ -208,7 +217,6 @@ const SplashPage = () => {
         <motion.button
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          // transition={{ duration: 0., delay: 0.6 }}
           whileHover={{ scale: 1.05, boxShadow: "0 0 20px rgba(37,99,235,0.4)" }}
           whileTap={{ scale: 0.95 }}
           onClick={() => navigate("/apply-job")}
@@ -237,7 +245,7 @@ const SplashPage = () => {
             <h2 className="text-3xl font-bold text-blue-500 mb-8">
               Our Features
             </h2>
-            <p className="text-[#94A3B8] text-[15px] leading-[1.9]">
+            <p style={{ color: 'var(--text-muted)' }} className="text-[15px] leading-[1.9]">
               Engineered for high-performance teams. Deploy modules that scale
               with your organizational complexity without sacrificing
               simplicity.
@@ -274,19 +282,21 @@ const SplashPage = () => {
           <motion.div
             variants={cardEntrance}
             whileHover={{ y: -10 }}
-            className="relative overflow-hidden rounded-[28px] bg-[#0F1C2B]/80 backdrop-blur-md border border-white/[0.08] shadow-[0_10px_40px_rgba(0,0,0,0.45)] p-8 transition-all duration-300 group"
+            style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
+            className="relative overflow-hidden rounded-[28px] bg-opacity-80 backdrop-blur-md border shadow-[0_10px_40px_rgba(0,0,0,0.45)] p-8 transition-all duration-300 group"
           >
             <div className="absolute left-0 top-6 bottom-6 w-[2px] bg-[#00A3FF]/40 rounded-full"></div>
             <div className="absolute inset-0 rounded-[28px] border-t border-white/10 pointer-events-none"></div>
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-[radial-gradient(circle_at_top,#00a3ff15,transparent_70%)] pointer-events-none"></div>
             <motion.div 
               whileHover={{ scale: 1.1, rotate: 5 }}
-              className="w-14 h-14 rounded-2xl bg-[#172637] border border-white/[0.04] flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] mb-10"
+              style={{ background: 'var(--input-bg)', borderColor: 'var(--border-main)' }}
+              className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] mb-10"
             >
               <i className="far fa-clock text-[#0094FF] text-[26px] drop-shadow-[0_0_12px_rgba(0,163,255,0.9)]"></i>
             </motion.div>
-            <h3 className="text-[#E2E8F0] text-[22px] font-semibold mb-5 tracking-[-0.02em]">Smart Attendance</h3>
-            <p className="text-[#94A3B8] text-[15px] leading-[1.9] mb-14">
+            <h3 style={{ color: 'var(--text-main)' }} className="text-[22px] font-semibold mb-5 tracking-[-0.02em]">Smart Attendance</h3>
+            <p style={{ color: 'var(--text-muted)' }} className="text-[15px] leading-[1.9] mb-14">
               Geofenced check-ins and facial recognition attendance tracking integrated with real-time reporting.
             </p>
             <div className="pt-6 border-t border-white/[0.06] flex items-center justify-between">
@@ -299,19 +309,21 @@ const SplashPage = () => {
           <motion.div
             variants={cardEntrance}
             whileHover={{ y: -10 }}
-            className="relative overflow-hidden rounded-[28px] bg-[#0F1C2B]/80 backdrop-blur-md border border-white/[0.08] shadow-[0_10px_40px_rgba(0,0,0,0.45)] p-8 transition-all duration-300 group"
+            style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
+            className="relative overflow-hidden rounded-[28px] bg-opacity-80 backdrop-blur-md border shadow-[0_10px_40px_rgba(0,0,0,0.45)] p-8 transition-all duration-300 group"
           >
             <div className="absolute left-0 top-6 bottom-6 w-[2px] bg-[#4ADE80]/40 rounded-full"></div>
             <div className="absolute inset-0 rounded-[28px] border-t border-white/10 pointer-events-none"></div>
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-[radial-gradient(circle_at_top,#4ade8015,transparent_70%)] pointer-events-none"></div>
             <motion.div 
               whileHover={{ scale: 1.1, rotate: -5 }}
-              className="w-14 h-14 rounded-2xl bg-[#132B27] border border-white/[0.04] flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] mb-10"
+              style={{ background: 'var(--icon-green-bg)', borderColor: 'var(--border-main)' }}
+              className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] mb-10"
             >
               <i className="fas fa-money-check-dollar text-[#69F0AE] text-[24px] drop-shadow-[0_0_12px_rgba(52,211,153,0.9)]"></i>
             </motion.div>
-            <h3 className="text-[#E2E8F0] text-[22px] font-semibold mb-5 tracking-[-0.02em]">Precision Payroll</h3>
-            <p className="text-[#94A3B8] text-[15px] leading-[1.9] mb-14">
+            <h3 style={{ color: 'var(--text-main)' }} className="text-[22px] font-semibold mb-5 tracking-[-0.02em]">Precision Payroll</h3>
+            <p style={{ color: 'var(--text-muted)' }} className="text-[15px] leading-[1.9] mb-14">
               Automated multi-currency payroll processing with instant tax compliance and localized benefit management.
             </p>
             <div className="pt-6 border-t border-white/[0.06] flex items-center justify-between">
@@ -324,19 +336,21 @@ const SplashPage = () => {
           <motion.div
             variants={cardEntrance}
             whileHover={{ y: -10 }}
-            className="relative overflow-hidden rounded-[28px] bg-[#0F1C2B]/80 backdrop-blur-md border border-white/[0.08] shadow-[0_10px_40px_rgba(0,0,0,0.45)] p-8 transition-all duration-300 group"
+            style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
+            className="relative overflow-hidden rounded-[28px] bg-opacity-80 backdrop-blur-md border shadow-[0_10px_40px_rgba(0,0,0,0.45)] p-8 transition-all duration-300 group"
           >
             <div className="absolute left-0 top-6 bottom-6 w-[2px] bg-[#FB923C]/40 rounded-full"></div>
             <div className="absolute inset-0 rounded-[28px] border-t border-white/10 pointer-events-none"></div>
             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 bg-[radial-gradient(circle_at_top,#fb923c15,transparent_70%)] pointer-events-none"></div>
             <motion.div 
               whileHover={{ scale: 1.1, y: -3 }}
-              className="w-14 h-14 rounded-2xl bg-[#2C2119] border border-white/[0.04] flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] mb-10"
+              style={{ background: 'var(--icon-orange-bg)', borderColor: 'var(--border-main)' }}
+              className="w-14 h-14 rounded-2xl flex items-center justify-center shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] mb-10"
             >
               <i className="fas fa-clipboard-check text-[#FDBA74] text-[24px] drop-shadow-[0_0_12px_rgba(251,146,60,0.9)]"></i>
             </motion.div>
-            <h3 className="text-[#E2E8F0] text-[22px] font-semibold mb-5 tracking-[-0.02em]">Task Tracking</h3>
-            <p className="text-[#94A3B8] text-[15px] leading-[1.9] mb-14">
+            <h3 style={{ color: 'var(--text-main)' }} className="text-[22px] font-semibold mb-5 tracking-[-0.02em]">Task Tracking</h3>
+            <p style={{ color: 'var(--text-muted)' }} className="text-[15px] leading-[1.9] mb-14">
               Collaborative workflow management with milestone tracking and AI-assisted resource allocation.
             </p>
             <div className="pt-6 border-t border-white/[0.06] flex items-center justify-between">
@@ -361,12 +375,12 @@ const SplashPage = () => {
           <h2 className="text-3xl font-bold text-blue-500 mb-8">
             About Staffly
           </h2>
-          <div className="space-y-6 text-gray-400 text-lg leading-relaxed">
-            <p>
+          <div className="space-y-6 text-lg leading-relaxed">
+            <p style={{ color: 'var(--text-main)' }}>
               Staffly provides the stability organizations need to thrive in a
               rapidly evolving talent landscape.
             </p>
-            <p>
+            <p style={{ color: 'var(--text-muted)' }}>
               A complete HRMS platform for both HR and employees, combining
               AI-powered recruitment, real-time attendance tracking, and
               automated payroll processing to deliver accuracy, efficiency, and
@@ -385,42 +399,45 @@ const SplashPage = () => {
           {/* Item 1: Platform */}
           <motion.div 
             variants={fadeInUp} 
-            whileHover={{ x: 10, backgroundColor: "rgba(255,255,255,0.08)" }}
-            className="bg-[#0F1C2B]/60 backdrop-blur-sm border border-white/10 rounded-xl p-6 flex items-center gap-6 group transition-all cursor-pointer"
+            whileHover={{ x: 10 }}
+            style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
+            className="bg-opacity-60 backdrop-blur-sm border rounded-xl p-6 flex items-center gap-6 group transition-all cursor-pointer hover:bg-opacity-80"
           >
             <div className="w-1.5 h-12 bg-[#00a3ff] rounded-full shadow-[0_0_15px_rgba(0,163,255,0.3)]"></div>
-            <div className="text-white text-xl font-medium tracking-tight">
-              <span className="uppercase opacity-90">PLATFORM</span>
-              <span className="mx-3 text-gray-600 font-light">–</span>
-              <span className="text-gray-200">HR & Employee Portal</span>
+            <div className="text-xl font-medium tracking-tight">
+              <span className="uppercase opacity-90" style={{ color: 'var(--text-main)' }}>PLATFORM</span>
+              <span className="mx-3 font-light" style={{ color: 'var(--text-muted)' }}>–</span>
+              <span style={{ color: 'var(--text-muted)' }}>HR & Employee Portal</span>
             </div>
           </motion.div>
 
           {/* Item 2: AI */}
           <motion.div 
             variants={fadeInUp} 
-            whileHover={{ x: 10, backgroundColor: "rgba(255,255,255,0.08)" }}
-            className="bg-[#0F1C2B]/60 backdrop-blur-sm border border-white/10 rounded-xl p-6 flex items-center gap-6 group transition-all cursor-pointer"
+            whileHover={{ x: 10 }}
+            style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
+            className="bg-opacity-60 backdrop-blur-sm border rounded-xl p-6 flex items-center gap-6 group transition-all cursor-pointer hover:bg-opacity-80"
           >
             <div className="w-1.5 h-12 bg-[#34d399] rounded-full shadow-[0_0_15px_rgba(52,211,153,0.3)]"></div>
-            <div className="text-white text-xl font-medium tracking-tight">
-              <span className="uppercase opacity-90">AI</span>
-              <span className="mx-3 text-gray-600 font-light">–</span>
-              <span className="text-gray-200">Smart Recruitment System</span>
+            <div className="text-xl font-medium tracking-tight">
+              <span className="uppercase opacity-90" style={{ color: 'var(--text-main)' }}>AI</span>
+              <span className="mx-3 font-light" style={{ color: 'var(--text-muted)' }}>–</span>
+              <span style={{ color: 'var(--text-muted)' }}>Smart Recruitment System</span>
             </div>
           </motion.div>
 
           {/* Item 3: IOT */}
           <motion.div 
             variants={fadeInUp} 
-            whileHover={{ x: 10, backgroundColor: "rgba(255,255,255,0.08)" }}
-            className="bg-[#0F1C2B]/60 backdrop-blur-sm border border-white/10 rounded-xl p-6 flex items-center gap-6 group transition-all cursor-pointer"
+            whileHover={{ x: 10 }}
+            style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
+            className="bg-opacity-60 backdrop-blur-sm border rounded-xl p-6 flex items-center gap-6 group transition-all cursor-pointer hover:bg-opacity-80"
           >
             <div className="w-1.5 h-12 bg-[#fb923c] rounded-full shadow-[0_0_15px_rgba(251,146,60,0.3)]"></div>
-            <div className="text-white text-xl font-medium tracking-tight">
-              <span className="uppercase opacity-90">IOT</span>
-              <span className="mx-3 text-gray-600 font-light">–</span>
-              <span className="text-gray-200">Real-time Attendance</span>
+            <div className="text-xl font-medium tracking-tight">
+              <span className="uppercase opacity-90" style={{ color: 'var(--text-main)' }}>IOT</span>
+              <span className="mx-3 font-light" style={{ color: 'var(--text-muted)' }}>–</span>
+              <span style={{ color: 'var(--text-muted)' }}>Real-time Attendance</span>
             </div>
           </motion.div>
         </motion.div>
@@ -432,15 +449,16 @@ const SplashPage = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.8 }}
-          className="relative overflow-hidden max-w-7xl mx-auto bg-[#0d141c]/80 backdrop-blur-lg border border-white/10 rounded-[2.5rem] p-10 md:p-16 flex flex-col lg:flex-row items-center justify-between gap-12 shadow-2xl"
+          style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
+          className="relative overflow-hidden max-w-7xl mx-auto bg-opacity-80 backdrop-blur-lg border rounded-[2.5rem] p-10 md:p-16 flex flex-col lg:flex-row items-center justify-between gap-12 shadow-2xl"
         >
           <div className="absolute top-[-20%] right-[-10%] w-[50%] h-[80%] bg-blue-500/20 blur-[120px] rounded-full pointer-events-none"></div>
 
           <div className="relative z-10 flex-1 text-center lg:text-left">
-            <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight max-w-xl">
+            <h2 style={{ color: 'var(--text-main)' }} className="text-3xl md:text-4xl font-bold mb-6 leading-tight max-w-xl">
               Ready to transform your HR operations?
             </h2>
-            <p className="text-gray-300 text-sm md:text-base max-w-md leading-relaxed mb-10 mx-auto lg:mx-0">
+            <p style={{ color: 'var(--text-muted)' }} className="text-sm md:text-base max-w-md leading-relaxed mb-10 mx-auto lg:mx-0">
               Experience a complete HRMS platform designed for both HR and
               employees, combining AI-powered recruitment, real-time attendance
               tracking, and automated payroll in one seamless system.
@@ -458,19 +476,21 @@ const SplashPage = () => {
 
           <div className="relative z-10 flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
             <motion.div 
-              whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.1)" }}
-              className="w-full sm:w-60 h-32 bg-white/[0.05] border border-white/10 rounded-2xl flex items-center justify-center p-8 text-center transition-all cursor-default backdrop-blur-sm"
+              whileHover={{ scale: 1.02 }}
+              style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--border-main)' }}
+              className="w-full sm:w-60 h-32 border rounded-2xl flex items-center justify-center p-8 text-center transition-all cursor-default backdrop-blur-sm hover:opacity-90"
             >
-              <span className="text-[10px] text-gray-400 font-mono tracking-[0.25em] uppercase leading-relaxed font-bold">
+              <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-mono tracking-[0.25em] uppercase leading-relaxed font-bold">
                 AI-Powered Recruitment
               </span>
             </motion.div>
 
             <motion.div 
-              whileHover={{ scale: 1.02, backgroundColor: "rgba(255,255,255,0.1)" }}
-              className="w-full sm:w-60 h-32 bg-white/[0.05] border border-white/10 rounded-2xl flex items-center justify-center p-8 text-center transition-all cursor-default backdrop-blur-sm"
+              whileHover={{ scale: 1.02 }}
+              style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--border-main)' }}
+              className="w-full sm:w-60 h-32 border rounded-2xl flex items-center justify-center p-8 text-center transition-all cursor-default backdrop-blur-sm hover:opacity-90"
             >
-              <span className="text-[10px] text-gray-400 font-mono tracking-[0.25em] uppercase leading-relaxed font-bold">
+              <span style={{ color: 'var(--text-muted)' }} className="text-[10px] font-mono tracking-[0.25em] uppercase leading-relaxed font-bold">
                 RFID Attendance Tracking
               </span>
             </motion.div>

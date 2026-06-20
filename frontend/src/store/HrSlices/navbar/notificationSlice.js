@@ -428,6 +428,25 @@ reducers: {
 clearNotifications: (state) => {
 state.list = [];
 state.unreadCount = 0;
+
+},
+// داخل reducers: { ... }
+addLiveNotification: (state, action) => {
+  const newItem = {
+    id: action.payload._id,
+    employeeName: `${action.payload.sender?.general?.firstName || ""} ${action.payload.sender?.general?.lastName || ""}`.trim(),
+    avatar: action.payload.sender?.general?.avatar || "",
+    title: action.payload.title,
+    message: action.payload.message,
+    type: action.payload.type?.toLowerCase(),
+    status: "unread",
+    targetId: action.payload.relatedId,
+    time: "Just now",
+    actionStatus: null,
+  };
+  // إضافة الإشعار في بداية المصفوفة
+  state.list.unshift(newItem);
+  state.unreadCount += 1;
 },
 },
 extraReducers: (builder) => {
@@ -497,6 +516,6 @@ builder
   });
 },});
 
-export const { clearNotifications } =
+export const { addLiveNotification,clearNotifications } =
 notificationSlice.actions;
 export default notificationSlice.reducer;
