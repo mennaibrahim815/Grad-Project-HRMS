@@ -83,7 +83,7 @@ const Sidebar = () => {
   return (
 <motion.aside
   animate={{ width: isCollapsed ? 80 : 175 }}
-  className="fixed h-screen bg-[#0b161d] text-gray-400 flex flex-col border-r border-gray-900  top-0 overflow-hidden z-50"
+  className="fixed h-screen bg-[#0b161d] text-gray-400 flex flex-col border-r border-gray-900  top-0 overflow-x-auto scroll-hiden z-50"
 >
      {/* Logo */}
       <NavLink

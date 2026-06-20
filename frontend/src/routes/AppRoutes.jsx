@@ -144,9 +144,8 @@ import PerformanceDetails from "../HrPages/PerformanceDetails/PerformanceDetails
 import LeaveRequests from "../HrPages/Leave/LeaveRequests/LeaveRequests";
 import LeaveDetails from "../HrPages/Leave/LeaveDetails/LeaveDetails";
 import Requests from "../HrPages/Requests/Requests";
-import Tasks from "../HrPages/Tasks/AllTasks/AllTasks";
-import OngoingTasks from "../HrPages/Tasks/OngoingTasks/OngoingTasks";
-import EmployeeDashboard from "../EmployeePages/EmployeeDashboard/EmployeeDashboard";
+import Tasks from "../HrPages/Tasks/Tasks";
+import MyDashBourd from "../EmployeePages/MyDashboard/MyDashboard";
 import Myleaves from "../EmployeePages/Myleaves/Myleaves";
 import EmployeeLeaveDetails from "../EmployeePages/Myleaves/EmployeeLeaveDetails";
 import MyAttendance from "../EmployeePages/MyAttendance/MyAttendance";
@@ -219,7 +218,8 @@ export const router = createBrowserRouter(
             </ProtectedRoute>
           ),
           children: [
-            { path: "/my-dashboard", element: <EmployeeDashboard /> },
+            { path: "/my-dashboard", element: <MyDashBourd /> },
+            { path: "/profile", element: <EmployeeDetail /> },
             { path: "/my-leaves", element: <Myleaves /> },
             { path: "/my-attendance", element: <MyAttendance /> },
             { path: "/my-requests", element: <MyRequests /> },
@@ -239,7 +239,6 @@ export const router = createBrowserRouter(
             <ProtectedRoute allowedRoles={["HR", "EMPLOYEE", "MANAGER"]} />
           ),
           children: [
-            // { path: "/my-dashboard", element: <MyDashBourd /> },
             { path: "/employee/:id", element: <EmployeeDetail /> },
             { path: "/hiring/:id", element: <HiringDetail /> },
             { path: "/hiring/jobs/:id", element: <JobDetailPage /> },
