@@ -8,7 +8,7 @@ import { useSearchParams } from "react-router-dom";
 const MyTasks = () => {
   const [tasks, setTasks] = useState([]);
   const [tableLoading, setTableLoading] = useState(true);
-  const [taskScope, setTaskScope] = useState("My Tasks"); // القيمة الظاهرة بالجدول "My Tasks" أو "Team Tasks"
+  const [taskScope, setTaskScope] = useState("My Tasks"); 
   const [searchTerm, setSearchTerm] = useState("");
 
   const [searchParams] = useSearchParams();
@@ -31,24 +31,22 @@ const [activeRow, setActiveRow] = useState(null);
 
     const timer = setTimeout(() => {
       setActiveRow(null);
-    }, 1200); // 1.2 ثانية highlight
+    }, 1200); 
 
     return () => clearTimeout(timer);
   }
 }, [highlightId]);
-  // دالة موحدة لجلب وتصفية البيانات بناءً على البحث أو الفلتر
+  
   const fetchTasksHistory = useCallback(async () => {
     try {
       setTableLoading(true);
       let url = "";
 
-      // 1️⃣ حالة البحث: لو شريط البحث مكتوب فيه حاجة، يضرب الـ Search API مباشرة
       if (searchTerm.trim() !== "") {
         url = `/tasks/search?title=${encodeURIComponent(searchTerm.trim())}`;
         const response = await instance.get(url);
         
         if (response.data?.status === 'success') {
-          // الـ Search API بيرجع النتائج في مصفوفة اسمها results
           const results = response.data.data.results || [];
           setTasks(results);
           setPagination(prev => ({
@@ -58,10 +56,10 @@ const [activeRow, setActiveRow] = useState(null);
             currentPage: 1
           }));
         }
-        return; // إنهاء الدالة هنا لأننا في حالة بحث
+        return; 
       }
 
-      // 2️⃣ حالة الفلترة العادية بالـ Tabs عند غياب البحث
+      
       const apiFilterParam = taskScope === "My Tasks" ? "my-tasks" : "team-tasks";
       url = `/tasks/my-tasks?filter=${apiFilterParam}&page=${pagination.currentPage}&limit=${pagination.recordsPerPage}`;
       
@@ -81,13 +79,12 @@ const [activeRow, setActiveRow] = useState(null);
     }
   }, [pagination.currentPage, pagination.recordsPerPage, taskScope, searchTerm]);
 
-  // عمل Debounce بسيط للبحث وتحديث الإحصائيات تلقائياً عند أي تعديل
+  
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       fetchTasksHistory();
-      // تحديث أرقام كروت الإحصائيات في الهيدر إذا كانت الدالة متوفرة
       if (refreshStatsFn) refreshStatsFn();
-    }, 400); // تأخير 400ms لتجنب تكرار الطلبات غير الضرورية أثناء الكتابة
+    }, 400); 
 
 
 
@@ -110,10 +107,9 @@ const [activeRow, setActiveRow] = useState(null);
   return (
     <div >
       
-      {/* هيدر الإحصائيات */}
+      
       <EmployeeTasksStatsHeader onStatsUpdated={handleStatsUpdated} />
       
-      {/* جدول المهام الشامل بعد دمج الـ Tabs والسيرش وتحديثات الفورم */}
 <MyTasksTable 
   tasks={tasks}
   loading={tableLoading}
