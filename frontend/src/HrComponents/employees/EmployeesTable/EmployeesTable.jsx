@@ -76,57 +76,65 @@ const EmployeesTable = ({ mode = "employees" }) => {
     });
   };
 
-  const columns = [
-    {
-      header: "Employee / Staff",
-      render: (row) => {
-        const fullName = `${row.general?.firstName || ""} ${row.general?.lastName || ""}`;
-        return (
-          <div className="flex items-center gap-3">
-            <img
-              src={row.general?.avatar?.startsWith('http') ? row.general.avatar : getAvatarUrl(fullName)}
-              alt={fullName}
-              className="w-10 h-10 rounded-full object-cover border-2 shadow-sm"
-              style={{ borderColor: 'var(--border-main)' }}
-            />
-            <div>
-              <p className="text-sm font-black tracking-tight" style={{ color: 'var(--text-main)' }}>{fullName}</p>
-              <p className="text-[10px] font-bold opacity-50 uppercase tracking-widest" style={{ color: 'var(--text-muted)' }}>#{row._id.slice(-6)}</p>
-            </div>
-          </div>
-        );
-      },
-    },
-    { header: "Email Address", render: (row) => <span className="text-xs font-bold opacity-80">{row.general?.email}</span> },
-    { header: "Department", render: (row) => <span className="text-[10px] font-black uppercase tracking-tighter" style={{ color: 'var(--text-muted)' }}>{row.employee?.department}</span> },
-    { header: "Designation", render: (row) => <span className="text-xs font-bold text-blue-500">{row.employee?.jobTitle}</span> },
-    {
-      header: "Employment",
-      render: (row) => <AttendanceBadge status={row.employee?.jobType} />,
-    },
-    {
-      header: "Action",
-      render: (row) => (
-        <div className="relative">
-          <button
-            onClick={() => setOpenMenuId(openMenuId === row._id ? null : row._id)}
-            style={{ color: 'var(--text-muted)' }}
-            className="p-2 hover:text-blue-500 transition-all active:scale-90"
-          >
-            <EditIcon fontSize="small" />
-          </button>
-          <RowActionMenu
-            isOpen={openMenuId === row._id}
-            onClose={() => setOpenMenuId(null)}
-            actions={[
-              { label: "View Profile", icon: Eye, onClick: () => navigate(`/employee/${row._id}`) },
-              { label: "Terminate", variant: "danger", icon: Trash2, onClick: () => setConfirmModal({ open: true, userId: row._id }) },
-            ]}
+ const columns = [
+  {
+    header: "Employee / Staff",
+    render: (row) => {
+      const fullName = `${row.general?.firstName || ""} ${row.general?.lastName || ""}`;
+      return (
+        <div className="flex items-center gap-3">
+          <img
+            src={row.general?.avatar?.startsWith('http') ? row.general.avatar : getAvatarUrl(fullName)}
+            alt={fullName}
+            className="w-10 h-10 rounded-full object-cover"
           />
+          <div>
+            <p className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>{fullName}</p>
+            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>#{row._id.slice(-6)}</p>
+          </div>
         </div>
-      ),
+      );
     },
-  ];
+  },
+  {
+    header: "Email Address",
+    render: (row) => <span className="text-sm" style={{ color: 'var(--text-main)' }}>{row.general?.email}</span>,
+  },
+  {
+    header: "Department",
+    render: (row) => <span className="text-sm" style={{ color: 'var(--text-muted)' }}>{row.employee?.department}</span>,
+  },
+  {
+    header: "Designation",
+    render: (row) => <span className="text-sm" style={{ color: 'var(--text-main)' }}>{row.employee?.jobTitle}</span>,
+  },
+  {
+    header: "Employment",
+    render: (row) => <AttendanceBadge status={row.employee?.jobType} />,
+  },
+  {
+    header: "Action",
+    render: (row) => (
+      <div className="relative">
+        <button
+          onClick={() => setOpenMenuId(openMenuId === row._id ? null : row._id)}
+          style={{ color: 'var(--text-muted)' }}
+          className="p-2 hover:text-blue-500 transition-all active:scale-90"
+        >
+          <EditIcon fontSize="small" />
+        </button>
+        <RowActionMenu
+          isOpen={openMenuId === row._id}
+          onClose={() => setOpenMenuId(null)}
+          actions={[
+            { label: "View Profile", icon: Eye, onClick: () => navigate(`/employee/${row._id}`) },
+            { label: "Terminate", variant: "danger", icon: Trash2, onClick: () => setConfirmModal({ open: true, userId: row._id }) },
+          ]}
+        />
+      </div>
+    ),
+  },
+];
 
   return (
     <BaseCard padding="p-0" style={{ background: 'linear-gradient(to bottom right, var(--card-from) 0%, var(--card-to) 100%)', borderColor: 'var(--card-border)' }} className="rounded-[2.5rem] border shadow-2xl overflow-hidden transition-all duration-500">
