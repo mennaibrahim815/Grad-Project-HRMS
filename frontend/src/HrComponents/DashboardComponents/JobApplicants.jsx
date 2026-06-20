@@ -36,15 +36,22 @@ const JobApplicants = ({ applicants = [], pagination }) => {
   };
 
   return (
-    <div className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] p-[20px] rounded-[2.5rem] border border-gray-800/50 shadow-xl h-[480px] flex flex-col transition-all">
+    <div 
+              style={{
+            background:
+              "linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)   ",borderColor: 'var(--border-main)'
+          }}
+          className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] p-[20px] rounded-[2.5rem] border border-gray-800/50 shadow-xl h-[480px] flex flex-col transition-all">
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h3 className="text-xl font-bold text-white">Job applicants</h3>
+        <h3 className="text-xl font-bold text-white" style={{ color: 'var(--text-main)' }}>Job applicants</h3>
         <button
           onClick={() => navigate("/hiring")}
+                      style={{ background: 'var(--tab-inactive-bg)' }}
+
           className="w-9 h-9 bg-[#0b141a] rounded-full flex items-center justify-center text-gray-400 hover:text-blue-500 transition-all border border-transparent hover:border-blue-500/30"
         >
-          <i className="fas fa-arrow-right -rotate-45 text-xs"></i>
+          <i className="fas fa-arrow-right -rotate-45 text-xs" style={{ color: 'var(--text-main)' }}></i>
         </button>
       </div>
 
@@ -57,6 +64,11 @@ const JobApplicants = ({ applicants = [], pagination }) => {
               setActiveTab(tab);
               setPage(1);
             }}
+                              style={{
+                    background: 'var(--input-bg)',
+                    borderColor: 'var(--border-main)',
+                    color: 'var(--text-main)',
+                  }}
             className={`flex-1 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-wider transition-all duration-300 ${
               activeTab === tab
                 ? "bg-linear-to-br from-transparent/20 to-45% to-[#182731] text-white shadow-2xl border border-gray-900"
@@ -101,7 +113,7 @@ const JobApplicants = ({ applicants = [], pagination }) => {
                         <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-blue-500 border-2 border-[#142129] rounded-full"></span>
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors truncate">
+                        <p className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors truncate"  style={{ color: 'var(--text-main)' }}>
                           {app.personalInfo?.firstName} {app.personalInfo?.lastName}
                         </p>
                         <p className="text-[10px] text-gray-500 font-medium truncate">
@@ -132,6 +144,7 @@ const JobApplicants = ({ applicants = [], pagination }) => {
            <button 
             disabled={page === 1 || loadingApplicants}
             onClick={() => setPage(p => p - 1)}
+            
             className="text-[10px] text-gray-500 hover:text-blue-400 disabled:opacity-20 transition-colors uppercase font-black"
           >
             Prev

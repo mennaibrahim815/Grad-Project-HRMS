@@ -98,6 +98,27 @@ export const deleteEmployee = createAsyncThunk(
   }
 );
 
+
+export const fetchHRs = createAsyncThunk(
+  "employees/fetchAllHRs",
+  async ({ page = 1, limit = 5, jobType }, { rejectWithValue }) => {
+    try {
+      const response = await axios.get("/users/hrs", {
+        params: {
+          page,
+          limit,
+          ...(jobType && { jobType }),
+        },
+      });
+
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(
+        err.response?.data?.message || "Failed to fetch HRs"
+      );
+    }
+  }
+);
 const employeeSlice = createSlice({
   name: "employees",
   initialState: {
@@ -267,7 +288,28 @@ const employeeSlice = createSlice({
         }
 
         state.loading = false;
-      })
+      }).addCase(fetchHRs.pending, (state) => {
+  state.loading = true;
+  state.error = null;
+})
+.addCase(fetchHRs.fulfilled, (state, action) => {
+  state.loading = false;
+
+  const { users, pagination } = action.payload.data;
+
+  state.employeesList = users || [];
+
+  state.pagination = {
+    currentPage: pagination.currentPage ?? 1,
+    totalPages: pagination.totalPages ?? 1,
+    totalRecords: pagination.totalRecords ?? 0,
+    limit: pagination.limit ?? 5,
+  };
+})
+.addCase(fetchHRs.rejected, (state, action) => {
+  state.loading = false;
+  state.error = action.payload;
+})
   },
 });
 

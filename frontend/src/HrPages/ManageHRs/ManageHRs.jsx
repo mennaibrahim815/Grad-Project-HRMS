@@ -58,7 +58,9 @@ const ManageHRs = () => {
           <div className="lg:col-span-2 ">
             
             {/* تم تمرير الفلتر هنا */}
-            <EmployeesTable roleFilter="HR" /> 
+            {/* <EmployeesTable roleFilter="HR" />  */}
+<EmployeesTable mode="hrs" />
+
           </div>
         </div></div>
   );
