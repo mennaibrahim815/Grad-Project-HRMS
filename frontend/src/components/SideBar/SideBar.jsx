@@ -54,7 +54,7 @@ const Sidebar = () => {
     { name: "My Leaves", icon: "fas fa-plane", path: "/my-leaves" },
     { name: "My Requests", icon: "fas fa-file-alt", path: "/my-requests" },
     { name: "My Tasks", icon: "fas fa-check-circle", path: "/my-tasks" },
-    { name: "Notifications", icon: "fas fa-bell", path: "/notifications" },
+    // { name: "Notifications", icon: "fas fa-bell", path: "/notifications" },
   ];
 
   const menuItems = userRole === "HR" || userRole === "MANAGER" ? hrMenuItems : employeeMenuItems;
@@ -75,7 +75,7 @@ const Sidebar = () => {
   return (
 <motion.aside
   animate={{ width: isCollapsed ? 80 : 175 }}
-  className="fixed h-screen bg-[#0b161d] text-gray-400 flex flex-col border-r border-gray-900  top-0 overflow-hidden z-50"
+  className="fixed h-screen bg-[#0b161d] text-gray-400 flex flex-col border-r border-gray-900  top-0 overflow-x-auto scroll-hiden z-50"
 >
      {/* Logo */}
       <NavLink
