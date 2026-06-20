@@ -77,7 +77,11 @@
 
   --pill-red-bg: #1E0A12;
   --pill-red-border: #4D1428;
-  --pill-red-text: #F598B7;
+  --pill-red-text: #EC3A76;
+
+  --performance-poor-bg: rgba(124, 45, 18, 0.3);
+  --performance-poor-border: rgba(194, 65, 12, 0.5);
+  --performance-poor-text: #fb923c;
 
   --icon-blue-bg: #013256;
   --icon-blue-color: #62BDFE;
@@ -90,6 +94,7 @@
 
   --icon-pink-bg: #34141F;
   --icon-pink-color: #F598B7;
+
 }
 
 [data-theme="light"] {
@@ -139,6 +144,7 @@
   --pill-red-border: #F0A8A8;
   --pill-red-text: #791F1F;
 
+
   --icon-blue-bg: #013256;
   --icon-blue-color: #62BDFE;
 
@@ -151,6 +157,9 @@
   --icon-pink-bg: #34141F;
   --icon-pink-color: #F598B7;
 
+  --performance-poor-bg: #FFEDD5;
+  --performance-poor-border: #FDBA74;
+  --performance-poor-text: #9A3412;
 }
 
 @keyframes flash-animation {
