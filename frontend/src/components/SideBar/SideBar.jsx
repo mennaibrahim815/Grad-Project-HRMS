@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import icon from "../../assets/icons/Icon.svg";
-import { logoutUser } from "../../store/HrSlices/auth/loginSlice";
+// import { logoutUser } from "../../store/HrSlices/auth/loginSlice";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -19,6 +19,14 @@ const Sidebar = () => {
     { name: "Dashboard", icon: "fas fa-th-large", path: "/dashboard" },
     { name: "Employees", icon: "fas fa-users", path: "/employees" },
     { name: "Project", icon: "fas fa-project-diagram", path: "/project" },
+    {
+      name: "Tasks",
+      icon: "fas fa-check-circle",
+      children: [
+        { name: "AllTasks", path: "/Tasks/alltasks" },
+        { name: "OngoingTasks", path: "/Tasks/ongoingtasks" },
+      ],
+    },
     {
       name: "Payroll",
       icon: "fas fa-wallet",
@@ -52,7 +60,7 @@ const Sidebar = () => {
     { name: "Payroll", icon: "fas fa-wallet", path: "/my-payroll" },
     { name: "My Leaves", icon: "fas fa-plane", path: "/my-leaves" },
     { name: "My Requests", icon: "fas fa-file-alt", path: "/my-requests" },
-    { name: "Tasks", icon: "fas fa-check-circle", path: "/tasks", badge: 3 },
+    { name: "My Tasks", icon: "fas fa-check-circle", path: "/my-tasks" },
     { name: "Notifications", icon: "fas fa-bell", path: "/notifications" },
   ];
 

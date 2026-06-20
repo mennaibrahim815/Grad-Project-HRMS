@@ -141,8 +141,15 @@ export const getEmployeePerformanceHistory = asyncWraper(async (req, res, next) 
         const prevStartDate = startDate.subtract(daysDifference * i, "day");
         const prevEndDate = endDate.subtract(daysDifference * i, "day");
 
-        const prevScores = await calculateKPI(employeeId, prevStartDate, prevEndDate);
-        const performanceChange = calculatePercentageChange(currentScores.overallPerformance, prevScores.overallPerformance);
+        const olderStartDate = startDate.subtract(daysDifference * (i + 1), "day");
+        const olderEndDate = endDate.subtract(daysDifference * (i + 1), "day");
+
+        const [prevScores, olderScores] = await Promise.all([
+            calculateKPI(employeeId, prevStartDate, prevEndDate),
+            calculateKPI(employeeId, olderStartDate, olderEndDate)
+        ]);
+
+        const performanceChange = calculatePercentageChange(prevScores.overallPerformance, olderScores.overallPerformance);
 
         previousPeriodsData.push({
             from: prevStartDate.format("YYYY-MM-DD"),
@@ -152,6 +159,12 @@ export const getEmployeePerformanceHistory = asyncWraper(async (req, res, next) 
             percentageChange: performanceChange
         });
     }
+
+    const firstPrevStartDate = startDate.subtract(daysDifference * 1, "day");
+    const firstPrevEndDate = endDate.subtract(daysDifference * 1, "day");
+    const firstPrevScores = await calculateKPI(employeeId, firstPrevStartDate, firstPrevEndDate);
+
+    const currentPercentageChange = calculatePercentageChange(currentScores.overallPerformance, firstPrevScores.overallPerformance);
 
     res.status(200).json({
         status: httpResponseText.SUCCESS,
@@ -166,6 +179,7 @@ export const getEmployeePerformanceHistory = asyncWraper(async (req, res, next) 
             },
             overallPerformance: currentScores.overallPerformance,
             performanceStatus: getPerformanceLabel(currentScores.overallPerformance),
+            percentageChange: currentPercentageChange,
             previousPeriods: previousPeriodsData 
         },
     });

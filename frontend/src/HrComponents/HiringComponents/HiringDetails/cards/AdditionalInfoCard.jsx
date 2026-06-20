@@ -1,14 +1,13 @@
 import BaseCard from "../../../../components/UI/Card";
 
 const InfoRow = ({ label, value }) => (
-  <div className="flex items-center justify-between py-2.5 border-b border-white/5 last:border-0">
-    <span className="text-slate-500 text-sm">{label}</span>
-    <span className="text-slate-200 text-sm">{value || "—"}</span>
+  <div className="flex items-center justify-between py-2.5 border-b last:border-0" style={{ borderColor: 'var(--border-main)' }}>
+    <span className="text-sm" style={{ color: 'var(--text-muted)' }}>{label}</span>
+    <span className="text-sm" style={{ color: 'var(--text-main)' }}>{value || "—"}</span>
   </div>
 );
 
 const AdditionalInfoCard = ({ applicant}) => {
-
 
   const { additionalQuestions } = applicant || {};
 
@@ -18,7 +17,7 @@ const AdditionalInfoCard = ({ applicant}) => {
 
   return (
     <BaseCard className="flex flex-col gap-4">
-      <p className="text-slate-400 text-xs font-medium uppercase tracking-wider">
+      <p className="text-xs font-medium uppercase tracking-wider" style={{ color: 'var(--text-muted)' }}>
         Additional Info
       </p>
 
@@ -30,9 +29,9 @@ const AdditionalInfoCard = ({ applicant}) => {
 
       {/* Motivation */}
       {additionalQuestions?.motivation && (
-        <div className="bg-white/5 rounded-xl p-4">
-          <p className="text-slate-500 text-xs mb-2">Motivation</p>
-          <p className="text-slate-300 text-sm leading-relaxed">
+        <div style={{ background: 'var(--tab-inactive-bg)' }} className="rounded-xl p-4">
+          <p className="text-xs mb-2" style={{ color: 'var(--text-muted)' }}>Motivation</p>
+          <p className="text-sm leading-relaxed" style={{ color: 'var(--text-main)' }}>
             {additionalQuestions.motivation}
           </p>
         </div>

@@ -28,15 +28,16 @@ import payrollReducer from "./HrSlices/payroll/payrollSlice";
 import empAttendanceReducer from "./EmployeeSlices/attendance/empAttendanceSlice";
 import empPayrollReducer from "./EmployeeSlices/payroll/empPayrollSlice";
 
+import themeReducer from "./themeSlice";
 export const store = configureStore({
   reducer: {
+    theme: themeReducer,
     // Authentication
     auth: loginReducer,
     forgotPassword: forgotPasswordReducer,
     verifyCode: verifyCodeReducer,
     resetPassword: resetPasswordReducer, 
     
-
 
     // Navbar Features
     ui: uiReducer,
@@ -57,7 +58,6 @@ export const store = configureStore({
     attendance: attendanceReducer,
     payroll:payrollReducer,
     careers: careersReducer,
-    // // Employee Side Features
     empAttendance: empAttendanceReducer,
     empPayroll: empPayrollReducer,
     

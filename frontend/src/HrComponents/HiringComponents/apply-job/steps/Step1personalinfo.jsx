@@ -241,7 +241,7 @@ const Step1PersonalInfo = ({ formData, handleChange, handleBlur, errors, touched
                         className={selectCls("experienceLevel", errors, touched)}
                     >
                         <option>Junior</option>
-                        <option>Mid</option>
+                        <option value="Mid-Level">Mid</option>
                         <option>Senior</option>
                     </select>
                     <FieldError field="experienceLevel" errors={errors} touched={touched} />

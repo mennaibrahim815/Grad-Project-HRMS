@@ -12,6 +12,7 @@ export default function App() {
     dispatch(checkAuthStatus());
   }, [dispatch]);
 
+
   return <RouterProvider router={router} />;
   
 }
