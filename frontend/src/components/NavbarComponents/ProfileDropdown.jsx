@@ -42,6 +42,9 @@ const ProfileDropdown = ({ isOpen, setIsOpen, profileRef }) => {
     displayUser?.general?.role ||
     displayUser?.role;
 
+const { user } = useSelector((state) => state.auth);
+const userRole = user?.general?.role; 
+
   // ✅ Logout
   const handleLogout = async () => {
     await dispatch(logoutUser());
@@ -119,6 +122,8 @@ const ProfileDropdown = ({ isOpen, setIsOpen, profileRef }) => {
             className="absolute right-0 mt-4 w-60 bg-[#142129] border border-gray-800 rounded-[1.5rem] shadow-2xl py-2 z-50 backdrop-blur-xl overflow-hidden"
           >
             {/* Show My Profile */}
+            {(userRole === "HR" || userRole === "MANAGER") && (
+
             <button
               onClick={goToProfile}
               className="w-full text-left px-6 py-4 text-sm text-gray-300 hover:bg-blue-600/10 hover:text-white flex items-center justify-between transition-all"
@@ -130,7 +135,7 @@ const ProfileDropdown = ({ isOpen, setIsOpen, profileRef }) => {
               </div>
 
               <i className="fas fa-chevron-right text-xs text-gray-500"></i>
-            </button>
+            </button>)}
 
             {/* Divider */}
             <div className="border-t border-gray-800/50 my-1 mx-2"></div>

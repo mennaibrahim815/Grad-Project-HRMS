@@ -1,44 +1,4 @@
-// import React, { useState, useEffect } from 'react';
-// import instance from '@/services/axios'; 
-// import EmployeeRequestsStatsHeader from '@/EmployeeComponents/MyRequestsComponents/EmployeeRequestsStatsHeader.jsx';
 
-// const MyRequests = () => {
-//   const [stats, setStats] = useState(null);
-//   const [loading, setLoading] = useState(true);
-
-//   useEffect(() => {
-//     const fetchStats = async () => {
-//       try {
-//         setLoading(true);
-//         // هنا حددنا شهر 1 وسنة 2026 بناءً على الـ API بتاعك، تقدري تخليهم ديناميك حسب التاريخ الحالي
-//         const response = await instance.get('/requests/monthly-stats/me?month=1&year=2026');
-        
-//         if (response.data.status === 'success') {
-//           setStats(response.data.data);
-//         }
-//       } catch (error) {
-//         console.error("Error fetching stats:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-
-//     fetchStats();
-//   }, []);
-
-//   return (
-//     <div >
-    
-      
-//       {/* استدعاء الهيدر وتمرير الداتا وحالة التحميل */}
-//       <EmployeeRequestsStatsHeader stats={stats} loading={loading} />
-      
-//       {/* هنا هيبقي الجزء التاني بتاع الجدول أو لستة الطلبات */}
-//     </div>
-//   );
-// };
-
-// export default MyRequests;
 import React, { useState, useEffect, useCallback } from 'react';
 import instance from '@/services/axios'; 
 import EmployeeRequestsStatsHeader from '@/EmployeeComponents/MyRequestsComponents/EmployeeRequestsStatsHeader.jsx';

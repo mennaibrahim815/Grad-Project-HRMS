@@ -40,7 +40,6 @@ export const store = configureStore({
     resetPassword: resetPasswordReducer, 
     
 
-
     // Navbar Features
     ui: uiReducer,
     search: searchReducer,
@@ -60,7 +59,6 @@ export const store = configureStore({
     attendance: attendanceReducer,
     payroll:payrollReducer,
     careers: careersReducer,
-    // // Employee Side Features
     empAttendance: empAttendanceReducer,
     empPayroll: empPayrollReducer,
     employeePerformance: employeePerformanceReducer,

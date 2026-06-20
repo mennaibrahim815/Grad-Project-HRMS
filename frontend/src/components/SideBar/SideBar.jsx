@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import icon from "../../assets/icons/Icon.svg";
-import { logoutUser } from "../../store/HrSlices/auth/loginSlice";
+// import { logoutUser } from "../../store/HrSlices/auth/loginSlice";
 
 const Sidebar = () => {
   const dispatch = useDispatch();
@@ -19,7 +19,14 @@ const Sidebar = () => {
     { name: "Dashboard", icon: "fas fa-th-large", path: "/dashboard" },
     { name: "Employees", icon: "fas fa-users", path: "/employees" },
     { name: "Project", icon: "fas fa-project-diagram", path: "/project" },
-    { name: "Tasks", icon: "fas fa-check-circle", path: "/Tasks" },
+    {
+      name: "Tasks",
+      icon: "fas fa-check-circle",
+      children: [
+        { name: "AllTasks", path: "/Tasks/alltasks" },
+        { name: "OngoingTasks", path: "/Tasks/ongoingtasks" },
+      ],
+    },
     {
       name: "Payroll",
       icon: "fas fa-wallet",
