@@ -367,7 +367,7 @@ const EmployeesTable = ({ mode = "employees" }) => {
     },
     { header: "Email Address", render: (row) => <span className="text-xs font-bold opacity-80">{row.general?.email}</span> },
     { header: "Department", render: (row) => <span className="text-[10px] font-black uppercase tracking-tighter" style={{ color: 'var(--text-muted)' }}>{row.employee?.department}</span> },
-    { header: "Designation", render: (row) => <span className="text-xs font-bold text-blue-500">{row.employee?.jobTitle}</span> },
+    { header: "Job Title", render: (row) => <span className="text-xs font-bold text-blue-500">{row.employee?.jobTitle}</span> },
     {
       header: "Employment",
       render: (row) => <AttendanceBadge status={row.employee?.jobType} />,
