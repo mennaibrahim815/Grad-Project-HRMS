@@ -81,11 +81,11 @@ export default function OngoingTasksPage() {
   return (
     <div>
       {/* Header */}
-      <div className="flex flex-col gap-2 mb-8 mt-10">
-        <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+      <div className="flex flex-col gap-2 mb-8">
+        <h1 className="text-2xl font-bold tracking-tight flex items-center gap-2 mt-10" style={{ color: 'var(--text-main)' }}>
           <Clock className="text-cyan-400" /> On-going Tasks Review
         </h1>
-        <p className="text-slate-400 text-sm">
+        <p className="text-sm" style={{ color: 'var(--text-muted)' }}>
           Review employee task updates and accept or reject submissions based on documentation.
         </p>
       </div>

@@ -65,7 +65,6 @@
 //         { path: "/performance", element: <Performance /> },
 //         { path: "/Requests", element: <Requests /> },
 
-        
 //         {
 //           path: "/manage-hrs",
 //           element: (
@@ -117,9 +116,6 @@
 //   },
 // );
 
-
-
-
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import ProtectedRoute from "./ProtectedRoute";
@@ -151,7 +147,7 @@ import Requests from "../HrPages/Requests/Requests";
 import Tasks from "../HrPages/Tasks/AllTasks/AllTasks";
 import OngoingTasks from "../HrPages/Tasks/OngoingTasks/OngoingTasks";
 import EmployeeDashboard from "../EmployeePages/EmployeeDashboard/EmployeeDashboard";
-import Myleaves  from "../EmployeePages/Myleaves/Myleaves";
+import Myleaves from "../EmployeePages/Myleaves/Myleaves";
 import EmployeeLeaveDetails from "../EmployeePages/Myleaves/EmployeeLeaveDetails";
 import MyAttendance from "../EmployeePages/MyAttendance/MyAttendance";
 import MyRequests from "../EmployeePages/MyRequests/MyRequests";
@@ -168,11 +164,11 @@ export const router = createBrowserRouter(
     { path: "/reset-password", element: <ResetPassword /> },
     { path: "/apply-job", element: <ApplyJob /> },
     { path: "/careers/apply/:id", element: <ApplyJobForm /> },
-
     {
-      element: <ProtectedRoute />, // حماية عامة للجلسة
+      element: <ProtectedRoute />,
       children: [
         //  (HR and MANAGER)
+        
         {
           element: (
             <ProtectedRoute allowedRoles={["HR", "MANAGER"]}>
@@ -203,6 +199,18 @@ export const router = createBrowserRouter(
         },
 
         //  EMPLOYEE
+        //     { path: "/Tasks", element: <Tasks /> },
+        //     {
+        //       path: "/manage-hrs",
+        //       element: (
+        //         <ProtectedRoute allowedRoles={["MANAGER"]}>
+        //           <ManageHRs />
+        //         </ProtectedRoute>
+        //       ),
+        //     },
+        //   ],
+        // },
+        // EMPLOYEE
         {
           element: (
             <ProtectedRoute allowedRoles={["EMPLOYEE"]}>
@@ -213,32 +221,42 @@ export const router = createBrowserRouter(
             { path: "/my-dashboard", element: <EmployeeDashboard /> },
             { path: "/my-leaves", element: <Myleaves /> },
             { path: "/my-attendance", element: <MyAttendance /> },
-            { path: "/my-requests", element:<MyRequests/>},
-            { path: "/my-tasks", element:<MyTasks/>},
-            { path: "/my-leave-details/:id", element: <EmployeeLeaveDetails /> },
+            { path: "/my-requests", element: <MyRequests /> },
+            { path: "/my-tasks", element: <MyTasks /> },
+            {
+              path: "/my-leave-details/:id",
+              element: <EmployeeLeaveDetails />,
+            },
             { path: "/my-payroll", element: <Myparoll /> },
           ],
         },
 
         // shared bages
         {
-          element: <ProtectedRoute allowedRoles={["HR", "EMPLOYEE", "MANAGER"]} />,
+          element: (
+            <ProtectedRoute allowedRoles={["HR", "EMPLOYEE", "MANAGER"]} />
+          ),
           children: [
-            { path: "/profile", element: <EmployeeDetail /> },
-            { path: "/settings", element: <Settings /> },
+            // { path: "/my-dashboard", element: <MyDashBourd /> },
             { path: "/employee/:id", element: <EmployeeDetail /> },
             { path: "/hiring/:id", element: <HiringDetail /> },
             { path: "/hiring/jobs/:id", element: <JobDetailPage /> },
+                        {
+              path: "/settings",
+              element: (
+            <ProtectedRoute allowedRoles={["HR", "MANAGER"]}>
+                  <Settings />
+                </ProtectedRoute>
+              ),
+            },
           ],
         },
       ],
     },
-
     { path: "*", element: <Error /> },
   ],
   {
     future: {
-      
       v7_startTransition: true,
       v7_relativeSplatPath: true,
       v7_fetcherPersist: true,
@@ -246,5 +264,5 @@ export const router = createBrowserRouter(
       v7_partialHydration: true,
       v7_skipActionErrorRevalidation: true,
     },
-  }
+  },
 );

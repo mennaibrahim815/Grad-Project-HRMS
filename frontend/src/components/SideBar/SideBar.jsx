@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import icon from "../../assets/icons/Icon.svg";
-import { logoutUser } from "../../store/HrSlices/auth/loginSlice";
+// import { logoutUser } from "../../store/HrSlices/auth/loginSlice";
 
 const Sidebar = () => {
   const dispatch = useDispatch();

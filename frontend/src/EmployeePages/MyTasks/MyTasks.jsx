@@ -1,41 +1,20 @@
-// import React, { useState, useCallback } from 'react';
-// import EmployeeTasksStatsHeader from '@/EmployeeComponents/MyTasksComponents/EmployeeTasksStatsHeader.jsx';
 
-// const MyTasks = () => {
-//   // دالة لحفظ زناد تحديث الكروت القادم من الهيدر (عشان لو احتاجنا نناديها مستقبلاً عند إضافة مهام جديدة)
-//   const [refreshStatsFn, setRefreshStatsFn] = useState(null);
-
-//   // استلام زناد التحديث من الهيدر لتحديث الكروت
-//   const handleStatsUpdated = useCallback((fetchStatsCallback) => {
-//     setRefreshStatsFn(() => fetchStatsCallback);
-//   }, []);
-
-//   return (
-//     <div className="w-full min-h-screen flex flex-col gap-6 p-4 sm:p-6 box-border bg-[#0B131A]">
-      
-//       {/* 1️⃣ هيدر الإحصائيات وبداخله كروت المهام الأربعة وزر الإنشاء والمودال */}
-//       <EmployeeTasksStatsHeader onStatsUpdated={handleStatsUpdated} />
-      
-//       {/* 2️⃣ هنا تقدري تضيفي الجدول (MyTasksTable) أو التشارتس مستقبلاً لما تخلصي الباك إند بتاعهم */}
-//       <div className="w-full mt-10 p-8 border border-dashed border-gray-850 rounded-[2rem] bg-slate-900/10 flex flex-col items-center justify-center min-h-[300px]">
-//         <p className="text-slate-500 text-sm font-medium">Task list and Kanban view will be integrated here soon...</p>
-//       </div>
-
-//     </div>
-//   );
-// };
-
-// export default MyTasks;
 import React, { useState, useEffect, useCallback } from 'react';
 import instance from '@/services/axios'; 
 import EmployeeTasksStatsHeader from '@/EmployeeComponents/MyTasksComponents/EmployeeTasksStatsHeader.jsx';
 import MyTasksTable from '@/EmployeeComponents/MyTasksComponents/MyTasksTable.jsx'; 
+import { useSearchParams } from "react-router-dom";
 
 const MyTasks = () => {
   const [tasks, setTasks] = useState([]);
   const [tableLoading, setTableLoading] = useState(true);
   const [taskScope, setTaskScope] = useState("My Tasks"); // القيمة الظاهرة بالجدول "My Tasks" أو "Team Tasks"
   const [searchTerm, setSearchTerm] = useState("");
+
+  const [searchParams] = useSearchParams();
+const highlightId = searchParams.get("highlightId");
+
+const [activeRow, setActiveRow] = useState(null);
 
   const [pagination, setPagination] = useState({
     currentPage: 1,
@@ -46,6 +25,17 @@ const MyTasks = () => {
 
   const [refreshStatsFn, setRefreshStatsFn] = useState(null);
 
+  useEffect(() => {
+  if (highlightId) {
+    setActiveRow(highlightId);
+
+    const timer = setTimeout(() => {
+      setActiveRow(null);
+    }, 1200); // 1.2 ثانية highlight
+
+    return () => clearTimeout(timer);
+  }
+}, [highlightId]);
   // دالة موحدة لجلب وتصفية البيانات بناءً على البحث أو الفلتر
   const fetchTasksHistory = useCallback(async () => {
     try {
@@ -99,6 +89,9 @@ const MyTasks = () => {
       if (refreshStatsFn) refreshStatsFn();
     }, 400); // تأخير 400ms لتجنب تكرار الطلبات غير الضرورية أثناء الكتابة
 
+
+
+    
     return () => clearTimeout(delayDebounceFn);
   }, [fetchTasksHistory, refreshStatsFn]);
 
@@ -121,18 +114,19 @@ const MyTasks = () => {
       <EmployeeTasksStatsHeader onStatsUpdated={handleStatsUpdated} />
       
       {/* جدول المهام الشامل بعد دمج الـ Tabs والسيرش وتحديثات الفورم */}
-      <MyTasksTable 
-        tasks={tasks}
-        loading={tableLoading}
-        taskScope={taskScope}
-        setTaskScope={setTaskScope}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        pagination={pagination}
-        onPageChange={handlePageChange}
-        onLimitChange={handleLimitChange}
-        refreshTable={fetchTasksHistory} // لتحديث الداتا فوراً بمجرد حفظ الفورم بنجاح
-      />
+<MyTasksTable 
+  tasks={tasks}
+  loading={tableLoading}
+  taskScope={taskScope}
+  setTaskScope={setTaskScope}
+  searchTerm={searchTerm}
+  setSearchTerm={setSearchTerm}
+  pagination={pagination}
+  onPageChange={handlePageChange}
+  onLimitChange={handleLimitChange}
+  refreshTable={fetchTasksHistory}
+  highlightId={activeRow}
+/>
       
     </div>
   );

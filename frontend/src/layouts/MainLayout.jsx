@@ -127,10 +127,8 @@ const MainLayout = () => {
   }, [dispatch]);
 
   return (
-    // لو الشاشة أصغر من 360 هتبقى flex-col (تحت بعض) ومفيش ارتفاع ثابت عشان الصفحة تسكرول طبيعي
     <div className={`flex ${isTinyScreen ? "flex-col min-h-screen" : "min-h-screen"}`}>
       
-      {/* القائمة الجانبية - هنمرر لها بروبس يعرفها إن الشاشة صغيرة لو محتاجة تعديل داخلي */}
       <Sidebar isTinyScreen={isTinyScreen} /> 
 
       {/* Content wrapper */}
@@ -138,10 +136,8 @@ const MainLayout = () => {
         className={`flex-1 flex flex-col min-w-0 transition-all duration-300
         ${isTinyScreen ? "ml-0" : isSidebarCollapsed ? "ml-[80px]" : "ml-[175px]"}`}
       >
-        {/* في الشاشات الصغيرة جداً الـ Navbar هينزل تحت الـ Sidebar بشكل طبيعي */}
         <Navbar />
 
-        {/* لو الشاشة صغيرة بنلغي الـ overflow-y-auto والـ pt العالية عشان المحتوى يظهر طبيعي ويسكرول مع الصفحة */}
         <main className={`flex-1 p-4 md:p-6 ${isTinyScreen ? "pt-4" : "pt-24 md:mt-10 overflow-y-auto scrollbar-hide"}`}>
           <Outlet />
         </main>

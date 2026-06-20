@@ -197,22 +197,18 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
     );
   }
 
-  // منع الدخول لصفحة اللوجين لو مسجل دخول فعلاً
   if (isAuthenticated && user && location.pathname === "/login") {
     const isAdmin = user?.general?.role === "HR" || user?.general?.role === "MANAGER";
     return <Navigate to={isAdmin ? "/dashboard" : "/my-dashboard"} replace />;
   }
 
-  // لو مش مسجل دخول
   if (!isAuthenticated || !user) {
     return <Navigate to="/login" replace />;
   }
 
   const userRole = user?.general?.role;
 
-  // 💡 التعديل الجوهري هنا: التحقق من الصلاحيات
   if (allowedRoles && !allowedRoles.includes(userRole)) {
-    // لو الشخص "إداري" (HR أو MANAGER) وحاول يدخل صفحة غلط، وديه للداشبورد الرئيسية
     const isAdmin = userRole === "HR" || userRole === "MANAGER";
     const fallbackPath = isAdmin ? "/dashboard" : "/my-dashboard";
 
