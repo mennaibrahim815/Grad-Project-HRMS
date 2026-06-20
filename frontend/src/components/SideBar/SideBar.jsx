@@ -80,7 +80,7 @@ const Sidebar = ({ isTinyScreen }) => {
   };
 
   const getActiveStyle = (isActive) => ({
-    backgroundColor: isActive ? 'var(--bg-deep)' : 'transparent',
+    backgroundColor: isActive ? '#182731' : 'transparent',
     color: isActive ? 'var(--text-main)' : 'var(--text-muted)',
   });
 
@@ -89,7 +89,7 @@ const Sidebar = ({ isTinyScreen }) => {
       // إذا كانت الشاشة صغيرة جداً، العرض 100%. وإلا يتبع حالة الـ Collapse
       animate={{ width: isTinyScreen ? "100%" : (isCollapsed ? 80 : 175) }}
       style={{ 
-        backgroundColor: 'var(--bg-card)', 
+        backgroundColor: '#0b161d', 
         // نغير اتجاه الحدود بناءً على مكان السايد بار
         borderRight: isTinyScreen ? 'none' : '1px solid var(--border-main)',
         borderBottom: isTinyScreen ? '1px solid var(--border-main)' : 'none'
