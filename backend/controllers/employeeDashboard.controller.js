@@ -260,3 +260,99 @@ export const getRecentRequests = asyncWraper(async (req, res, next) => {
         },
     });
 });
+
+export const getEmployeeWeeklyAttendanceStats = asyncWraper(
+    async (req, res, next) => {
+        const { day, month, year } = req.query;
+
+        // 1. التحقق من المدخلات
+        if (!day || !month || !year) {
+            const error = appErrors.create(
+                400,
+                "day, month, and year are required",
+                httpResponseText.FAIL
+            );
+            return next(error);
+        }
+
+        // 2. استخراج الـ ID بشكل صحيح (عشان نتجنب خطأ Mongoose)
+        // بنستخدم _id أو id من كائن المستخدم المتاح في الـ Request
+        const employeeId = req.currentUser.userId;
+
+        // 3. حساب تواريخ البداية والنهاية للأسبوع
+        const startDate = dayjs(`${year}-${month}-${day}`)
+            .subtract(6, "day")
+            .format("YYYY-MM-DD");
+
+        const endDate = dayjs(`${year}-${month}-${day}`).format("YYYY-MM-DD");
+
+        const daysOfWeek = [
+            "",
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+        ];
+
+        // 4. استخراج الإحصائيات (Aggregation)
+        const attendence = await Attendance.aggregate([
+            {
+                $match: {
+                    date: {
+                        $gte: startDate,
+                        $lte: endDate,
+                    },
+                    // تحويل الـ ID المظبوط لـ ObjectId
+                    employeeId: new mongoose.Types.ObjectId(employeeId),
+                },
+            },
+            {
+                $group: {
+                    // التجميع بناءً على حقل التاريخ لكل يوم
+                    _id: "$date",
+                    onTimeCount: {
+                        $sum: {
+                            $cond: [{ $eq: ["$status", "On Time"] }, 1, 0],
+                        },
+                    },
+                    lateCount: {
+                        $sum: { $cond: [{ $eq: ["$status", "Late"] }, 1, 0] },
+                    },
+                    absentCount: {
+                        $sum: { $cond: [{ $eq: ["$status", "Absent"] }, 1, 0] },
+                    },
+                },
+            },
+            {
+                $project: {
+                    _id: 0, // إخفاء الـ _id من النتيجة النهائية
+                    fullDate: "$_id", // إرجاع التاريخ كامل
+                    onTimeCount: 1,
+                    lateCount: 1,
+                    absentCount: 1,
+                    dayName: {
+                        $arrayElemAt: [
+                            daysOfWeek,
+                            {
+                                $dayOfWeek: {
+                                    // تحويل التاريخ لنص عشان نجيب منه اسم اليوم
+                                    $dateFromString: { dateString: "$_id" },
+                                },
+                            },
+                        ],
+                    },
+                },
+            },
+            { $sort: { fullDate: 1 } }, // ترتيب الأيام تصاعدياً
+        ]);
+
+        // 5. إرسال الاستجابة بنجاح
+        res.status(200).json({
+            status: httpResponseText.SUCCESS,
+            data: { weeklyAttendenceStats: attendence },
+        });
+    }
+);
