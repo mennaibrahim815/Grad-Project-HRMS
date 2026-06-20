@@ -43,7 +43,7 @@ const MyLeaveYearlyChart = () => {
   }, [selectedYear]);
 
   return (
-    // 🛠️ تم تنظيف كلاسات الـ div الخارجي لمنع تكرار الخلفية والحواف والمساحات الزائدة
+    
     <div className="w-full leaves-chart-override">
       
       {loading && (

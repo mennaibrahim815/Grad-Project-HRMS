@@ -20,13 +20,11 @@ const Performance = () => {
     try {
       let response;
       
-      // 👇 التحقق إذا كان المستخدم بيبحث عن اسم لتوجيهه لـ Endpoint السيرش المخصصة
       if (searchName.trim() !== "") {
         response = await instance.get(
           `/employeePerformance/search?name=${encodeURIComponent(searchName)}`
         );
       } else {
-        // الجلب العادي من الـ Endpoint الأساسية في حال عدم وجود بحث
         response = await instance.get(
           `/employeePerformance/all?page=${page}&limit=${limit}&startDate=${startDate}&endDate=${endDate}`
         );
@@ -34,11 +32,10 @@ const Performance = () => {
 
       if (response.data?.status === "success") {
         const dataPayload = response.data.data;
-        // استخراج مصفوفة التقارير بشكل مرن يدعم الحالتين
+        
         const performanceReport = dataPayload?.performanceReport || [];
         setReports(performanceReport);
 
-        // 👇 لو الـ API راجع منه pagination (زي الـ /all) بنحدثه، غير كده بنعمل واحد وهمي متوافق مع داتا السيرش
         if (dataPayload?.pagination) {
           setPagination(dataPayload.pagination);
         } else {
