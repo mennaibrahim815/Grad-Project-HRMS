@@ -27,6 +27,7 @@ import payrollReducer from "./HrSlices/payroll/payrollSlice";
 // // Employee Side
 import empAttendanceReducer from "./EmployeeSlices/attendance/empAttendanceSlice";
 import empPayrollReducer from "./EmployeeSlices/payroll/empPayrollSlice";
+import employeePerformanceReducer from "./EmployeeSlices/employeePerformance/employeePerformanceSlice"
 
 import themeReducer from "./themeSlice";
 export const store = configureStore({
@@ -62,6 +63,7 @@ export const store = configureStore({
     // // Employee Side Features
     empAttendance: empAttendanceReducer,
     empPayroll: empPayrollReducer,
+    employeePerformance: employeePerformanceReducer,
     
   },
 });

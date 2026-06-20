@@ -155,6 +155,7 @@ import MyAttendance from "../EmployeePages/MyAttendance/MyAttendance";
 import MyRequests from "../EmployeePages/MyRequests/MyRequests";
 import MyTasks from "../EmployeePages/MyTasks/MyTasks";
 import Myparoll from "../EmployeePages/MyPayroll/Mypayroll";
+import MyPerformance from "../EmployeePages/MyPerformance/MyPerformance";
 import Settings from "../HrPages/sett/Settings";
 
 export const router = createBrowserRouter(
@@ -212,6 +213,7 @@ export const router = createBrowserRouter(
             { path: "/my-tasks", element:<MyTasks/>},
             { path: "/my-leave-details/:id", element: <EmployeeLeaveDetails /> },
             { path: "/my-payroll", element: <Myparoll /> },
+            { path: "/my-performance", element: <MyPerformance /> },
           ],
         },
 

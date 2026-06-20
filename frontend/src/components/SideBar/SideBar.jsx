@@ -54,6 +54,7 @@ const Sidebar = () => {
     { name: "My Leaves", icon: "fas fa-plane", path: "/my-leaves" },
     { name: "My Requests", icon: "fas fa-file-alt", path: "/my-requests" },
     { name: "My Tasks", icon: "fas fa-check-circle", path: "/my-tasks" },
+    { name: "Performance", icon: "fas fa-chart-line", path: "/my-performance" },
     { name: "Notifications", icon: "fas fa-bell", path: "/notifications" },
   ];
 
