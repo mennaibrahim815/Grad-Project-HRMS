@@ -17,16 +17,15 @@ const Step4Success = () => {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, ease: "easeOut" }}
-            className="flex flex-col items-center text-center gap-6
-                       bg-white/3 border border-white/8 rounded-2xl p-10"
+            style={{ background: "var(--bg-card)", borderColor: "var(--border-main)" }}
+            className="flex flex-col items-center text-center gap-6 border rounded-2xl p-10"
         >
-            {/* Animated check icon */}
             <motion.div
                 initial={{ scale: 0 }}
                 animate={{ scale: 1 }}
                 transition={{ delay: 0.2, type: "spring", stiffness: 200, damping: 15 }}
-                className="w-20 h-20 rounded-full bg-blue-500/10 border border-blue-500/20
-                           flex items-center justify-center"
+                className="w-20 h-20 rounded-full flex items-center justify-center"
+                style={{ background: "rgba(59,130,246,0.1)", border: "1px solid rgba(59,130,246,0.2)" }}
             >
                 <i className="fas fa-check text-blue-400 text-3xl" />
             </motion.div>
@@ -37,8 +36,8 @@ const Step4Success = () => {
                 transition={{ delay: 0.35 }}
                 className="flex flex-col gap-2"
             >
-                <h2 className="text-white font-bold text-2xl">Application Submitted!</h2>
-                <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
+                <h2 className="font-bold text-2xl" style={{ color: "var(--text-main)" }}>Application Submitted!</h2>
+                <p className="text-sm leading-relaxed max-w-sm" style={{ color: "var(--text-muted)" }}>
                     Your application has been received. We'll review it and get back to you
                     as soon as possible. Good luck!
                 </p>

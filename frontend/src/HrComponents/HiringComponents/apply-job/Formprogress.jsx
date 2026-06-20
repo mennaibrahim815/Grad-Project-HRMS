@@ -3,11 +3,10 @@ import { motion } from "framer-motion";
 const FormProgress = ({ currentStep, steps }) => {
     return (
         <div className="w-full">
-            {/* Steps row */}
             <div className="flex items-center justify-between relative">
 
                 {/* Background line */}
-                <div className="absolute top-4 left-0 right-0 h-px bg-white/10 z-0" />
+                <div className="absolute top-4 left-0 right-0 h-px z-0" style={{ background: "var(--border-main)" }} />
 
                 {/* Animated progress line */}
                 <motion.div
@@ -27,14 +26,8 @@ const FormProgress = ({ currentStep, steps }) => {
                         <div key={label} className="flex flex-col items-center gap-2 z-10">
                             <motion.div
                                 animate={{
-                                    backgroundColor: isDone
-                                        ? "#0095ff"
-                                        : isActive
-                                        ? "#0095ff"
-                                        : "rgba(255,255,255,0.05)",
-                                    borderColor: isDone || isActive
-                                        ? "#0095ff"
-                                        : "rgba(255,255,255,0.15)",
+                                    backgroundColor: isDone || isActive ? "#0095ff" : "var(--input-bg)",
+                                    borderColor: isDone || isActive ? "#0095ff" : "var(--border-main)",
                                     scale: isActive ? 1.1 : 1,
                                 }}
                                 transition={{ duration: 0.3 }}
@@ -43,15 +36,19 @@ const FormProgress = ({ currentStep, steps }) => {
                                 {isDone ? (
                                     <i className="fas fa-check text-white text-xs" />
                                 ) : (
-                                    <span className={`text-xs font-bold ${isActive ? "text-white" : "text-slate-500"}`}>
+                                    <span
+                                        className="text-xs font-bold"
+                                        style={{ color: isActive ? "#fff" : "var(--text-muted)" }}
+                                    >
                                         {stepNum}
                                     </span>
                                 )}
                             </motion.div>
 
-                            <span className={`text-xs font-medium transition-colors ${
-                                isActive ? "text-blue-400" : isDone ? "text-slate-400" : "text-slate-600"
-                            }`}>
+                            <span
+                                className="text-xs font-medium transition-colors"
+                                style={{ color: isActive ? "#3b82f6" : "var(--text-muted)" }}
+                            >
                                 {label}
                             </span>
                         </div>

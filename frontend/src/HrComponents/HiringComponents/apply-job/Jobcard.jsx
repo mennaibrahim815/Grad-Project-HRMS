@@ -1,19 +1,22 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
+import BaseCard from "../../../components/UI/Card";
+
+// 1. تعريف الـ Motion Component للـ BaseCard عشان نقدر نستخدم whileHover و Animations
+const MotionBaseCard = motion(BaseCard);
 
 const DEPT_COLORS = {
-    "UI Design":    "text-blue-400 bg-blue-500/10",
-    "Marketing":    "text-yellow-400 bg-yellow-500/10",
-    "Social Media": "text-pink-400 bg-pink-500/10",
-    "Engineering":  "text-emerald-400 bg-emerald-500/10",
-    "Product":      "text-purple-400 bg-purple-500/10",
-    "People Ops":   "text-orange-400 bg-orange-500/10",
+    "UI Design":    "text-[var(--pill-blue-text)] bg-[var(--pill-blue-bg)] border-[var(--pill-blue-border)]",
+    "Marketing":    "text-[var(--pill-orange-text)] bg-[var(--pill-orange-bg)] border-[var(--pill-orange-border)]",
+    "Social Media": "text-[var(--pill-red-text)] bg-[var(--pill-red-bg)] border-[var(--pill-red-border)]",
+    "Engineering":  "text-[var(--pill-green-text)] bg-[var(--pill-green-bg)] border-[var(--pill-green-border)]",
+    "Product":      "text-[var(--pill-blue-text)] bg-[var(--pill-blue-bg)] border-[var(--pill-blue-border)]",
+    "People Ops":   "text-[var(--pill-orange-text)] bg-[var(--pill-orange-bg)] border-[var(--pill-orange-border)]",
 };
 
-const getDeptColor = (dept) => DEPT_COLORS[dept] || "text-slate-400 bg-white/10";
+const getDeptColor = (dept) => DEPT_COLORS[dept] || "text-[var(--text-muted)] bg-[var(--input-bg)] border-[var(--border-subtle)]";
 
-// 1. إضافة الأيقونات الخاصة بالخبرة والتعليم
 const TAG_ICON = {
     experienceLevel: "fas fa-circle-half-stroke",
     workLocation:    "fas fa-location-dot",
@@ -25,7 +28,6 @@ const TAG_ICON = {
 const JobCard = ({ job }) => {
     const navigate = useNavigate();
 
-    // 2. استخراج البيانات الجديدة من الـ Job Object
     const { 
         _id, 
         title, 
@@ -44,7 +46,6 @@ const JobCard = ({ job }) => {
         ? formatDistanceToNow(new Date(createdAt), { addSuffix: true })
         : "";
 
-    // 3. إضافة البيانات الجديدة لمصفوفة الـ Tags
     const tags = [
         { key: "experienceLevel", value: experienceLevel },
         { key: "workLocation",    value: workLocation },
@@ -54,75 +55,82 @@ const JobCard = ({ job }) => {
     ].filter((t) => t.value);
 
     return (
-        <motion.div
+        // 2. استخدام MotionBaseCard كالحاوية الرئيسية
+        <MotionBaseCard
             whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            className="flex flex-col justify-between gap-4 p-5 rounded-2xl
-                       bg-[#111c2b] border border-white/8
-                       hover:border-white/15 hover:bg-[#13202f]
-                       transition-colors duration-200 group h-full"
+            padding="p-0" // مسحنا الـ padding الافتراضي بتاع BaseCard عشان نتحكم فيه جوه هنا براحتنا
+            className="flex flex-col justify-between h-full group
+                       hover:border-[#0293FA] hover:shadow-[0_4px_20px_rgba(2,147,250,0.15)]
+                       transition-all duration-300 overflow-hidden"
         >
-            {/* Top Section */}
-            <div>
-                <span className={`inline-block text-[10px] font-bold tracking-widest uppercase
-                                  px-2.5 py-1 rounded-md mb-3 ${getDeptColor(department)}`}>
-                    {department}
-                </span>
-
-                <h3 className="text-white font-bold text-lg leading-snug mb-2 group-hover:text-blue-100 transition-colors">
-                    {title}
-                </h3>
-
-                <p className="text-slate-400 text-sm leading-relaxed line-clamp-2">
-                    {description}
-                </p>
-
-                {/* 4. عرض المهارات المطلوبة (Skills) */}
-                {requiredSkills && requiredSkills.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 mt-3">
-                        {requiredSkills.slice(0, 4).map((skill, index) => (
-                            <span 
-                                key={index} 
-                                className="text-[10px] font-medium text-slate-300 bg-white/5 border border-white/10 px-2 py-0.5 rounded"
-                            >
-                                {skill}
-                            </span>
-                        ))}
-                        {requiredSkills.length > 4 && (
-                            <span className="text-[10px] font-medium text-slate-500 px-1 py-0.5">
-                                +{requiredSkills.length - 4} more
-                            </span>
-                        )}
-                    </div>
-                )}
-            </div>
-
-            {/* Tags Section */}
-            <div className="flex flex-wrap gap-2 mt-auto">
-                {tags.map(({ key, value }) => (
-                    <span key={key}
-                        className="flex items-center gap-1.5 text-slate-400 text-xs
-                                   bg-white/5 border border-white/8 rounded-full px-3 py-1">
-                        <i className={`${TAG_ICON[key]} text-[10px]`} />
-                        {value}
+            {/* أضفنا div داخلي عشان يمسك الـ padding بشكل صح */}
+            <div className="flex flex-col justify-between gap-4 p-5 h-full">
+                
+                {/* Top Section */}
+                <div>
+                    <span className={`inline-block text-[10px] font-bold tracking-widest uppercase
+                                      px-2.5 py-1 rounded-md mb-3 border ${getDeptColor(department)}`}>
+                        {department}
                     </span>
-                ))}
-            </div>
 
-            {/* Bottom Section */}
-            <div className="flex items-center justify-between pt-3 mt-1 border-t border-white/5">
-                <span className="text-slate-500 text-xs">Posted {postedAgo}</span>
+                    {/* تغيير لون التايتل للدرجة المطلوبة عند الـ hover */}
+                    <h3 className="text-[var(--text-main)] font-bold text-lg leading-snug mb-2 group-hover:text-[#0293FA] transition-colors duration-300">
+                        {title}
+                    </h3>
 
-                <motion.button
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => navigate(`/careers/apply/${_id}`)}
-                    className="text-sm font-semibold text-white
-                               bg-white/10 hover:bg-[#0095ff] border border-white/10 hover:border-[#0095ff]
-                               px-4 py-2 rounded-xl transition-all duration-200"
-                >
-                    Apply Now
-                </motion.button>
+                    <p className="text-[var(--text-muted)] text-sm leading-relaxed line-clamp-2">
+                        {description}
+                    </p>
+
+                    {/* Skills */}
+                    {requiredSkills && requiredSkills.length > 0 && (
+                        <div className="flex flex-wrap gap-1.5 mt-3">
+                            {requiredSkills.slice(0, 4).map((skill, index) => (
+                                <span 
+                                    key={index} 
+                                    className="text-[10px] font-medium text-[var(--text-muted)] bg-[var(--input-bg)] border border-[var(--border-subtle)] px-2 py-0.5 rounded"
+                                >
+                                    {skill}
+                                </span>
+                            ))}
+                            {requiredSkills.length > 4 && (
+                                <span className="text-[10px] font-medium text-[var(--text-muted)] px-1 py-0.5">
+                                    +{requiredSkills.length - 4} more
+                                </span>
+                            )}
+                        </div>
+                    )}
+                </div>
+
+                {/* Tags Section */}
+                <div className="flex flex-wrap gap-2 mt-auto">
+                    {tags.map(({ key, value }) => (
+                        <span key={key}
+                            className="flex items-center gap-1.5 text-[var(--text-muted)] text-xs
+                                       bg-[var(--input-bg)] border border-[var(--border-subtle)] rounded-full px-3 py-1">
+                            <i className={`${TAG_ICON[key]} text-[10px]`} />
+                            {value}
+                        </span>
+                    ))}
+                </div>
+
+                {/* Bottom Section */}
+                <div className="flex items-center justify-between pt-3 mt-1 border-t border-[var(--border-main)] group-hover:border-[#0293FA]/30 transition-colors duration-300">
+                    <span className="text-[var(--text-muted)] text-xs">Posted {postedAgo}</span>
+
+                    <motion.button
+                        whileTap={{ scale: 0.95 }}
+                        onClick={() => navigate(`/careers/apply/${_id}`)}
+                        className="text-sm font-semibold text-[var(--pill-blue-text)]
+                                   bg-[var(--pill-blue-bg)] border border-[var(--pill-blue-border)]
+                                   hover:bg-[#0293FA] hover:text-white hover:border-[#0293FA]
+                                   px-4 py-2 rounded-xl transition-all duration-300"
+                    >
+                        Apply Now
+                    </motion.button>
+                </div>
             </div>
-        </motion.div>
+        </MotionBaseCard>
     );
 };
 

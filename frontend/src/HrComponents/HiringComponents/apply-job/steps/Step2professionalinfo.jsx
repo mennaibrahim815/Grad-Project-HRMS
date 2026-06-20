@@ -2,11 +2,11 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const inputCls = (field, errors, touched) =>
-    `w-full bg-white/5 border rounded-xl px-4 py-2.5 text-slate-100 text-sm outline-none
-     transition-all placeholder:text-slate-600
+    `w-full border rounded-xl px-4 py-2.5 text-sm outline-none
+     transition-all
      ${touched[field] && errors[field]
         ? "border-red-500/50 focus:border-red-500/80"
-        : "border-white/10 focus:border-blue-500/50"}`;
+        : "focus:border-blue-500/50"}`;
 
 const FieldError = ({ field, errors, touched }) => (
     <AnimatePresence>
@@ -31,6 +31,7 @@ const Step2ProfessionalInfo = ({
     setFormData, onNext, onBack,
 }) => {
     const [skillInput, setSkillInput] = useState("");
+    const fieldStyle = { background: "var(--input-bg)", borderColor: "var(--border-main)", color: "var(--text-main)" };
 
     const addSkill = () => {
         const trimmed = skillInput.trim();
@@ -51,16 +52,18 @@ const Step2ProfessionalInfo = ({
     };
 
     return (
-        <div className="bg-white/3 border border-white/8 rounded-2xl p-6 flex flex-col gap-5">
-
+        <div
+            style={{ background: "var(--bg-card)", borderColor: "var(--border-main)" }}
+            className="border rounded-2xl p-6 flex flex-col gap-5"
+        >
             <div>
-                <h2 className="text-white font-bold text-xl">Professional Information</h2>
-                <p className="text-slate-400 text-sm mt-1">Your experience and qualifications</p>
+                <h2 className="font-bold text-xl" style={{ color: "var(--text-main)" }}>Professional Information</h2>
+                <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>Your experience and qualifications</p>
             </div>
 
             {/* Education Level */}
             <div>
-                <label className="text-slate-400 text-xs block mb-1.5">
+                <label className="text-xs block mb-1.5" style={{ color: "var(--text-muted)" }}>
                     Education Level <span className="text-red-400">*</span>
                 </label>
                 <select
@@ -68,10 +71,10 @@ const Step2ProfessionalInfo = ({
                     value={formData.educationLevel}
                     onChange={handleChange}
                     onBlur={() => handleBlur("educationLevel")}
-                    className={`w-full bg-[#1e2a3a] border rounded-xl px-4 py-2.5 text-slate-100 text-sm
+                    style={fieldStyle}
+                    className={`w-full border rounded-xl px-4 py-2.5 text-sm
                                 outline-none cursor-pointer transition-all
-                                ${touched.educationLevel && errors.educationLevel
-                                    ? "border-red-500/50" : "border-white/10"}`}
+                                ${touched.educationLevel && errors.educationLevel ? "border-red-500/50" : ""}`}
                 >
                     <option>High School</option>
                     <option>Bachelor's</option>
@@ -84,46 +87,38 @@ const Step2ProfessionalInfo = ({
             {/* Years of Experience + Current Job Title */}
             <div className="grid grid-cols-2 gap-4">
                 <div>
-                    <label className="text-slate-400 text-xs block mb-1.5">Years of Experience</label>
+                    <label className="text-xs block mb-1.5" style={{ color: "var(--text-muted)" }}>Years of Experience</label>
                     <input
-                        name="yearsOfExperience"
-                        type="number"
-                        min="0"
-                        value={formData.yearsOfExperience}
-                        onChange={handleChange}
+                        name="yearsOfExperience" type="number" min="0"
+                        value={formData.yearsOfExperience} onChange={handleChange}
                         placeholder="e.g. 3"
-                        className={inputCls("yearsOfExperience", errors, touched)}
+                        style={fieldStyle} className={inputCls("yearsOfExperience", errors, touched)}
                     />
                 </div>
                 <div>
-                    <label className="text-slate-400 text-xs block mb-1.5">Current Job Title</label>
+                    <label className="text-xs block mb-1.5" style={{ color: "var(--text-muted)" }}>Current Job Title</label>
                     <input
-                        name="currentJobTitle"
-                        value={formData.currentJobTitle}
-                        onChange={handleChange}
+                        name="currentJobTitle" value={formData.currentJobTitle} onChange={handleChange}
                         placeholder="e.g. Frontend Developer"
-                        className={inputCls("currentJobTitle", errors, touched)}
+                        style={fieldStyle} className={inputCls("currentJobTitle", errors, touched)}
                     />
                 </div>
             </div>
 
             {/* Current Company */}
             <div>
-                <label className="text-slate-400 text-xs block mb-1.5">Current Company</label>
+                <label className="text-xs block mb-1.5" style={{ color: "var(--text-muted)" }}>Current Company</label>
                 <input
-                    name="currentCompany"
-                    value={formData.currentCompany}
-                    onChange={handleChange}
+                    name="currentCompany" value={formData.currentCompany} onChange={handleChange}
                     placeholder="e.g. Tech Corp"
-                    className={inputCls("currentCompany", errors, touched)}
+                    style={fieldStyle} className={inputCls("currentCompany", errors, touched)}
                 />
             </div>
 
             {/* Skills tag input */}
             <div>
-                <label className="text-slate-400 text-xs block mb-1.5">Skills</label>
+                <label className="text-xs block mb-1.5" style={{ color: "var(--text-muted)" }}>Skills</label>
 
-                {/* Tags */}
                 {formData.skills.length > 0 && (
                     <div className="flex flex-wrap gap-2 mb-2">
                         <AnimatePresence>
@@ -150,34 +145,32 @@ const Step2ProfessionalInfo = ({
                     </div>
                 )}
 
-                {/* Input */}
                 <div className="flex gap-2">
                     <input
                         value={skillInput}
                         onChange={(e) => setSkillInput(e.target.value)}
                         onKeyDown={handleSkillKeyDown}
                         placeholder="Type a skill and press Enter or Add"
-                        className="flex-1 bg-white/5 border border-white/10 rounded-xl px-4 py-2.5
-                                   text-slate-100 text-sm outline-none focus:border-blue-500/50
-                                   transition-all placeholder:text-slate-600"
+                        style={fieldStyle}
+                        className="flex-1 border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500/50 transition-all"
                     />
                     <button
                         onClick={addSkill}
-                        className="px-4 py-2.5 rounded-xl bg-white/5 border border-white/10
-                                   text-slate-300 text-sm hover:bg-white/10 transition-all"
+                        style={{ background: "var(--input-bg)", borderColor: "var(--border-main)", color: "var(--text-muted)" }}
+                        className="px-4 py-2.5 rounded-xl border text-sm hover:opacity-80 transition-all"
                     >
                         Add
                     </button>
                 </div>
-                <p className="text-slate-600 text-xs mt-1.5">Press Enter or click Add to add each skill</p>
+                <p className="text-xs mt-1.5" style={{ color: "var(--text-muted)" }}>Press Enter or click Add to add each skill</p>
             </div>
 
             {/* Navigation */}
             <div className="flex gap-3 mt-1">
                 <button
                     onClick={onBack}
-                    className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10
-                               text-slate-400 text-sm font-medium hover:bg-white/10 transition-all"
+                    style={{ background: "var(--input-bg)", borderColor: "var(--border-main)", color: "var(--text-muted)" }}
+                    className="flex-1 py-3 rounded-xl border text-sm font-medium hover:opacity-80 transition-all"
                 >
                     <i className="fas fa-arrow-left mr-1 text-xs" /> Back
                 </button>
