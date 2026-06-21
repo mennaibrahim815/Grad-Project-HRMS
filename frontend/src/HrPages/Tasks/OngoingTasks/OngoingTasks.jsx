@@ -1,7 +1,7 @@
 
 import { useEffect, useState } from "react";
 import API from "@/services/axios";
-import HrTaskCard from "@/HrComponents/TasksComponents/HrTaskCard.jsx"; // استدعاء الكومبوننت الجديد هنا
+import HrTaskCard from "@/HrComponents/TasksComponents/HrTaskCard.jsx"; 
 import { Loader2, AlertCircle, Clock, AlertTriangle } from "lucide-react";
 
 export default function OngoingTasksPage() {
@@ -9,12 +9,12 @@ export default function OngoingTasksPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ستيت لإدارة فورم التأكيد (Modal)
+
   const [confirmModal, setConfirmModal] = useState({
     isOpen: false,
     taskId: null,
     taskTitle: "",
-    actionType: "", // "accept" أو "reject"
+    actionType: "", 
   });
 
   const fetchTasks = async () => {
@@ -43,7 +43,7 @@ export default function OngoingTasksPage() {
     fetchTasks();
   }, []);
 
-  // دالة لفتح مودال التأكيد بدلاً من التنفيذ المباشر
+
   const openConfirmModal = (taskId, taskTitle, actionType) => {
     setConfirmModal({
       isOpen: true,
@@ -53,12 +53,11 @@ export default function OngoingTasksPage() {
     });
   };
 
-  // الدالة التي تنفذ الأكشن الفعلي بعد الضغط على "تأكيد" في المودال
   const handleConfirmAction = async () => {
     const { taskId, actionType } = confirmModal;
     try {
       await API.patch(`/tasks/${taskId}`, {
-        acceptance: actionType, // 'accept' أو 'reject'
+        acceptance: actionType, 
       });
 
       setTasks((prev) => prev.filter((task) => task._id !== taskId));
@@ -112,7 +111,7 @@ export default function OngoingTasksPage() {
         </div>
       )}
 
-      {/* 📋 فورم التأكيد الاحترافي (Confirmation Modal) */}
+    
       {confirmModal.isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm animate-fade-in">
           <div className="bg-[#182731] border border-slate-800 rounded-[2rem] max-w-md w-full p-6 space-y-4 shadow-2xl text-center">

@@ -29,7 +29,6 @@ export default function AddProjectModal({ onClose, onSuccess }) {
     { name: "Project Image URL", key: "avatar", type: "text" },
   ];
 
-  // الـ shared input style كـ object عشان نستخدمه في كل الـ inputs
   const inputStyle = {
     width: '100%',
     background: 'var(--input-bg)',

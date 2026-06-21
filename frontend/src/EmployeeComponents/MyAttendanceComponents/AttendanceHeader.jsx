@@ -18,10 +18,10 @@ function AttendanceHeader() {
   return (
     <div className="flex justify-between items-start sm:items-center gap-3 mb-4 bg-transparent p-4 rounded-2xl">
       <div>
-        <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight" style={{ color: "var(--text-main)" }}>
           My Attendance
         </h1>
-        <p className="text-sm text-gray-300 mt-1">
+        <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>
           Overview of your work hours and punctuality for {formattedMonth}
         </p>
       </div>

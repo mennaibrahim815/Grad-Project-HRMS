@@ -21,7 +21,6 @@ const EditJobModal = ({ isOpen, onClose, job }) => {
         status: "Open",
     });
 
-   
     useEffect(() => {
         if (job) {
             setFormData({
@@ -58,6 +57,8 @@ const EditJobModal = ({ isOpen, onClose, job }) => {
         onClose();
     };
 
+    const fieldStyle = { background: "var(--input-bg)", borderColor: "var(--border-main)", color: "var(--text-main)" };
+
     return (
         <Modal open={isOpen} onClose={onClose}>
             {success ? (
@@ -77,46 +78,46 @@ const EditJobModal = ({ isOpen, onClose, job }) => {
 
                         {/* Title */}
                         <div>
-                            <label className="text-slate-400 text-xs block mb-1.5">Job Title</label>
+                            <label className="text-xs block mb-1.5" style={{ color: "var(--text-muted)" }}>Job Title</label>
                             <input
                                 name="title"
                                 value={formData.title}
                                 onChange={handleChange}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5
-                                           text-slate-100 text-sm outline-none focus:border-blue-500/50
-                                           placeholder:text-slate-600"
+                                style={fieldStyle}
+                                className="w-full border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500/50"
                             />
                         </div>
 
                         {/* Description */}
                         <div>
-                            <label className="text-slate-400 text-xs block mb-1.5">Description</label>
+                            <label className="text-xs block mb-1.5" style={{ color: "var(--text-muted)" }}>Description</label>
                             <textarea
                                 name="description"
                                 value={formData.description}
                                 onChange={handleChange}
                                 rows={3}
-                                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5
-                                           text-slate-100 text-sm outline-none focus:border-blue-500/50
-                                           resize-none"
+                                style={fieldStyle}
+                                className="w-full border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-blue-500/50 resize-none"
                             />
                         </div>
 
                         {/* Department + Experience */}
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="text-slate-400 text-xs block mb-1.5">Department</label>
+                                <label className="text-xs block mb-1.5" style={{ color: "var(--text-muted)" }}>Department</label>
                                 <select name="department" value={formData.department} onChange={handleChange}
-                                    className="w-full bg-[#1e2a3a] border border-white/10 rounded-xl px-4 py-2.5 text-slate-100 text-sm outline-none cursor-pointer">
+                                    style={fieldStyle}
+                                    className="w-full border rounded-xl px-4 py-2.5 text-sm outline-none cursor-pointer">
                                     <option>UI Design</option>
                                     <option>Social Media</option>
                                     <option>Marketing</option>
                                 </select>
                             </div>
                             <div>
-                                <label className="text-slate-400 text-xs block mb-1.5">Experience Level</label>
+                                <label className="text-xs block mb-1.5" style={{ color: "var(--text-muted)" }}>Experience Level</label>
                                 <select name="experienceLevel" value={formData.experienceLevel} onChange={handleChange}
-                                    className="w-full bg-[#1e2a3a] border border-white/10 rounded-xl px-4 py-2.5 text-slate-100 text-sm outline-none cursor-pointer">
+                                    style={fieldStyle}
+                                    className="w-full border rounded-xl px-4 py-2.5 text-sm outline-none cursor-pointer">
                                     <option>Junior</option>
                                     <option>Mid</option>
                                     <option>Senior</option>
@@ -127,9 +128,10 @@ const EditJobModal = ({ isOpen, onClose, job }) => {
                         {/* Job Type + Work Location */}
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <label className="text-slate-400 text-xs block mb-1.5">Job Type</label>
+                                <label className="text-xs block mb-1.5" style={{ color: "var(--text-muted)" }}>Job Type</label>
                                 <select name="jobType" value={formData.jobType} onChange={handleChange}
-                                    className="w-full bg-[#1e2a3a] border border-white/10 rounded-xl px-4 py-2.5 text-slate-100 text-sm outline-none cursor-pointer">
+                                    style={fieldStyle}
+                                    className="w-full border rounded-xl px-4 py-2.5 text-sm outline-none cursor-pointer">
                                     <option>Full-time</option>
                                     <option>Part-time</option>
                                     <option>Contract</option>
@@ -137,9 +139,10 @@ const EditJobModal = ({ isOpen, onClose, job }) => {
                                 </select>
                             </div>
                             <div>
-                                <label className="text-slate-400 text-xs block mb-1.5">Work Location</label>
+                                <label className="text-xs block mb-1.5" style={{ color: "var(--text-muted)" }}>Work Location</label>
                                 <select name="workLocation" value={formData.workLocation} onChange={handleChange}
-                                    className="w-full bg-[#1e2a3a] border border-white/10 rounded-xl px-4 py-2.5 text-slate-100 text-sm outline-none cursor-pointer">
+                                    style={fieldStyle}
+                                    className="w-full border rounded-xl px-4 py-2.5 text-sm outline-none cursor-pointer">
                                     <option>On-site</option>
                                     <option>Remote</option>
                                     <option>Hybrid</option>
@@ -149,20 +152,26 @@ const EditJobModal = ({ isOpen, onClose, job }) => {
 
                         {/* Status */}
                         <div>
-                            <label className="text-slate-400 text-xs block mb-1.5">Status</label>
+                            <label className="text-xs block mb-1.5" style={{ color: "var(--text-muted)" }}>Status</label>
                             <div className="flex gap-3">
                                 {["Open", "Closed"].map((s) => (
-                                    <label key={s}
-                                        className={`flex-1 flex items-center gap-2 rounded-xl px-4 py-2.5
-                                                    cursor-pointer border transition-all
-                                                    ${formData.status === s
-                                                ? "bg-blue-500/10 border-blue-500/30"
-                                                : "bg-white/3 border-white/10"}`}>
+                                    <label
+                                        key={s}
+                                        style={
+                                            formData.status === s
+                                                ? { background: "rgba(59,130,246,0.1)", borderColor: "rgba(59,130,246,0.3)" }
+                                                : { background: "var(--input-bg)", borderColor: "var(--border-main)" }
+                                        }
+                                        className="flex-1 flex items-center gap-2 rounded-xl px-4 py-2.5 cursor-pointer border transition-all"
+                                    >
                                         <input type="radio" name="status" value={s}
                                             checked={formData.status === s}
                                             onChange={handleChange}
                                             className="accent-blue-500" />
-                                        <span className={`text-sm ${formData.status === s ? "text-blue-400" : "text-slate-400"}`}>
+                                        <span
+                                            className="text-sm"
+                                            style={{ color: formData.status === s ? "#3b82f6" : "var(--text-muted)" }}
+                                        >
                                             {s}
                                         </span>
                                     </label>
@@ -172,8 +181,10 @@ const EditJobModal = ({ isOpen, onClose, job }) => {
 
                         {/* Error */}
                         {error && (
-                            <div className="flex items-center gap-2 px-4 py-3 rounded-xl
-                                            bg-red-500/10 border border-red-500/20">
+                            <div
+                                style={{ background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)" }}
+                                className="flex items-center gap-2 px-4 py-3 rounded-xl"
+                            >
                                 <i className="fas fa-circle-exclamation text-red-400 text-sm" />
                                 <p className="text-red-400 text-sm">{error}</p>
                             </div>
@@ -181,9 +192,11 @@ const EditJobModal = ({ isOpen, onClose, job }) => {
 
                         {/* Buttons */}
                         <div className="flex gap-3 mt-2">
-                            <button type="button" onClick={onClose}
-                                className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10
-                                           text-slate-400 text-sm font-medium hover:bg-white/10 transition-all">
+                            <button
+                                type="button" onClick={onClose}
+                                style={{ background: "var(--input-bg)", borderColor: "var(--border-main)", color: "var(--text-muted)" }}
+                                className="flex-1 py-3 rounded-xl border text-sm font-medium hover:opacity-80 transition-all"
+                            >
                                 Cancel
                             </button>
                             <button type="button" onClick={handleSubmit} disabled={updateJobLoading}

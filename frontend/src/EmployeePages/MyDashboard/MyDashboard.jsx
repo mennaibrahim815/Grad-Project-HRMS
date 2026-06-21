@@ -247,7 +247,7 @@ import {
 } from "../../store/EmployeeSlices/dashBoard/employeeDashBoardSlice";
 
 import { Clock, Umbrella, ClipboardList, Inbox } from "lucide-react";
-import DashboardHeader from "../../EmployeeComponents/DashBoardComponents/DashboardHeader";
+import DashboardHeader from "../../EmployeeComponents/DashBoardComponents/DashBoardHeader";
 import StatsCard from "../../EmployeeComponents/DashBoardComponents/StatsCard";
 import AttendanceReport from "../../components/Charts/AttendanceReport";
 import MyTasksSidebar from "../../EmployeeComponents/DashBoardComponents/MyTasksSidebar";

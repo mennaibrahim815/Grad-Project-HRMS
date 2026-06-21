@@ -31,15 +31,15 @@ const JobDetailPage = () => {
             {/* Back */}
             <button
                 onClick={() => navigate("/hiring/jobs")}
-                className="flex items-center gap-2 text-slate-400 hover:text-white
-                           transition-colors w-fit text-sm"
+                style={{ color: "var(--text-muted)" }}
+                className="flex items-center gap-2 hover:opacity-80 transition-colors w-fit text-sm"
             >
                 <i className="fas fa-arrow-left text-xs" />
                 Back to Jobs
             </button>
 
             {/* Title */}
-            <h1 className="text-2xl font-bold text-white">
+            <h1 className="text-2xl font-bold" style={{ color: "var(--text-main)" }}>
                 {selectedJob?.title || "Job Details"}
             </h1>
 

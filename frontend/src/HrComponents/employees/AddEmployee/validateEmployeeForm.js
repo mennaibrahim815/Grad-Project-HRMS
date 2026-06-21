@@ -16,7 +16,7 @@ export const validators = {
       !v || v.trim().length === 0 ? "Address is required" : "",
   },
 
-  // كل حقول experience اختيارية في الباك، بس لو اتملت لازم تكون صحيحة
+  
   experience: {
     jobType: (v) =>
       v && !["Full-time", "Part-time", "Internship", "Contract"].includes(v)
@@ -59,20 +59,18 @@ export const validators = {
   },
 };
 
-// الحقول الإجبارية فقط (للتحقق من صلاحية الخطوة كاملة)
 export const requiredFields = {
   general: ["firstName", "lastName", "email", "rfidTag", "phone", "address"],
-  experience: [], // مفيش حقول إجبارية في experience
+  experience: [], 
   employee: ["jobTitle", "department", "workLocation", "workingHours", "joiningDate", "baseSalary"],
 };
 
-// تشيك على حقل واحد وترجع رسالة الإيرور أو ""
 export const validateField = (section, field, value, allData) => {
   const fn = validators[section]?.[field];
   return fn ? fn(value, allData) : "";
 };
 
-// تشيك على خطوة كاملة وترجع object فيه كل الإيرورز
+
 export const validateStep = (section, data) => {
   const errors = {};
   const fields = Object.keys(validators[section] || {});
@@ -83,17 +81,17 @@ export const validateStep = (section, data) => {
   return errors;
 };
 
-// هل الخطوة valid (الحقول الإجبارية موجودة وكلها بدون إيرور)؟
+
 export const isStepComplete = (section, data) => {
   const required = requiredFields[section] || [];
-  // كل الحقول الإجبارية لازم تكون موجودة
+  
   const hasAllRequired = required.every((f) => {
     const val = data[f];
     return val !== "" && val !== undefined && val !== null;
   });
   if (!hasAllRequired) return false;
 
-  // وكل الحقول (إجبارية أو اختيارية لو مكتوبة) لازم تعدي الـ validation
+  
   const errors = validateStep(section, data);
   return Object.keys(errors).length === 0;
 };

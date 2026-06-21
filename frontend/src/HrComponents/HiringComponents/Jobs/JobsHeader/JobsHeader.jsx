@@ -12,7 +12,9 @@ const JobsHeader = () => {
             />
 
             <div className="flex items-center justify-between mb-10 mt-6">
-                <h1 className="text-2xl font-bold text-white tracking-tight">Job posts</h1>
+                <h1 className="text-2xl font-bold tracking-tight" style={{ color: "var(--text-main)" }}>
+                    Job posts
+                </h1>
 
                 <button
                     onClick={() => setIsModalOpen(true)}

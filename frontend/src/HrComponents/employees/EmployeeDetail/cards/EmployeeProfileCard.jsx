@@ -31,7 +31,7 @@ const FormField = ({ label, children }) => (
 );
 const EmployeeProfileCard = () => {
   const dispatch = useDispatch();
-  const { id } = useParams(); // جبنا الـ id من الـ URL
+  const { id } = useParams(); 
   const { employeeDetail: emp, loading } = useSelector((state) => state.employees);
 
   useEffect(() => {
@@ -42,13 +42,13 @@ const EmployeeProfileCard = () => {
   const [formData, setFormData] = useState({});
 
   useEffect(() => {
-    if (emp) setFormData(emp); // لما الداتا تييجي نملي الـ form
+    if (emp) setFormData(emp);
   }, [emp]);
 
   if (loading) return <div className="text-white p-6">Loading...</div>;
   if (!emp) return null;
 
-  // Mapping الـ API fields للـ UI
+
   const fullName = `${emp.general?.firstName} ${emp.general?.lastName}`;
   const avatar = emp.general?.avatar;
   const gender = emp.general?.gender;
@@ -136,7 +136,7 @@ const handleChange = (e, section) => {
           </>
         )}
 
-        {/* Edit Mode - نفس الكود بتاعك بالظبط */}
+   
         {editMode && (
   <form className="space-y-4">
     {/* Name */}

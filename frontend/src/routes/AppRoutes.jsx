@@ -24,7 +24,7 @@ import HiringDetail from "../HrPages/HiringDetail/HiringDetail";
 import JobDetailPage from "../HrPages/JobDetailPage/JobDetailPage";
 import Attendance from "../HrPages/Attendance/Attendance";
 import Performance from "../HrPages/Performance/Performance";
-import PerformanceDetails from "../HrPages/PerformanceDetails/PerformanceDetails";
+import PerformanceDetails from "../HrPages/PerformanceDetails/performanceDetails";
 import LeaveRequests from "../HrPages/Leave/LeaveRequests/LeaveRequests";
 import LeaveDetails from "../HrPages/Leave/LeaveDetails/LeaveDetails";
 import Requests from "../HrPages/Requests/Requests";
