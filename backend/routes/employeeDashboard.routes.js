@@ -12,6 +12,7 @@ import {
     getMyProjects,
     getRecentRequests,
 } from "../controllers/employeeDashboard.controller.js";
+import { weeklyStatsSchema } from "../validators/attendance.validation.js";
 
 router
     .route("/dashboard-stats")
