@@ -9,7 +9,7 @@ function AttendanceStats() {
 
   useEffect(() => {
     const date = new Date(selectedMonth);
-    const month = date.getMonth() + 1; // getMonth() بترجع من 0-11
+    const month = date.getMonth() + 1; 
     const year = date.getFullYear();
 
     dispatch(fetchMonthlyStats({ month, year }));

@@ -50,7 +50,6 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
     },
   });
 
-  // ── Errors state لكل سيكشن ─────────────────────────
   const [errors, setErrors] = useState({
     general: {},
     experience: {},
@@ -75,7 +74,6 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
     setFormData((prev) => ({ ...prev, employee: { ...prev.employee, [field]: value } }));
   };
 
-  // ── يتم استدعاؤها عند onBlur من جوه كل Step ──────────
   const handleBlur = (section, field) => {
     const value = formData[section][field];
     const errorMsg = validateField(section, field, value, formData[section]);
@@ -137,7 +135,6 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
     }
   };
 
-  // ── الخطوة الحالية valid أم لا (validation حقيقي) ────
   const sectionKey = step === 1 ? "general" : step === 2 ? "experience" : "employee";
   const stepValid = isStepComplete(sectionKey, formData[sectionKey]);
 
@@ -230,7 +227,7 @@ const AddEmployeeModal = ({ open, onClose, onSuccess }) => {
           >
             {step === 3 ? (
               isLoading ? (
-                // تم تعديل الحجم واللون ليناسب الزرار
+             
                 <i className="fas fa-spinner fa-spin text-lg text-white"></i>
               ) : (
                 'Save Employee'

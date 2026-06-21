@@ -76,7 +76,7 @@ const AttendanceHistoryCard = ({ employeeId }) => {
   };
 
   const handleRecordsPerPageChange = (newLimit) => {
-    setRecordsPerPage(newLimit); // useEffect هيحس بالتغيير
+    setRecordsPerPage(newLimit); 
   };
 
   const columns = [
