@@ -28,7 +28,6 @@ export default function ProjectHeader({ onProjectAdded, stats, onSearch }) {
             <StatCard key={s.title} title={s.title} value={s.value} />
           ))}
 
-          {/* تمرير دالة البحث لمكون الإدخال */}
           <SearchInput onSearch={onSearch} />
 
           <button

@@ -78,16 +78,24 @@ const EmployeeStatus = ({ pieStripes, title }) => {
   const totalCount = raw.totalEmployee || 0;
 
   return (
-    <div className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] p-[20px] rounded-[2.5rem] border border-gray-800/50 shadow-xl h-full flex flex-col relative min-h-[420px] overflow-hidden">
+    <div 
+              style={{
+            background:
+              "linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)   ",
+              borderColor: 'var(--border-main)'
+          }}
+          className="bg-gradient-to-br from-transparent/20 to-45% to-[#182731] p-[20px] rounded-[2.5rem] border border-gray-800/50 shadow-xl h-full flex flex-col relative min-h-[420px] overflow-hidden">
       
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
-        <h3 className="text-xl font-bold text-white">{title}</h3>
+        <h3 className="text-xl font-bold text-white" style={{ color: 'var(--text-main)' }}>{title}</h3>
         <button
+         style={{ background: 'var(--tab-inactive-bg)' }}
           onClick={() => navigate("/employees")}
           className="w-9 h-9 bg-[#0b141a] rounded-full flex items-center justify-center text-gray-500 hover:text-blue-500 transition-all"
         >
-          <i className="fas fa-arrow-right -rotate-45 text-xs"></i>
+          <i className="fas fa-arrow-right -rotate-45 text-xs"         style={{ color: 'var(--text-main)' }}
+ ></i>
         </button>
       </div>
 
@@ -139,11 +147,11 @@ const EmployeeStatus = ({ pieStripes, title }) => {
           </ResponsiveContainer>
 
           {/* Center */}
-          <div className="absolute inset-0 flex items-center justify-center flex-col pointer-events-none">
-            <span className="text-3xl font-black text-white">
+          <div className="absolute inset-0 flex items-center justify-center flex-col pointer-events-none" >
+            <span className="text-3xl font-black text-white" style={{ color: 'var(--text-main)' }}>
               {totalCount}
             </span>
-            <span className="text-[13px] text-gray-400">Employee</span>
+            <span className="text-[13px] text-gray-400" style={{ color: 'var(--text-main)' }}>Employee</span>
           </div>
         </div>
 
@@ -156,7 +164,7 @@ const EmployeeStatus = ({ pieStripes, title }) => {
                 style={{ background: item.color }}
               />
               <div>
-                <p className="text-gray-200 font-bold">{item.name}</p>
+                <p className="text-gray-200 font-bold" style={{ color: 'var(--text-main)' }}>{item.name}</p>
                 <p className="text-xs text-gray-500">
                   {item.value}% Employees
                 </p>

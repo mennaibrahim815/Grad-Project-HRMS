@@ -192,6 +192,19 @@ export const fetchApplicantsByJob = createAsyncThunk(
   }
 );
 
+// 14.Onboard Applicant (Hired)
+export const onboardApplicant = createAsyncThunk(
+  "hiring/onboardApplicant",
+  async ({ id, onboardData }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`/applicants/${id}/onboard`, onboardData);
+      return response.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to onboard employee");
+    }
+  }
+);
+
 const hiringSlice = createSlice({
   name: "hiring",
   initialState: {
@@ -380,6 +393,35 @@ const hiringSlice = createSlice({
         state.jobApplicants = action.payload.data?.applicants || [];
       })
       .addCase(fetchApplicantsByJob.rejected, (state) => { state.jobApplicantsLoading = false; state.jobApplicants = []; })
+      .addCase(onboardApplicant.pending, (state) => {
+        state.loading = true; // أو يمكنك عمل ستايت مخصصة مثل onboardLoading
+        state.error = null;
+      })
+      .addCase(onboardApplicant.fulfilled, (state, action) => {
+        state.loading = false;
+
+        // الـ ID الخاص بالمتقدم الذي تم تعيينه
+        const onboardedId = action.meta.arg.id;
+
+        // 1. تحديث حالة المتقدم في تفاصيل المتقدم المفتوحة حالياً (إن وجدت)
+        if (state.selectedApplicant && state.selectedApplicant._id === onboardedId) {
+          state.selectedApplicant = {
+            ...state.selectedApplicant,
+            status: "Hired"
+          };
+        }
+
+        // 2. تحديث حالته داخل القائمة الرئيسية (List) ليصبح "Hired" بدلاً من حذفه
+        state.list = state.list.map((applicant) =>
+          applicant._id === onboardedId
+            ? { ...applicant, status: "Hired" }
+            : applicant
+        );
+      })
+      .addCase(onboardApplicant.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
   },
 });
 

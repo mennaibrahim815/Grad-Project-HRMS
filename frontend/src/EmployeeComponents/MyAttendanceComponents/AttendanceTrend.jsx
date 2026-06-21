@@ -25,7 +25,7 @@ function AttendanceTrend() {
     );
   }
 
-  // إعادة تشكيل الداتا عشان تتوافق مع شكل props بتاع AttendanceReport
+  
   const reportData = {
     chartData: sixMonthsStats.monthlyStats,
     totals: {

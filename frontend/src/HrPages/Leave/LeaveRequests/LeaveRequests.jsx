@@ -99,15 +99,13 @@ export default function LeaveRequests() {
   return (
     <div  >
       
-      {/* الكاردز والكاليندر الشهري */}
+      
       <LeaveStatsHeader onStatsUpdated={setRefreshStats} />
 
-      {/* 2. التشارت السنوي الجاهز يظهر هنا بشكل متناسق جداً */}
+      
       <div className="mb-10">
         <LeaveYearlyChartSection />
       </div>
-
-      {/* الجدول الأصلي كما هو */}
       <LeaveTable
         leaves={leaves}
         loading={loading}

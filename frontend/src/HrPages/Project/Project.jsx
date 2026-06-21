@@ -20,15 +20,14 @@ export default function Project() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
 
-  // حالات موديل الحذف
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [projectToDelete, setProjectToDelete] = useState(null);
 
-  // حالات موديل إضافة تاسك للمشروع
+  
   const [isAddTaskModalOpen, setIsAddTaskModalOpen] = useState(false);
   const [activeProjectId, setActiveProjectId] = useState(null);
 
-  // --- API Calls ---
+  
   const fetchStats = async () => {
     try {
       const response = await API.get("/projects/stats");
@@ -52,7 +51,7 @@ export default function Project() {
     }
   };
 
-  // التعديل: الفلترة بناءً على حقل status المباشر من الـ root
+  
   const distributeProjects = (projectsList) => {
     const newColumns = {
       "On-going": projectsList.filter(p => p.status && p.status.toLowerCase() === "on-going"),
@@ -135,14 +134,14 @@ export default function Project() {
 
   return (
     <div className="w-full max-w-[1700px] mx-auto p-4 bg-transparent">
-      {/* الهيدر */}
+      
       <ProjectHeader 
         onProjectAdded={() => { fetchProjects(); fetchStats(); }} 
         stats={stats} 
         onSearch={handleSearch}
       />
 
-      {/* موديل الحذف */}
+      
       <DeleteModal 
         isOpen={isDeleteModalOpen}
         onClose={() => setIsDeleteModalOpen(false)}
@@ -151,7 +150,7 @@ export default function Project() {
         message="Are you sure you want to delete this project? This action will remove all associated tasks and data permanently."
       />
 
-      {/* موديل إضافة تاسك للمشروع */}
+    
       {isAddTaskModalOpen && activeProjectId && (
         <AddTaskModal 
           projectId={activeProjectId} 
@@ -166,7 +165,7 @@ export default function Project() {
         />
       )}
 
-      {/* محتوى الصفحة */}
+      
       {loading ? (
         <div className="flex items-center justify-center h-64 text-slate-400">
             <div className="animate-pulse text-lg font-medium">Loading Projects...</div>
@@ -193,7 +192,7 @@ export default function Project() {
                   priority: p.priority,
                   assignedTo: p.assignedTo || [], 
                   documents: p.documents || [],
-                  // 🛠️ تمرير الـ subTasks القادمة من الباك إند مباشرة للكارت لتعرض فوراً
+                  
                   subTasks: p.subTasks || [],
                   onEdit: () => {
                     setSelectedProject({
@@ -220,7 +219,7 @@ export default function Project() {
         </DndContext>
       )}
 
-      {/* موديل التعديل */}
+    
       {isEditModalOpen && selectedProject && (
         <EditProjectModal 
           project={selectedProject}

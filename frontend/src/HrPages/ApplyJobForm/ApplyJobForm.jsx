@@ -162,23 +162,22 @@ const ApplyJobForm = () => {
         <div className="min-h-screen flex flex-col">
 
             {/* Navbar */}
-            <nav className="w-full flex items-center justify-between px-8 py-4
-                            border-b border-white/8 backdrop-blur-sm sticky top-0 z-50">
-                {/* Logo */}
+            <nav
+                style={{ background: "var(--bg-card)", borderColor: "var(--border-main)" }}
+                className="w-full flex items-center justify-between px-8 py-4 border-b backdrop-blur-sm sticky top-0 z-50"
+            >
                 <div className="flex items-center gap-2">
                     <img src={icon} alt="Staffly" className="w-8 h-8" />
-                    <span className="text-xl text-white font-bold italic">
+                    <span className="text-xl font-bold italic" style={{ color: "var(--text-main)" }}>
                         Staf<span className="text-blue-500">fly</span>
                     </span>
                 </div>
 
-                {/* Back to Listings */}
                 <button
                     type="button"
                     onClick={() => navigate("/apply-job")}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl
-                               border border-white/10 bg-white/5 hover:bg-white/10
-                               text-slate-300 text-sm font-medium transition-all"
+                    style={{ background: "var(--input-bg)", borderColor: "var(--border-main)", color: "var(--text-muted)" }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl border hover:opacity-80 text-sm font-medium transition-all"
                 >
                     <i className="fas fa-arrow-left text-xs" />
                     Back to Listings

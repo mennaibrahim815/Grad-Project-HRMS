@@ -74,16 +74,16 @@ const JobCard = ({ job, openMenuId, setOpenMenuId, navigate, setConfirmModal }) 
                 {/* Header */}
                 <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
-                        <p className="text-base font-semibold text-slate-100 truncate">
+                        <p className="text-base font-semibold truncate" style={{ color: 'var(--text-main)' }}>
                             {job.title || "—"}
                         </p>
-                        <p className="text-xs text-slate-500 mt-0.5">{job._id?.slice(-6)}</p>
+                        <p className="text-xs mt-0.5" style={{ color: 'var(--text-muted)' }}>{job._id?.slice(-6)}</p>
                     </div>
 
                     <div className="relative shrink-0">
                         <button
                             onClick={() => setOpenMenuId(openMenuId === job._id ? null : job._id)}
-                            className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+                            className="p-2 hover:opacity-70 rounded-lg transition-colors"
                             style={{ color: ICON_COLOR }}
                         >
                             <EditIcon fontSize="small" />
@@ -115,29 +115,28 @@ const JobCard = ({ job, openMenuId, setOpenMenuId, navigate, setConfirmModal }) 
 
                 {/* Details */}
                 <div className="grid grid-cols-2 gap-3 text-sm">
-                    <div className="flex items-center gap-2 text-slate-400">
+                    <div className="flex items-center gap-2" style={{ color: 'var(--text-muted)' }}>
                         <Building2 size={15} style={{ color: ICON_COLOR }} className="shrink-0" />
                         <span className="truncate">{job.department || "—"}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-400">
+                    <div className="flex items-center gap-2" style={{ color: 'var(--text-muted)' }}>
                         <Briefcase size={15} style={{ color: ICON_COLOR }} className="shrink-0" />
                         <span className="truncate">{job.experienceLevel || "—"}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-400">
+                    <div className="flex items-center gap-2" style={{ color: 'var(--text-muted)' }}>
                         <Clock size={15} style={{ color: ICON_COLOR }} className="shrink-0" />
                         <span className="truncate">{job.jobType || "—"}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-400">
+                    <div className="flex items-center gap-2" style={{ color: 'var(--text-muted)' }}>
                         <MapPin size={15} style={{ color: ICON_COLOR }} className="shrink-0" />
                         <span className="truncate">{job.workLocation || "—"}</span>
                     </div>
 
-                    {/* ✅ حقلين جدد */}
-                    <div className="flex items-center gap-2 text-slate-400">
+                    <div className="flex items-center gap-2" style={{ color: 'var(--text-muted)' }}>
                         <GraduationCap size={15} style={{ color: ICON_COLOR }} className="shrink-0" />
                         <span className="truncate">{job.requiredEducationLevel || "—"}</span>
                     </div>
-                    <div className="flex items-center gap-2 text-slate-400">
+                    <div className="flex items-center gap-2" style={{ color: 'var(--text-muted)' }}>
                         <CalendarDays size={15} style={{ color: ICON_COLOR }} className="shrink-0" />
                         <span className="truncate">
                             {job.requiredExperienceYears != null ? `${job.requiredExperienceYears} yrs` : "—"}
@@ -145,10 +144,10 @@ const JobCard = ({ job, openMenuId, setOpenMenuId, navigate, setConfirmModal }) 
                     </div>
                 </div>
 
-                {/* ✅ Required Skills */}
+                {/* Required Skills */}
                 {job.requiredSkills?.length > 0 && (
                     <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-1.5 text-slate-500 text-xs">
+                        <div className="flex items-center gap-1.5 text-xs" style={{ color: 'var(--text-muted)' }}>
                             <Tags size={13} style={{ color: ICON_COLOR }} />
                             <span>Required Skills</span>
                         </div>
@@ -162,7 +161,10 @@ const JobCard = ({ job, openMenuId, setOpenMenuId, navigate, setConfirmModal }) 
                                 </span>
                             ))}
                             {job.requiredSkills.length > 4 && (
-                                <span className="text-xs px-2.5 py-0.5 rounded-full bg-white/5 border border-white/10 text-slate-400">
+                                <span
+                                    style={{ background: 'var(--tab-inactive-bg)', borderColor: 'var(--border-main)', color: 'var(--text-muted)' }}
+                                    className="text-xs px-2.5 py-0.5 rounded-full border"
+                                >
                                     +{job.requiredSkills.length - 4}
                                 </span>
                             )}
@@ -171,8 +173,8 @@ const JobCard = ({ job, openMenuId, setOpenMenuId, navigate, setConfirmModal }) 
                 )}
 
                 {/* Footer */}
-                <div className="pt-3 border-t border-white/5 flex items-center justify-between">
-                    <span className="text-xs text-slate-500">
+                <div className="pt-3 border-t flex items-center justify-between" style={{ borderColor: 'var(--border-main)' }}>
+                    <span className="text-xs" style={{ color: 'var(--text-muted)' }}>
                         {job.createdAt
                             ? new Date(job.createdAt).toLocaleDateString("en-GB")
                             : "—"}
@@ -204,7 +206,6 @@ const JobsTable = () => {
     const [openMenuId, setOpenMenuId] = useState(null);
     const [confirmModal, setConfirmModal] = useState({ open: false, jobId: null });
 
-    // ── Fetch on change ───────────────────────────────────────
     useEffect(() => {
         if (searchQuery.trim()) {
             dispatch(searchJobsHR(searchQuery));
@@ -217,7 +218,6 @@ const JobsTable = () => {
         }
     }, [dispatch, searchQuery, activeFilter, recordsPerPage]);
 
-    // ── Pagination ────────────────────────────────────────────
     const handlePageChange = (newPage) => {
         if (searchQuery.trim()) {
             dispatch(searchJobsHR(searchQuery));
@@ -230,7 +230,6 @@ const JobsTable = () => {
         }
     };
 
-    // ── Delete ────────────────────────────────────────────────
     const handleDelete = () => {
         dispatch(deleteJob(confirmModal.jobId)).then((result) => {
             if (result.meta.requestStatus === "fulfilled") {
@@ -258,22 +257,25 @@ const JobsTable = () => {
                             animate={{ opacity: 1, scale: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.9, y: 10 }}
                             transition={{ duration: 0.2 }}
-                            className="bg-gradient-to-br from-[#1e2a3a] to-[#162231] border border-slate-700
-                                        rounded-2xl p-6 w-full max-w-sm shadow-2xl"
+                            style={{
+                                background: 'linear-gradient(to bottom right, var(--menu-gradient-from), var(--menu-gradient-to))',
+                                borderColor: 'var(--border-main)',
+                            }}
+                            className="border rounded-2xl p-6 w-full max-w-sm shadow-2xl"
                         >
                             <div className="flex items-center justify-center w-12 h-12 rounded-full
                                             bg-red-500/15 mx-auto mb-4">
                                 <Trash2 size={22} className="text-pink-400" />
                             </div>
-                            <h3 className="text-white text-center font-semibold text-lg mb-1">Delete Job</h3>
-                            <p className="text-slate-400 text-center text-sm mb-6">
+                            <h3 className="text-center font-semibold text-lg mb-1" style={{ color: 'var(--text-main)' }}>Delete Job</h3>
+                            <p className="text-center text-sm mb-6" style={{ color: 'var(--text-muted)' }}>
                                 Are you sure you want to delete this job post? This action cannot be undone.
                             </p>
                             <div className="flex gap-3">
                                 <button
                                     onClick={() => setConfirmModal({ open: false, jobId: null })}
-                                    className="flex-1 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-600
-                                               text-slate-300 text-sm font-medium transition-all"
+                                    style={{ background: 'var(--tab-inactive-bg)', color: 'var(--tab-inactive-text)' }}
+                                    className="flex-1 py-2.5 rounded-xl text-sm font-medium transition-all hover:opacity-80"
                                 >
                                     Cancel
                                 </button>
@@ -281,7 +283,7 @@ const JobsTable = () => {
                                     onClick={handleDelete}
                                     disabled={jobDeleteLoading}
                                     className="flex-1 py-2.5 rounded-xl bg-pink-400/12 text-pink-400
-                                               hover:bg-pink-400/10 text-sm font-medium transition-all
+                                               hover:bg-pink-400/20 text-sm font-medium transition-all
                                                disabled:opacity-60"
                                 >
                                     {jobDeleteLoading ? (
@@ -313,7 +315,7 @@ const JobsTable = () => {
                     <i className="fas fa-spinner fa-spin text-4xl" style={{ color: ICON_COLOR }} />
                 </div>
             ) : jobsList.length === 0 ? (
-                <div className="flex items-center justify-center py-20 text-slate-500 text-sm">
+                <div className="flex items-center justify-center py-20 text-sm" style={{ color: 'var(--text-muted)' }}>
                     No jobs found
                 </div>
             ) : (

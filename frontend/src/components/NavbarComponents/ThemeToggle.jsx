@@ -1,10 +1,22 @@
-// components/ThemeToggle.jsx
+import { useEffect } from "react"; // 1. استيراد useEffect
 import { useDispatch, useSelector } from "react-redux";
 import { toggleTheme } from "../../store/themeSlice";
 
 const ThemeToggle = () => {
   const dispatch = useDispatch();
   const isDark = useSelector((state) => state.theme.mode === "dark");
+
+  // 2. إضافة التأثير الذي يربط Redux بالـ HTML DOM
+  useEffect(() => {
+    const root = document.documentElement; // تاج <html>
+    if (!isDark) {
+      // لو الحالة light، ضيف الـ attribute عشان الـ CSS يشتغل
+      root.setAttribute("data-theme", "light");
+    } else {
+      // لو الحالة dark، شيل الـ attribute عشان يرجع للألوان الافتراضية (:root)
+      root.removeAttribute("data-theme");
+    }
+  }, [isDark]);
 
   return (
     <button

@@ -11,6 +11,7 @@ import HeroSection from "../../HrComponents/HiringComponents/apply-job/HeroSecti
 import SearchBar from "../../HrComponents/HiringComponents/apply-job/SearchBar";
 import FilterBar from "../../HrComponents/HiringComponents/apply-job/FilterBar";
 import JobGrid from "../../HrComponents/HiringComponents/apply-job/Jobgrid";
+import ThemeToggle from "../../components/NavbarComponents/ThemeToggle";
 // ── Variants ──────────────────────────────────────────────────────────────────
 
 
@@ -57,28 +58,33 @@ function ApplyJob() {
 
             {/* Navbar */}
             <motion.nav
-                variants={navVariants}
-                initial="hidden"
-                animate="visible"
-                className="w-full flex items-center justify-between px-8 py-4
-                           border-b border-white/8 backdrop-blur-sm sticky top-0 z-50"
+                initial={{ y: -100 }}
+                animate={{ y: 0 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
+                className="fixed top-0 left-0 w-full z-50 bg-opacity-60 backdrop-blur-md border-b"
             >
-                <div className="flex items-center gap-2">
-                    <img src={icon} alt="Staffly" className="w-8 h-8" />
-                    <span className="text-xl text-white font-bold italic">
-                        Staf<span className="text-blue-500">fly</span>
-                    </span>
-                </div>
+                <div className="flex items-center justify-between px-8 py-4 max-w-7xl mx-auto">
+                    <div className="flex items-center gap-2 cursor-pointer">
+                        <img src={icon} alt="Staffly" className="w-8 h-8" />
+                        <span className="text-xl font-bold italic" style={{ color: 'var(--text-main)' }}>
+                            Staf<span className="text-blue-500">fly</span>
+                        </span>
+                    </div>
 
-                <button
-                    onClick={() => navigate("/login")}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl
-                               border border-white/10 bg-white/5 hover:bg-white/10
-                               text-slate-300 text-sm font-medium transition-all"
-                >
-                    Login (Employees/HR)
-                    <i className="fas fa-arrow-right text-xs" />
-                </button>
+                    <div className="flex items-center gap-4">
+                        <ThemeToggle />
+                        <motion.button
+                            whileHover={{ scale: 1.05 }}
+                            whileTap={{ scale: 0.95 }}
+                            onClick={() => navigate("/login")}
+                            style={{ borderColor: 'var(--border-main)', color: 'var(--accent-cyan)' }}
+                            className="px-6 py-2 border rounded-lg text-sm font-semibold hover:bg-white/5 transition-all"
+                        >
+                            Login (Employees/HR)
+                        </motion.button>
+                    </div>
+                </div>
             </motion.nav>
 
             {/* Page Content - الـ container بتاع الـ stagger */}
