@@ -3,28 +3,45 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import instance from "@/services/axios";
 import BaseCard from "@/components/UI/Card.jsx";
-import { ArrowLeft, Calendar, Clock, CheckSquare, TrendingUp, TrendingDown } from "lucide-react";
+import { ArrowLeft, Clock, CheckSquare, TrendingUp, TrendingDown } from "lucide-react";
 import EmployeePerformanceChart from "@/HrComponents/PerformanceComponents/EmployeePerformanceChart.jsx";
+import ReusableCalendar from "@/components/UI/ReusableCalendar.jsx"; 
 
-const performanceDetails = () => {
+const PerformanceDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const fetchSpecificPerformance = async () => {
-      try {
-        const response = await instance.get(`/employeePerformance/${id}`);
-        if (response.data?.status === "success") setData(response.data.data);
-      } catch (error) {
-        console.error("Error fetching specific performance:", error);
-      } finally {
-        setLoading(false);
+  const [dateRange, setDateRange] = useState({
+    start: "2026-06-01",
+    end: "2026-06-30"
+  });
+
+  const fetchSpecificPerformance = async () => {
+    try {
+      const response = await instance.get(
+        `/employeePerformance/${id}?startDate=${dateRange.start}&endDate=${dateRange.end}`
+      );
+      if (response.data?.status === "success") {
+        setData(response.data.data);
+        if (response.data.data?.currentPeriod && loading) {
+          setDateRange({
+            start: response.data.data.currentPeriod.from,
+            end: response.data.data.currentPeriod.to
+          });
+        }
       }
-    };
+    } catch (error) {
+      console.error("Error fetching specific performance:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchSpecificPerformance();
-  }, [id]);
+  }, [id, dateRange]);
 
   if (loading) {
     return (
@@ -68,7 +85,8 @@ const performanceDetails = () => {
       </div>
 
       {/* Top Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* التعديل الأول: أضفنا z-30 هنا لتأمين بيئة العرض العلوية بالكامل */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 relative z-30">
 
         {/* Overall Score Card */}
         <BaseCard padding="p-6" className="flex flex-col items-center justify-center text-center relative overflow-hidden">
@@ -98,14 +116,24 @@ const performanceDetails = () => {
         </BaseCard>
 
         {/* KPIs Card */}
-        <BaseCard padding="p-6" className="md:col-span-2 space-y-6">
+        {/* التعديل الثاني: أضفنا !overflow-visible لكي نسمح للكاليندر بالخروج بحرية دون الاختفاء تحت الكارد */}
+        <BaseCard padding="p-6" className="md:col-span-2 space-y-6 !overflow-visible relative z-40">
           <div className="flex items-center justify-between border-b pb-3" style={{ borderColor: "var(--border-main)" }}>
             <h3 className="text-sm font-semibold" style={{ color: "var(--text-main)" }}>
               Current Period KPIs
             </h3>
-            <span className="text-xs flex items-center gap-1" style={{ color: "var(--text-muted)" }}>
-              <Calendar size={12} /> {data.currentPeriod.from} to {data.currentPeriod.to}
-            </span>
+            
+            {/* التعديل الثالث: إعطاء الحاوية الخارجية الخاصة بالكاليندر تموضعاً نسبياً مع أعلى z-index ممكن */}
+            <div className="relative z-[50]">
+              <ReusableCalendar
+                mode="range"
+                value={dateRange}
+                align="right" 
+                onSave={(newRange) => {
+                  setDateRange(newRange);
+                }}
+              />
+            </div>
           </div>
 
           {/* Attendance Score */}
@@ -151,4 +179,4 @@ const performanceDetails = () => {
   );
 };
 
-export default performanceDetails;
+export default PerformanceDetails;

@@ -224,21 +224,6 @@ const MyTasksTable = ({
 
             <form onSubmit={handleStatusAndDocSubmit} className="space-y-5">
 
-              {/* Status Select */}
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-semibold" style={{ color: "var(--text-main)" }}>Task Status</label>
-                <select
-                  value={selectedStatus}
-                  onChange={(e) => { setSelectedStatus(e.target.value); }}
-                  className="w-full text-sm rounded-xl px-3 py-2.5 outline-none focus:border-[#0293FA] transition-colors"
-                  style={{ background: "var(--input-bg)", border: "1px solid var(--border-main)", color: "var(--text-main)" }}
-                >
-                  <option value="Pending">Pending</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="On-going">On-going (Work Submitted)</option>
-                  <option value="Testing">Testing</option>
-                </select>
-              </div>
 
               {/* File Upload */}
               <div className="flex flex-col gap-2">
