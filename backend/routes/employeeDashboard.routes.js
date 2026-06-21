@@ -12,11 +12,14 @@ import {
     getMyProjects,
     getRecentRequests,
 } from "../controllers/employeeDashboard.controller.js";
-import { weeklyStatsSchema } from "../validators/attendance.validation.js";
 
 router
     .route("/dashboard-stats")
-    .get(verifyToken, allowedTo("EMPLOYEE", "HR"), getEmployeeDashboardStats);
+    .get(
+        verifyToken,
+        allowedTo("EMPLOYEE", "HR", "MANAGER"),
+        getEmployeeDashboardStats
+    );
 router
     .route("/my-projects")
     .get(verifyToken, allowedTo("EMPLOYEE"), getMyProjects);

@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AttendanceReport from "../../components/Charts/AttendanceReport";
-import { fetchSixMonthsStats } from "../../store/EmployeeSlices/attendance/empAttendanceSlice"
+import { fetchSixMonthsStats } from "../../store/EmployeeSlices/attendance/empAttendanceSlice";
 
 function AttendanceTrend() {
   const dispatch = useDispatch();
   const { selectedMonth, sixMonthsStats, sixMonthsLoading } = useSelector(
-    (state) => state.empAttendance
+    (state) => state.empAttendance,
   );
 
   useEffect(() => {
@@ -25,7 +25,6 @@ function AttendanceTrend() {
     );
   }
 
-  
   const reportData = {
     chartData: sixMonthsStats.monthlyStats,
     totals: {

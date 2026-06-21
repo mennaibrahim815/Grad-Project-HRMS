@@ -1,3 +1,3 @@
 // backend/utils/authStore.js
-let verificationCodes = {}; 
+let verificationCodes = {};
 module.exports = verificationCodes;
