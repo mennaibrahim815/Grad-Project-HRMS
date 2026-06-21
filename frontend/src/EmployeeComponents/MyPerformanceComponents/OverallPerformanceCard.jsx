@@ -5,10 +5,17 @@ import {
   getPerformanceMessage,
 } from "./performanceUtils";
 
-function OverallPerformanceCard({ overallPerformance = 0, performanceStatus = "Poor" }) {
+function OverallPerformanceCard({
+  overallPerformance = 0,
+  performanceStatus = "Poor",
+  percentageChange = 0,
+}) {
   const colors = getPerformanceColors(performanceStatus);
   const iconColors = getPerformanceIconColors(performanceStatus);
   const message = getPerformanceMessage(performanceStatus);
+
+  const isPositive = percentageChange >= 0;
+  const changeColor = isPositive ? "#34d399" : "#f87171";
 
   return (
     <BaseCard className="flex flex-col gap-4">
@@ -25,9 +32,20 @@ function OverallPerformanceCard({ overallPerformance = 0, performanceStatus = "P
       </div>
 
       <div className="flex items-end justify-between flex-wrap gap-3">
-        <span className="text-5xl font-extrabold" style={{ color: colors.text }}>
-          {overallPerformance}%
-        </span>
+        <div className="flex items-end gap-2">
+          <span className="text-5xl font-extrabold" style={{ color: colors.text }}>
+            {overallPerformance}%
+          </span>
+
+          <span
+            className="flex items-center gap-1 text-xs font-bold mb-1.5"
+            style={{ color: changeColor }}
+          >
+            <i className={`fas ${isPositive ? "fa-arrow-up" : "fa-arrow-down"} text-[10px]`}></i>
+            {isPositive ? "+" : ""}
+            {percentageChange}%
+          </span>
+        </div>
 
         <span
           style={{

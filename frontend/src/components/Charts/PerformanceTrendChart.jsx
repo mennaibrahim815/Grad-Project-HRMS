@@ -3,12 +3,13 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { TrendingUp } from "lucide-react";
 import { getPerformanceColors } from "../../EmployeeComponents/MyPerformanceComponents/performanceUtils";
 
-const buildChartData = (previousPeriods = [], currentPeriod, overallPerformance, performanceStatus) => {
+const buildChartData = (previousPeriods = [], currentPeriod, overallPerformance, performanceStatus, percentageChange) => {
   const formattedPrevious = [...previousPeriods].reverse().map((item) => ({
     period: `${item.from.substring(5)} → ${item.to.substring(5)}`,
     fullPeriod: `${item.from} to ${item.to}`,
     Score: item.overallPerformance,
     status: item.performanceStatus,
+    percentageChange: item.percentageChange,
   }));
 
   if (currentPeriod) {
@@ -17,6 +18,7 @@ const buildChartData = (previousPeriods = [], currentPeriod, overallPerformance,
       fullPeriod: `${currentPeriod.from} to ${currentPeriod.to}`,
       Score: overallPerformance,
       status: performanceStatus,
+      percentageChange,
       isCurrent: true,
     });
   }
@@ -28,6 +30,7 @@ const CustomTooltip = ({ active, payload }) => {
   if (!active || !payload?.length) return null;
   const d = payload[0].payload;
   const colors = getPerformanceColors(d.status);
+  const isPositive = (d.percentageChange ?? 0) >= 0;
 
   return (
     <div
@@ -40,6 +43,16 @@ const CustomTooltip = ({ active, payload }) => {
       <p className="font-extrabold text-sm font-mono mt-0.5" style={{ color: "#0095ff" }}>
         Score: {payload[0].value}%
       </p>
+
+      {d.percentageChange !== undefined && (
+        <p
+          className="text-[10px] font-bold font-mono mt-0.5"
+          style={{ color: isPositive ? "#34d399" : "#f87171" }}
+        >
+          Change: {isPositive ? "+" : ""}{d.percentageChange}%
+        </p>
+      )}
+
       <p className="text-[10px] font-semibold mt-1" style={{ color: "var(--text-muted)" }}>
         Status: <span style={{ color: colors.text }}>{d.status}</span>
       </p>
@@ -52,6 +65,7 @@ const PerformanceTrendChart = ({
   currentPeriod,
   overallPerformance,
   performanceStatus,
+  percentageChange,
   isLoading = false,
   title = "Performance History Trend",
   subtitle = "Overview of employee performance score evolution over the last 5 periods",
@@ -139,6 +153,7 @@ PerformanceTrendChart.propTypes = {
   isLoading: PropTypes.bool,
   title: PropTypes.string,
   subtitle: PropTypes.string,
+  percentageChange: PropTypes.number
 };
 
 export default PerformanceTrendChart;
