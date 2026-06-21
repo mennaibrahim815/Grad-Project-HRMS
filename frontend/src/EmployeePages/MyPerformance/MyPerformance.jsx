@@ -38,21 +38,26 @@ export default function MyPerformance() {
                     <OverallPerformanceCard
                         overallPerformance={data.overallPerformance}
                         performanceStatus={data.performanceStatus}
+                        percentageChange={data.percentageChange}
                     />
-                    <KpiStats />
-                   
-                        <PerformanceTrendChart
-                            previousPeriods={data.previousPeriods}
-                            currentPeriod={data.currentPeriod}
-                            overallPerformance={data.overallPerformance}
-                            performanceStatus={data.performanceStatus}
-                            isLoading={loading}
-                        />
-                        <PreviousPeriodsTable
-                            previousPeriods={data.previousPeriods}
-                            isLoading={loading}
-                        />
-                    
+                    <KpiStats
+                        attendanceScore={data?.kpis?.attendanceScore ?? 0}
+                        taskScore={data?.kpis?.taskScore ?? 0}
+                    />
+
+                    <PerformanceTrendChart
+                        previousPeriods={data.previousPeriods}
+                        currentPeriod={data.currentPeriod}
+                        overallPerformance={data.overallPerformance}
+                        performanceStatus={data.performanceStatus}
+                        isLoading={loading}
+                        percentageChange={data.percentageChange}
+                    />
+                    <PreviousPeriodsTable
+                        previousPeriods={data.previousPeriods}
+                        isLoading={loading}
+                    />
+
                 </div>
             )}
         </>

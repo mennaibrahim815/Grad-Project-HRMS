@@ -17,7 +17,7 @@ function PerformanceHeader() {
         className="text-lg sm:text-2xl font-bold tracking-tight shrink-0"
         style={{ color: "var(--text-main)" }}
       >
-        Employee Performance
+        My Performance
       </h1>
 
       <div className="flex items-center gap-3 relative">
