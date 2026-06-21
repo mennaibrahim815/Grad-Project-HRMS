@@ -134,10 +134,24 @@ export const updateValidateUserSchema = z.object({
         .object({
             general: validateUserSchema.shape.body.shape.general
                 .partial()
+                .extend({
+                    role: z.enum(["HR", "EMPLOYEE", "MANAGER"]).optional(),
+                    avatar: z.string().optional(),
+                })
                 .optional(),
 
             employee: validateUserSchema.shape.body.shape.employee
                 .partial()
+                .extend({
+                    status: z.enum(["Active", "Archived"]).optional(),
+                    leaveBalance: z
+                        .object({
+                            annual: z.coerce.number().optional(),
+                            sick: z.coerce.number().optional(),
+                            casual: z.coerce.number().optional(),
+                        })
+                        .optional(),
+                })
                 .optional(),
 
             experience:

@@ -98,7 +98,6 @@ export const updateJob = asyncWraper(async (req, res, next) => {
         return next(error);
     }
 
-    // safe: true بيمنع تفكيك الـ Arrays زي requiredSkills
     const updateData = flatten(req.body, { safe: true });
 
     const updatedJob = await Job.findByIdAndUpdate(
@@ -156,9 +155,9 @@ export const searchJobs = asyncWraper(async (req, res, next) => {
                 jobType: 1,
                 workLocation: 1,
                 status: 1,
-                requiredSkills: 1, // 👈 أضفنا ده
-                requiredExperienceYears: 1, // 👈 أضفنا ده
-                requiredEducationLevel: 1, // 👈 أضفنا ده
+                requiredSkills: 1,
+                requiredExperienceYears: 1,
+                requiredEducationLevel: 1,
                 createdAt: 1,
             },
         },

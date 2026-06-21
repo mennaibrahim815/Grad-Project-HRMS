@@ -1043,28 +1043,6 @@ export const editPayrollDraft = asyncWraper(async (req, res, next) => {
 
     let customMessage = `Your salary draft for ${payroll.month}/${payroll.year} has been updated.`;
 
-    // if (manualAdditions > 0 && manualDeductions > 0) {
-    //     customMessage = `Your ${payroll.month}/${payroll.year} salary draft has been updated: A bonus of ${manualAdditions} and a deduction of ${manualDeductions} have been applied.`;
-    // } else if (manualAdditions > 0) {
-    //     customMessage = `Good news! A bonus of ${manualAdditions} has been added to your ${payroll.month}/${payroll.year} salary.`;
-    // } else if (manualDeductions > 0) {
-    //     customMessage = `A deduction of ${manualDeductions} has been applied to your ${payroll.month}/${payroll.year} salary.`;
-    // }
-
-    // if (adjustmentReason) {
-    //     customMessage += ` Reason: ${adjustmentReason}`;
-    // }
-
-    // const io = req.app.get("io");
-    // await sendNotification(io, {
-    //     recipient: payroll.employeeId,
-    //     sender: req.currentUser.userId,
-    //     title: "Salary Draft Updated ",
-    //     message: customMessage,
-    //     type: "Payroll",
-    //     relatedId: payroll._id,
-    // });
-
     res.status(200).json({
         status: httpResponseText.SUCCESS,
         message: `Payroll draft has been updated successfully`,
