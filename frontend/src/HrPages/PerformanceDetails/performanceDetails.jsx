@@ -6,7 +6,7 @@ import BaseCard from "@/components/UI/Card.jsx";
 import { ArrowLeft, Calendar, Clock, CheckSquare, TrendingUp, TrendingDown } from "lucide-react";
 import EmployeePerformanceChart from "@/HrComponents/PerformanceComponents/EmployeePerformanceChart.jsx";
 
-const PerformanceDetails = () => {
+const performanceDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
@@ -151,4 +151,4 @@ const PerformanceDetails = () => {
   );
 };
 
-export default PerformanceDetails;
+export default performanceDetails;
