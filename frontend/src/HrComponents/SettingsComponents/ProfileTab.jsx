@@ -58,7 +58,6 @@ const ProfileTab = () => {
 
     const dataToSend = new FormData();
     
-    // إرسال البيانات بالتنسيق المتداخل (general[key])
     dataToSend.append("general[firstName]", formData.firstName.trim());
     dataToSend.append("general[lastName]", formData.lastName.trim());
     dataToSend.append("general[phone]", formData.phone.trim());
@@ -69,7 +68,6 @@ const ProfileTab = () => {
       dataToSend.append("password", formData.password);
     }
     
-    // رفع الصورة باستخدام المفتاح الذي تأكدنا منه في Postman
     if (formData.avatarFile) {
       dataToSend.append("general[avatar]", formData.avatarFile);
     }
@@ -82,7 +80,6 @@ const ProfileTab = () => {
       if (updateHRProfile.fulfilled.match(resultAction)) {
         setMessage({ type: "success", text: "Profile updated successfully!" });
         setIsEditing(false);
-        // تحديث البيانات في الـ Redux لضمان تزامن الصورة والبيانات
         await dispatch(fetchMyHRProfile());
       } else {
         setMessage({ type: "error", text: resultAction.payload || "Update failed" });
@@ -93,16 +90,13 @@ const ProfileTab = () => {
   };
 
   const getAvatarSrc = () => {
-    // 1. لو في صورة مختارينها حالا للمعاينة
     if (formData.avatarPreview) return formData.avatarPreview;
 
-    // 2. لو في صورة من الباك إند
     if (user?.general?.avatar) {
       const path = user.general.avatar;
       if (path.startsWith('http')) return path;
       
       const baseUrl = import.meta.env.VITE_API_URL || "https://grad-project-hrms-production-7.up.railway.app";
-      // إضافة Timestamp لمنع الكاش وتحديث الصورة فورا
       return `${baseUrl}${path}?t=${Date.now()}`;
     }
 

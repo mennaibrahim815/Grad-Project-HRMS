@@ -15,7 +15,6 @@ import RowActionMenu from "../../../components/UI/RowActionMenu";
 import BaseCard from "../../../components/UI/Card";
 import { Eye, Trash2, UserCheck, ShieldAlert } from "lucide-react";
 
-// Badge ملون واحترافي
 const AttendanceBadge = ({ status }) => {
   const styles = {
     "Full-time": "bg-emerald-500/15 text-emerald-400 border-emerald-400/40",
@@ -44,7 +43,6 @@ const EmployeesTable = ({ mode = "employees" }) => {
   const [recordsPerPage, setRecordsPerPage] = useState(5);
   const [confirmModal, setConfirmModal] = useState({ open: false, userId: null });
 
-  // دالة جلب البيانات بناءً على الـ Mode
   const loadData = useCallback((page) => {
     const params = {
       page,

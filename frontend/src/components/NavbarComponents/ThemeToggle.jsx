@@ -20,7 +20,6 @@ const ThemeToggle = () => {
         }
       `}
     >
-      {/* الـ Knob */}
       <span
         className={`
           absolute top-1 left-1 w-6 h-6 rounded-full flex items-center justify-center
@@ -31,7 +30,6 @@ const ThemeToggle = () => {
           }
         `}
       >
-        {/* أيقونة القمر */}
         <svg
           className={`absolute w-3.5 h-3.5 transition-all duration-300
             ${isDark ? "opacity-100 rotate-0" : "opacity-0 -rotate-90"}`}
@@ -42,7 +40,6 @@ const ThemeToggle = () => {
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
         </svg>
 
-        {/* أيقونة الشمس */}
         <svg
           className={`absolute w-3.5 h-3.5 transition-all duration-300
             ${isDark ? "opacity-0 rotate-90" : "opacity-100 rotate-0"}`}

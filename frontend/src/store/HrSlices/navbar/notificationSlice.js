@@ -86,7 +86,6 @@ state.list = [];
 state.unreadCount = 0;
 
 },
-// داخل reducers: { ... }
 addLiveNotification: (state, action) => {
   const newItem = {
     id: action.payload._id,
@@ -100,7 +99,6 @@ addLiveNotification: (state, action) => {
     time: "Just now",
     actionStatus: null,
   };
-  // إضافة الإشعار في بداية المصفوفة
   state.list.unshift(newItem);
   state.unreadCount += 1;
 },

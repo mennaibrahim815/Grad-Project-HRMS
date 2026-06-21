@@ -4,7 +4,6 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import icon from "../../assets/icons/Icon.svg";
 
-// نستقبل prop الـ isTinyScreen المرسل من الـ MainLayout
 const Sidebar = ({ isTinyScreen }) => {
   const dispatch = useDispatch();
   const isCollapsed = useSelector((state) => state.ui.isSidebarCollapsed);
@@ -67,7 +66,7 @@ const Sidebar = ({ isTinyScreen }) => {
   const menuItems = userRole === "HR" || userRole === "MANAGER" ? hrMenuItems : employeeMenuItems;
 
   const handleMouseEnter = (e, itemName) => {
-    if (!isCollapsed || isTinyScreen) return; // نمنع الـ Flyout في الشاشات الصغيرة
+    if (!isCollapsed || isTinyScreen) return; 
     clearTimeout(flyoutTimeout.current);
     const rect = e.currentTarget.getBoundingClientRect();
     setFlyoutPos({ top: rect.top, visible: true, item: itemName });
@@ -86,18 +85,16 @@ const Sidebar = ({ isTinyScreen }) => {
 
   return (
     <motion.aside
-      // إذا كانت الشاشة صغيرة جداً، العرض 100%. وإلا يتبع حالة الـ Collapse
       animate={{ width: isTinyScreen ? "100%" : (isCollapsed ? 80 : 175) }}
       style={{ 
         backgroundColor: 'var(--bg-card)', 
-        // نغير اتجاه الحدود بناءً على مكان السايد بار
         borderRight: isTinyScreen ? 'none' : '1px solid var(--border-main)',
         borderBottom: isTinyScreen ? '1px solid var(--border-main)' : 'none'
       }}
       className={`z-50 transition-colors duration-300 flex flex-col border-gray-900 
         ${isTinyScreen 
-          ? "relative h-auto pb-4" // في الشاشة الصغيرة يكون جزء من الصفحة (يظهر في الأعلى)
-          : "fixed h-screen top-0 overflow-x-auto scrollbar-hide" // الوضع العادي الثابت
+          ? "relative h-auto pb-4"
+          : "fixed h-screen top-0 overflow-x-auto scrollbar-hide" 
         }`}
     >
       {/* Logo */}
@@ -201,7 +198,6 @@ const Sidebar = ({ isTinyScreen }) => {
         })}
       </div>
 
-      {/* Flyout (معطل في حالة الشاشة الصغيرة جداً) */}
       {isCollapsed && !isTinyScreen && flyoutPos.visible && (() => {
         const item = menuItems.find(i => i.name === flyoutPos.item);
         if (!item) return null;
@@ -226,7 +222,6 @@ const Sidebar = ({ isTinyScreen }) => {
               <div className="px-4 py-2.5 border-b" style={{ borderColor: 'var(--border-main)' }}>
                 <span className="text-xs font-semibold" style={{ color: 'var(--text-main)' }}>{item.name}</span>
               </div>
-              {/* ... باقي كود الـ Flyout ... */}
               {item.children ? (
                 item.children.map((child) => (
                   <NavLink
@@ -260,3 +255,5 @@ const Sidebar = ({ isTinyScreen }) => {
 };
 
 export default Sidebar;
+
+

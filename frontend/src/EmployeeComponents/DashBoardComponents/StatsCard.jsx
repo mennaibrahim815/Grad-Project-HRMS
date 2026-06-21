@@ -14,9 +14,8 @@ const StatsCard = ({ title, value, subValue, icon: Icon, colorClass, subColorCla
   return (
     <div 
       style={{ 
-        // ✅ هنا تم إضافة الـ Linear Gradient مكان الـ Background Color القديمة
         background: 'linear-gradient(to bottom right, var(--card-from) 0%, var(--card-to) 100%)',
-        borderColor: 'var(--card-border)' // يفضل استخدام card-border مع الجرادينت للتناسق
+        borderColor: 'var(--card-border)' 
       }}
       className="p-5 rounded-[2rem] border transition-all hover:shadow-xl group"
     >

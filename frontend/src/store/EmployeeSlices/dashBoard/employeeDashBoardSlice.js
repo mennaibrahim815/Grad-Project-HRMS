@@ -3,10 +3,8 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../../services/axios";
 
 // ======================================
-// 1. الأكشنز (Thunks)
 // ======================================
 
-// إحصائيات الكروت
 export const fetchEmployeeDashboardStats = createAsyncThunk(
   "employeeDashboard/fetchStats",
   async ({ dateString }, { rejectWithValue }) => {
@@ -19,7 +17,6 @@ export const fetchEmployeeDashboardStats = createAsyncThunk(
   }
 );
 
-// تقرير الحضور
 export const fetchAttendanceReport = createAsyncThunk(
   "employeeDashboard/fetchAttendance",
   async ({ month, year }, { rejectWithValue }) => {
@@ -32,7 +29,6 @@ export const fetchAttendanceReport = createAsyncThunk(
   }
 );
 
-// المشاريع
 export const fetchEmployeeProjects = createAsyncThunk(
   "employeeDashboard/fetchProjects",
   async ({ page = 1, limit = 5 }, { rejectWithValue }) => {
@@ -45,7 +41,6 @@ export const fetchEmployeeProjects = createAsyncThunk(
   }
 );
 
-// الطلبات الأخيرة
 export const fetchEmployeeRequests = createAsyncThunk(
   "employeeDashboard/fetchRequests",
   async ({ page = 1, limit = 5 }, { rejectWithValue }) => {
@@ -58,7 +53,6 @@ export const fetchEmployeeRequests = createAsyncThunk(
   }
 );
 
-// الإشعارات
 export const fetchEmployeeNotifications = createAsyncThunk(
   "employeeDashboard/fetchNotifications",
   async (_, { rejectWithValue }) => {
@@ -72,7 +66,6 @@ export const fetchEmployeeNotifications = createAsyncThunk(
 );
 
 // ======================================
-// 2. السلايس (Slice)
 // ======================================
 
 const employeeDashboardSlice = createSlice({
@@ -92,15 +85,12 @@ const employeeDashboardSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // داخل extraReducers في السلايس
 .addCase(fetchEmployeeDashboardStats.fulfilled, (state, action) => {
   state.loadingStats = false;
-  // ✅ التعديل هنا: استبدال الكائن بالكامل لضمان تحديث القيم بناءً على التاريخ المختار
   state.stats = action.payload; 
 })
       .addCase(fetchAttendanceReport.fulfilled, (state, action) => {
         const attendance = action.payload || [];
-        // تحويل البيانات لشكل الرسم البياني
         const mappedStats = attendance.map(item => ({
           dayName: new Date(item.date).toLocaleDateString("en-US", { weekday: "short" }),
           onTimeCount: item.status === "On Time" ? 1 : 0,

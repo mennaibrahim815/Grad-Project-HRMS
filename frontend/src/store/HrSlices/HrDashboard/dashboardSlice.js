@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../../services/axios";
 
-// 1. الأكشن الكبير لتحميل كل بيانات الداشبورد (لأول مرة)
 export const fetchDashboardAnalytics = createAsyncThunk(
   "dashboard/fetchAnalytics",
   async ({ dateString }, { rejectWithValue }) => {
@@ -34,7 +33,6 @@ export const fetchDashboardAnalytics = createAsyncThunk(
   }
 );
 
-// 2. أكشن خاص بالمشاريع (pagination & tabs)
 export const fetchProjects = createAsyncThunk(
   "dashboard/fetchProjects",
   async ({ status, page, limit = 10 }, { rejectWithValue }) => {
@@ -47,7 +45,6 @@ export const fetchProjects = createAsyncThunk(
   }
 );
 
-// 3. أكشن خاص بالمتقدمين للوظائف (pagination & tabs)
 export const fetchApplicants = createAsyncThunk(
   "dashboard/fetchApplicants",
   async ({ status, page, limit = 5 }, { rejectWithValue }) => {
@@ -85,7 +82,6 @@ const dashboardSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      // تفعيل لودنج وتحديث المشاريع
       .addCase(fetchProjects.pending, (state) => { state.loadingProjects = true; })
       .addCase(fetchProjects.fulfilled, (state, action) => {
         state.loadingProjects = false;
@@ -94,7 +90,6 @@ const dashboardSlice = createSlice({
           state.analytics.projectsPagination = action.payload.pagination;
         }
       })
-      // تفعيل لودنج وتحديث المتقدمين
       .addCase(fetchApplicants.pending, (state) => { state.loadingApplicants = true; })
       .addCase(fetchApplicants.fulfilled, (state, action) => {
         state.loadingApplicants = false;

@@ -79,7 +79,6 @@ export const router = createBrowserRouter(
             { path: "/Tasks/ongoingTasks", element: <OngoingTasks /> },
             
 
-            // تابة المانجر محمية داخلياً برول المانجر بس
             { path: "/manage-hrs", element: <ProtectedRoute allowedRoles={["MANAGER"]}><ManageHRs /></ProtectedRoute> },
           ],
         },

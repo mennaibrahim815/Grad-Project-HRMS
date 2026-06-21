@@ -55,14 +55,12 @@ const DashboardHeader = ({ printRef }) => {
       </h1>
 
       <div className="flex   sm:flex-row flex-col items-center gap-3 relative">
-        {/* تم استبدال كل كود التقويم القديم بهذا المكون السحري */}
         <ReusableCalendar
           mode="single"
           value={appliedDate}
           onSave={(newDate) => dispatch(setSelectedDate(newDate))}
         />
 
-        {/* زر التصدير الذكي */}
         <button
           onClick={handleExportPDF}
           disabled={isExporting}

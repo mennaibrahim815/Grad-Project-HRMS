@@ -84,7 +84,6 @@ const AccessTab = () => {
 
   if (!settings?.companyName) return null;
 
-  // تنسيق موحد للـ Inputs
   const inputStyle = {
     backgroundColor: 'var(--input-bg)',
     borderColor: 'var(--border-main)',

@@ -260,7 +260,6 @@ const Dashboard = () => {
     (state) => state.employeeDashboard
   );
 
-  // دالة مساعدة لتحديد لون النص السفلي بناءً على الحالة
   const getStatusColor = (status) => {
     switch (status) {
       case "On Time": return "text-green-400";
@@ -283,7 +282,6 @@ const Dashboard = () => {
     }));
   }, [dispatch, selectedDate]);
 
-  // منطق التحقق مما إذا كان التاريخ المختار هو "اليوم"
   const isToday = selectedDate === new Date().toISOString().split("T")[0];
 
   return (

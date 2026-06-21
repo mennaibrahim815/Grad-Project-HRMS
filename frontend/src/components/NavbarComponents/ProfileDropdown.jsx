@@ -26,10 +26,8 @@ const ProfileDropdown = ({ isOpen, setIsOpen, profileRef }) => {
     }
   }, [dispatch, authUser, hrProfile]);
 
-  // ✅ الداتا الحالية
   const displayUser = hrProfile || authUser;
 
-  // ✅ تجهيز الاسم والصورة والروول
   const fullName = displayUser?.general
     ? `${displayUser.general.firstName} ${displayUser.general.lastName}`
     : displayUser?.name || "Loading...";
@@ -47,14 +45,12 @@ const ProfileDropdown = ({ isOpen, setIsOpen, profileRef }) => {
   const { user } = useSelector((state) => state.auth);
   const userRole = user?.general?.role; 
 
-  // ✅ Logout
   const handleLogout = async () => {
     await dispatch(logoutUser());
     navigate("/login");
     setIsOpen(false);
   };
 
-  // ✅ فتح صفحة الاعدادات على تاب الاكونت
   const goToProfile = () => {
     navigate("/settings", {
       state: {
@@ -66,7 +62,6 @@ const ProfileDropdown = ({ isOpen, setIsOpen, profileRef }) => {
 
   return (
     <div className="relative ml-2" ref={profileRef}>
-      {/* زر البروفايل */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         style={{ 
@@ -75,7 +70,6 @@ const ProfileDropdown = ({ isOpen, setIsOpen, profileRef }) => {
         }}
         className="flex items-center gap-3 p-1.5 pr-4 rounded-full border transition-all group backdrop-blur-sm"
       >
-        {/* الصورة */}
         <div 
           style={{ backgroundColor: 'var(--bg-deep)', borderColor: 'rgba(59, 130, 246, 0.3)' }}
           className="w-9 h-9 rounded-full overflow-hidden border"
@@ -96,7 +90,6 @@ const ProfileDropdown = ({ isOpen, setIsOpen, profileRef }) => {
           )}
         </div>
 
-        {/* الاسم */}
         <div className="text-left hidden sm:block">
           <p 
             style={{ color: 'var(--text-main)' }} 
@@ -112,7 +105,6 @@ const ProfileDropdown = ({ isOpen, setIsOpen, profileRef }) => {
           )}
         </div>
 
-        {/* السهم */}
         <i
           style={{ color: 'var(--text-muted)' }}
           className={`fas fa-chevron-down text-[10px] transition-transform duration-300 ${

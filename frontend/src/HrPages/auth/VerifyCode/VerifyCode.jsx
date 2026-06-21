@@ -42,7 +42,6 @@ const VerifyCode = () => {
   const handleChange = (value, index) => {
     if (isNaN(value)) return;
 
-    // 💡 تصفير الإيرور بمجرد ما تبدأي تكتبي حرف جديد
     if (error) dispatch(clearVerifyError());
 
     const newCode = [...code];
@@ -64,7 +63,6 @@ const VerifyCode = () => {
 
     dispatch(verifyOtpCode({ email, code: fullCode })).then((res) => {
       if (!res.error) {
-        // 💡 النجاح: تحويل لصفحة Reset Password وتمرير الإيميل والكود
         setIsRedirecting(true);
         setTimeout(() => {
           navigate("/reset-password", { state: { email, code: fullCode } });
@@ -112,7 +110,6 @@ const VerifyCode = () => {
         className="min-h-screen flex font-sans overflow-hidden relative z-0"
       >
         
-        {/* الإضاءة البيضاء المتمركزة في النص */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[70%] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.15)_0%,rgba(255,255,255,0.05)_5%,transparent_70%)] blur-[100px] -z-10 pointer-events-none"></div>
 
         <div className="relative w-full z-10 flex">

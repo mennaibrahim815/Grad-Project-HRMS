@@ -18,7 +18,6 @@ const SplashPage = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("home");
 
-  // دالة لمراقبة التمرير وتغيير القسم النشط
   useEffect(() => {
     const handleScroll = () => {
       const sections = ["home", "features", "about"];
@@ -44,7 +43,6 @@ const SplashPage = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // دالة التمرير السلس
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     if (element) {
@@ -87,18 +85,14 @@ const SplashPage = () => {
       className="font-sans selection:bg-blue-500/30 relative overflow-x-hidden z-0"
     >
       
-      {/* --- إضاءة خلفية بيضاء فخمة (White Light Gradients) --- */}
       <div className="fixed inset-0 pointer-events-none -z-20 overflow-hidden">
-        {/* ضوء أبيض رئيسي يشع من المنتصف العلوي للصفحة */}
         <div className="absolute top-[-15%] left-1/2 -translate-x-1/2 w-[90%] md:w-[70%] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.15)_0%,rgba(255,255,255,0.05)_40%,transparent_70%)] blur-[100px]"></div>
         
-        {/* توهج أبيض خفيف منتشر على الجانبين لإعطاء عمق للصفحة */}
         <div className="absolute top-[30%] left-[-10%] w-[50%] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.06)_0%,transparent_70%)] blur-[120px]"></div>
         <div className="absolute top-[60%] right-[-10%] w-[50%] h-[600px] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.06)_0%,transparent_70%)] blur-[120px]"></div>
       </div>
       {/* ----------------------------------------------------- */}
 
-      {/* --- الناف بار الثابت --- */}
       <motion.nav 
         initial={{ y: -100 }}
         animate={{ y: 0 }}
@@ -107,7 +101,6 @@ const SplashPage = () => {
         className="fixed top-0 left-0 w-full z-50 bg-opacity-60 backdrop-blur-md border-b"
       >
         <div className="flex items-center justify-between px-8 py-4 max-w-7xl mx-auto">
-          {/* اللوجو */}
           <div
             className="flex items-center gap-2 cursor-pointer"
             onClick={() => scrollToSection("home")}
@@ -125,7 +118,6 @@ const SplashPage = () => {
                     
 
 
-          {/* روابط التنقل */}
           <div className="hidden md:flex items-center gap-10">
             {["Home", "Features", "About"].map((item) => {
               const id = item.toLowerCase();
@@ -160,7 +152,6 @@ const SplashPage = () => {
         </div>
       </motion.nav>
 
-      {/* 1. قسم الهيرو (Home) */}
       <section
         id="home"
         className="min-h-screen pt-32 pb-20 px-6 text-center flex flex-col items-center justify-center relative"
@@ -229,7 +220,6 @@ const SplashPage = () => {
         </motion.button>
       </section>
 
-      {/* 2. قسم المميزات (Features) */}
       <section
         id="features"
         className="relative py-20 px-6 max-w-7xl mx-auto overflow-hidden"
@@ -361,7 +351,6 @@ const SplashPage = () => {
         </motion.div>
       </section>
 
-      {/* 3. قسم عن المنصة (About) */}
       <section
         id="about"
         className="py-30 px-6 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-20 items-center overflow-hidden"

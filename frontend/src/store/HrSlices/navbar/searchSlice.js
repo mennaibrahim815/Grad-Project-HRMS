@@ -20,7 +20,6 @@ export const executeSearch = createAsyncThunk(
       } else if (type === "myTasks") {
         endpoint = `/tasks/my-tasks?filter=team-tasks&page=1&limit=10`;
 
-        // 🔥 لو فيه فلتر status من التاب
         if (status) {
           endpoint = `/tasks/my-tasks?filter=team-tasks&status=${status}&page=1&limit=10`;
         }
@@ -28,7 +27,6 @@ export const executeSearch = createAsyncThunk(
 
       const response = await axios.get(endpoint);
 
-      // unified safe response handling
       const data = response.data?.data || response.data;
 
       // ---------------- EMPLOYEES ----------------

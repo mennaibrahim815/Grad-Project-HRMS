@@ -23,7 +23,6 @@ const MyProfile = () => {
     avatarPreview: null
   });
 
-  // التحكم في إخفاء الرسالة تلقائياً بعد 3 ثوانٍ
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => {
@@ -128,7 +127,6 @@ const MyProfile = () => {
   return (
     <div style={{ backgroundColor: 'var(--bg-deep)', color: 'var(--text-main)' }} className="min-h-screen p-4 md:p-8 transition-colors duration-300">
       
-      {/* Toast Feedback - تم نقله للأسفل يميناً */}
       {message && (
         <div className={`fixed bottom-10 right-10 z-50 p-5 rounded-2xl shadow-2xl border flex items-center gap-4 animate-in slide-in-from-right-10 duration-300 ${message.type === 'success' ? 'bg-green-500/10 border-green-500/50 text-green-500' : 'bg-red-500/10 border-red-500/50 text-red-500'}`}>
           <div className={`p-2 rounded-full ${message.type === 'success' ? 'bg-green-500/20' : 'bg-red-500/20'}`}>
@@ -283,7 +281,6 @@ const MyProfile = () => {
   );
 };
 
-// --- المكونات المساعدة ---
 
 const BadgeItem = ({ icon, text }) => (
   <div className="flex items-center gap-2.5 px-4 py-2.5 rounded-full border border-[var(--card-border)] bg-[var(--bg-deep)] text-[var(--text-muted)] shadow-inner hover:scale-105 transition-transform">
