@@ -5,13 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 import { toggleSidebar } from "../../store/HrSlices/navbar/sideMenuSlice";
 
-// components
 import NavSearchTrigger from "../NavbarComponents/NavSearchTrigger";
 import NotificationDropdown from "../NavbarComponents/NotificationDropdown";
 import ProfileDropdown from "../NavbarComponents/ProfileDropdown";
 import SearchModal from "../NavbarComponents/SearchModal";
 import ThemeToggle from "../NavbarComponents/ThemeToggle";
-
 
 const Navbar = ({ isTinyScreen }) => {
   const dispatch = useDispatch();
@@ -29,7 +27,6 @@ const Navbar = ({ isTinyScreen }) => {
   const notifRef = useRef(null);
   const searchRef = useRef(null);
 
-  // Close dropdowns on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -65,19 +62,15 @@ const Navbar = ({ isTinyScreen }) => {
 
   return (
     <>
-      {/* Navbar */}
       <nav
         style={{
-          // التحديث: إذا كانت شاشة صغيرة جداً، نلغي الإزاحة والوضع الثابت
           left: isTinyScreen ? "0" : (isCollapsed ? "70px" : "175px"),
           position: isTinyScreen ? "relative" : "fixed",
           width: isTinyScreen ? "100%" : "auto"
         }}
         className={`top-0 right-0 h-20 backdrop-blur-md flex items-center justify-between z-40 transition-all duration-300 ${isTinyScreen ? 'px-4' : 'px-8'}`}
       >
-        {/* LEFT SIDE */}
         <div className="flex items-center gap-5">
-          {/* Sidebar toggle - يختفي في الشاشة الصغيرة جداً لأن المنيو أصبح مفروداً فوق */}
           {!isTinyScreen && (
             <button
               onClick={() => dispatch(toggleSidebar())}
@@ -89,16 +82,13 @@ const Navbar = ({ isTinyScreen }) => {
             </button>
           )}
 
-          {/* Search */}
           <NavSearchTrigger
             onClick={() => setIsSearchModalOpen(true)}
           />
         </div>
 
-        {/* RIGHT SIDE */}
         <div className="flex items-center gap-4">
 
-          {/* Theme Toggle */}
           <ThemeToggle />
 
           {(userRole === "HR" || userRole === "MANAGER") && (
@@ -115,14 +105,12 @@ const Navbar = ({ isTinyScreen }) => {
             </button>
           )}
 
-          {/* Notifications */}
           <NotificationDropdown
             isOpen={showNotifMenu}
             setIsOpen={setShowNotifMenu}
             notifRef={notifRef}
           />
 
-          {/* Profile */}
           <ProfileDropdown
             isOpen={showProfileMenu}
             setIsOpen={setShowProfileMenu}
@@ -131,7 +119,6 @@ const Navbar = ({ isTinyScreen }) => {
         </div>
       </nav>
 
-      {/* Search Modal */}
       <SearchModal
         isOpen={isSearchModalOpen}
         onClose={() => setIsSearchModalOpen(false)}

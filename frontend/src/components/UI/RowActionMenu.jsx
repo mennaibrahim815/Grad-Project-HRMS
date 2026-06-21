@@ -45,9 +45,9 @@ const RowActionMenu = ({ isOpen, onClose, actions }) => {
               }}
               style={{
                 color: isDanger
-                  ? '#f472b6' // pink-400
+                  ? '#f472b6' 
                   : isSuccess
-                  ? '#34d399' // emerald-400
+                  ? '#34d399' 
                   : 'var(--text-main)',
               }}
               className="flex items-center gap-3 px-4 py-3

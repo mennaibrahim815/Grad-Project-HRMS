@@ -13,13 +13,11 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // سحب الحالة من الريدوكس
   const { loading, error } = useSelector((state) => state.auth);
 
   const [showPassword, setShowPassword] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
 
-  // دالة مساعدة للتأكد من مكان الخطأ (إيميل أم باسورد)
   const errorContains = (word) => {
     if (typeof error !== "string") return false;
     return error.toLowerCase().includes(word.toLowerCase());
@@ -35,10 +33,8 @@ const Login = () => {
 
     onSubmit: async (values) => {
       try {
-        // unwrap بيخلينا ناخد النتيجة مباشرة أو نروح للـ catch لو فيه error
         const user = await dispatch(loginUser(values)).unwrap();
 
-        // 💡 الوصول للرول: user.general.role (حسب ريسبونس يوسف)
         const userRole = user?.general?.role;
 
         setIsRedirecting(true);
@@ -58,7 +54,6 @@ const Login = () => {
 
   return (
     <>
-      {/* أنيميشن الانتقال */}
       <AnimatePresence>
         {isRedirecting && (
           <motion.div
@@ -85,12 +80,10 @@ const Login = () => {
         className="min-h-screen flex font-sans overflow-hidden relative z-0"
       >
         
-        {/* الإضاءة البيضاء المتمركزة في النص */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[70%] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.15)_0%,rgba(255,255,255,0.05)_5%,transparent_70%)] blur-[100px] -z-10 pointer-events-none"></div>
 
         <div className="relative w-full z-10 flex">
           
-          {/* Navigation Button - Go to Hiring Page */}
           <Link
             to="/apply-job"
             style={{ borderColor: 'var(--border-main)', backgroundColor: 'var(--bg-card)', color: 'var(--text-muted)' }}
@@ -178,7 +171,6 @@ const Login = () => {
                   )}
                 </div>
 
-                {/* عرض خطأ السيرفر الحقيقي */}
                 <AnimatePresence>
                   {error && typeof error === "string" && (
                     <motion.div
@@ -202,7 +194,6 @@ const Login = () => {
                   </Link>
                 </div>
 
-                {/* زر الإرسال */}
                 <motion.button
                   whileHover={!loading ? { scale: 1.01 } : {}}
                   whileTap={!loading ? { scale: 0.99 } : {}}
@@ -224,7 +215,6 @@ const Login = () => {
             </div>
           </motion.div>
 
-          {/* الجانب الأيمن الثابت */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}

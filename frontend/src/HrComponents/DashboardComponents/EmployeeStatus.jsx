@@ -51,7 +51,6 @@ const EmployeeStatus = ({ pieStripes, title }) => {
     );
   }
 
-  // تحويل الـ API shape → PieChart shape
   const data = [
     {
       name: "Full Time",

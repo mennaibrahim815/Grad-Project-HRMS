@@ -73,7 +73,6 @@ const HelpSupportTab = () => {
   );
 };
 
-// مكون فرعي للكروت لتوحيد التصميم
 const SupportCard = ({ icon, title, desc }) => (
   <div 
     style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }} 

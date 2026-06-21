@@ -7,7 +7,6 @@ import DashboardHeader from "../../HrComponents/DashboardComponents/DashboardHea
 import StatsCards from "../../HrComponents/DashboardComponents/StatsCards";
 import AttendanceReport from "../../components/Charts/AttendanceReport";
 import EmployeeStatus from "../../HrComponents/DashboardComponents/EmployeeStatus";
-// import StatusPieChart from "../../HrComponents/StatusPieChart/StatusPieChart";
 import JobApplicants from "../../HrComponents/DashboardComponents/JobApplicants";
 import TaskSummary from "../../HrComponents/DashboardComponents/TaskSummary";
 
@@ -21,7 +20,6 @@ const Dashboard = () => {
   );
 
   useEffect(() => {
-    // بنبعت التاريخ كاوبجكت فيه dateString زي ما السلايس متوقعة
     dispatch(fetchDashboardAnalytics({ dateString: selectedDate }));
   }, [selectedDate, dispatch]);
 

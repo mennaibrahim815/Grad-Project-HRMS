@@ -11,7 +11,6 @@ const formatLabel = (dateStr) => {
 };
 
 const PreviousPeriodsChart = ({ previousPeriods = [], currentPeriod, overallPerformance, performanceStatus, isLoading = false }) => {
-  // oldest -> newest, with current period appended at the end
   const chartData = [
     ...[...previousPeriods].reverse().map((p) => ({
       label: formatLabel(p.to),

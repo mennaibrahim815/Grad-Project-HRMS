@@ -49,7 +49,6 @@ const NotificationItem = ({ n, onClose }) => {
       className={`px-4 sm:px-6 py-4 hover:bg-white/[0.02] cursor-pointer transition-colors relative`}
     >
       <div className="flex gap-3 sm:gap-4">
-        {/* Avatar - Responsive size */}
         <div 
           style={{ backgroundColor: 'var(--bg-deep)', borderColor: 'var(--border-main)' }}
           className="w-10 h-10 sm:w-11 sm:h-11 rounded-full overflow-hidden shrink-0 border"
@@ -158,7 +157,6 @@ const NotificationDropdown = ({ isOpen, setIsOpen, notifRef }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 15 }}
             style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
-            // التعديل هنا: استخدام w-[calc(100vw-32px)] للشاشات الصغيرة جداً و w-[400px] للشاشات الكبيرة
             className="absolute right-0 sm:right-0 mt-4 w-[calc(100vw-32px)] sm:w-[400px] border rounded-[1.5rem] sm:rounded-[2rem] shadow-2xl z-50 overflow-hidden backdrop-blur-xl"
           >
             <div 

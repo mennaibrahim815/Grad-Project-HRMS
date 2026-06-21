@@ -5,19 +5,17 @@ export const resetPassword = createAsyncThunk(
   "auth/resetPassword",
   async ({ email, newPassword }, { rejectWithValue }) => {
     try {
-      // 💡 بنبعت الداتا كـ JSON عادي لأن السيرفر بيقبلها كدة
       const response = await axios.post("/auth/reset-password", { 
         email, 
         newPassword 
       });
       return response.data;
     } catch (err) {
-      // 💡 معالجة شكل الخطأ الجديد (المصفوفة)
       const errorData = err.response?.data?.message;
       let finalMessage = "Reset failed";
 
       if (Array.isArray(errorData)) {
-        finalMessage = errorData[0].message; // سحب أول رسالة خطأ من المصفوفة
+        finalMessage = errorData[0].message; 
       } else if (typeof errorData === 'string') {
         finalMessage = errorData;
       }

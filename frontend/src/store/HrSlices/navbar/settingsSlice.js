@@ -3,13 +3,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../../services/axios";
 
-// جلب الإعدادات
 export const fetchSettings = createAsyncThunk("settings/fetch", async () => {
   const response = await axios.get("/settings");
   return response.data.data.settings; 
 });
 
-// تحديث الإعدادات (تخدم General و Access معاً)
 export const updateSettings = createAsyncThunk(
   "settings/update",
   async (payload, { rejectWithValue }) => {
@@ -45,13 +43,12 @@ const settingsSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
-      // تحديث الإعدادات
       .addCase(updateSettings.pending, (state) => {
-        state.loading = true; // عشان الزرار يعمل Loading
+        state.loading = true; 
       })
       .addCase(updateSettings.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload; // تحديث الداتا في الصفحة فوراً
+        state.data = action.payload;
       })
       .addCase(updateSettings.rejected, (state, action) => {
         state.loading = false;

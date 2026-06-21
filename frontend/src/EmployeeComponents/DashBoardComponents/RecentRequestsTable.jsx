@@ -12,7 +12,6 @@ import {
 } from 'lucide-react';
 
 const RecentRequestsTable = ({ requests, loading }) => {
-  // 1. دالة لتحديد الأيقونة والألوان باستخدام المتغيرات
   const getTypeStyles = (type) => {
     switch (type) {
       case 'Sick Leave': 
@@ -43,7 +42,6 @@ const RecentRequestsTable = ({ requests, loading }) => {
     }
   };
 
-  // ستايل الكارت الموحد (الجرادينت)
   const luxuryCardStyle = {
     background: 'linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)',
     borderColor: 'var(--card-border)'

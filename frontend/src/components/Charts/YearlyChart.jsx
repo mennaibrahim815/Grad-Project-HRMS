@@ -28,12 +28,10 @@ const YearlyChart = ({
       }}
       className="p-[20px] rounded-[2.5rem] shadow-xl w-full mb-8 min-h-[420px] h-full"
     >
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
         <h3 className="text-xl font-bold mb-1" style={{ color: 'var(--text-main)' }}>{title}</h3>
 
         <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-6 flex-wrap">
-          {/* Legend */}
           <div className="flex items-center gap-3 sm:gap-4 flex-wrap">
             <div className="flex items-center gap-1.5">
               <div className="w-2.5 h-2.5 rounded-full bg-cyan-400 shrink-0" />
@@ -45,7 +43,6 @@ const YearlyChart = ({
             </div>
           </div>
 
-          {/* Year Selector */}
           {onYearChange && (
             <select
               value={selectedYear}
@@ -61,7 +58,6 @@ const YearlyChart = ({
         </div>
       </div>
 
-      {/* Chart Area */}
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="w-full lg:flex-1 h-[300px]">
           {isLoading ? (
