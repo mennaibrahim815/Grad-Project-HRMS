@@ -7,7 +7,6 @@ import defaultAvatar from "../../assets/avatars/avatar-default-symbolic-svgrepo-
 const LiveNotificationToast = ({ notification, onClose }) => {
   const navigate = useNavigate();
 
-  // الإغلاق التلقائي بعد 3 ثوانٍ
   useEffect(() => {
     const timer = setTimeout(onClose, 3000);
     return () => clearTimeout(timer);

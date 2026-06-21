@@ -16,7 +16,6 @@ const JobApplicants = ({ applicants = [], pagination }) => {
 
   const tabs = ["Applied", "Hired", "Rejected", "Interviewing"];
 
-  // جلب البيانات عند تغيير التاب أو الصفحة
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false;

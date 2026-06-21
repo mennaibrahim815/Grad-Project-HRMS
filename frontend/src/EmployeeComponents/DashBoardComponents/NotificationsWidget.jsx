@@ -5,7 +5,6 @@ import React from 'react';
 import { Bell, Megaphone, CheckCircle2, Calendar } from 'lucide-react';
 
 const NotificationsWidget = () => {
-  // استخدام متغيرات الألوان المركزية (CSS Variables) لضمان التوافق مع الثيمين
   const notifications = [
     { 
       id: 1, 
@@ -36,7 +35,6 @@ const NotificationsWidget = () => {
     },
   ];
 
-  // ستايل الكارت الموحد (الجرادينت الفخم)
   const luxuryCardStyle = {
     background: 'linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)',
     borderColor: 'var(--card-border)'
@@ -60,7 +58,6 @@ const NotificationsWidget = () => {
       <div className="space-y-8">
         {notifications.map((note) => (
           <div key={note.id} className="flex gap-4 group cursor-pointer transition-all">
-            {/* حاوية الأيقونة تستخدم الخلفية المتغيرة */}
             <div 
               style={{ backgroundColor: note.bg, borderColor: 'var(--card-border)' }}
               className="w-11 h-11 rounded-2xl flex-shrink-0 flex items-center justify-center border shadow-md transition-transform group-hover:scale-110 group-hover:rotate-3"

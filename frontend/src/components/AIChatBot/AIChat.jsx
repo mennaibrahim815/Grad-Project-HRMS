@@ -69,7 +69,6 @@ const AIChat = () => {
 
   return (
     <>
-      {/* Floating Button */}
       <button
         onClick={() => setOpen(!open)}
         style={{ borderColor: 'var(--bg-deep)' }}
@@ -86,14 +85,12 @@ const AIChat = () => {
         )}
       </button>
 
-      {/* Chat Box */}
       {open && (
         <div 
           style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
           className="fixed bottom-24 right-5 w-[400px] h-[600px] border rounded-[2.5rem] shadow-2xl flex flex-col overflow-hidden z-50 animate-in fade-in zoom-in duration-300"
         >
           
-          {/* Header */}
           <div 
             style={{ backgroundColor: 'var(--bg-card)', borderBottom: '1px solid var(--border-main)' }}
             className="p-5 flex items-center gap-3"
@@ -109,7 +106,6 @@ const AIChat = () => {
             </div>
           </div>
 
-          {/* Messages Area */}
           <div 
             style={{ backgroundColor: 'rgba(0,0,0,0.03)' }}
             className="flex-1 overflow-y-auto p-4 space-y-6 custom-scrollbar"
@@ -128,7 +124,6 @@ const AIChat = () => {
                   msg.sender === "user" ? "flex-row-reverse" : "flex-row"
                 }`}
               >
-                {/* Profile Image or AI Icon */}
                 <div 
                   style={{ borderColor: 'var(--border-main)', backgroundColor: 'var(--bg-deep)' }}
                   className="w-8 h-8 rounded-full overflow-hidden shrink-0 border shadow-sm flex items-center justify-center"
@@ -140,7 +135,6 @@ const AIChat = () => {
                   )}
                 </div>
 
-                {/* Message Bubble */}
                 <div
                   style={msg.sender === "ai" ? { 
                     backgroundColor: 'var(--bg-deep)', 
@@ -158,7 +152,6 @@ const AIChat = () => {
               </div>
             ))}
 
-            {/* Loading indicator */}
             {loading && (
               <div className="flex items-start gap-2.5">
                 <div 
@@ -180,7 +173,6 @@ const AIChat = () => {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input Area */}
           <div 
             style={{ backgroundColor: 'var(--bg-card)', borderTop: '1px solid var(--border-main)' }}
             className="p-5 backdrop-blur-md"

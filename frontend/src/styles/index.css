@@ -1,32 +1,5 @@
 @import "tailwindcss";
 
-/* @theme {
-  --color-n-900: #121417;
-  --color-n-800: #1B1E22;
-  --color-n-700: #383D47;
-  --color-n-500: #697386;
-  --color-n-300: #A1A7B5;
-  --color-n-100: #FCFCFD;
-
-  --color-primary-blue: #0293FA;
-  --color-primary-blue-dark: #013256;
-  --color-primary-blue-light: #62BDFE;
-
-  --color-primary-green: #4BFFB2;
-  --color-primary-green-dark: #00331E;
-  --color-primary-green-mid: #00522F;
-  --color-primary-green-light: #A8FFDA;
-
-  --color-primary-orange: #F68018;
-  --color-primary-orange-dark: #673204;
-  --color-primary-orange-mid: #984A06;
-  --color-primary-orange-light: #FBCCA2;
-
-  --color-primary-red: #EC3A76;
-  --color-primary-red-dark: #34141F;
-  --color-primary-red-mid: #6B0A2B;
-  --color-primary-red-light: #F598B7;
-} */
 :root {
   --bg-main: #121417;
   --bg-deep: #0f172a;
@@ -48,13 +21,8 @@
   --input-bg: rgba(30, 41, 59, 0.6);
   --border-subtle: rgba(30, 41, 59, 0.6);
 
-  /* ناقصين للـ Pagination */
-  --hover-bg: rgba(71, 85, 105, 0.5);
-  /* slate-600/50 */
   --dropdown-bg: #1e293b;
-  /* slate-800 */
   --dropdown-hover: rgba(51, 65, 85, 0.5);
-  /* slate-700/50 */
   --accent-cyan: #22d3ee;
   --menu-gradient-from: #1e2a3a;
   --menu-gradient-to: #162231;
@@ -119,7 +87,6 @@
   --accent-cyan: #0293fa;
 
 
-  /* ... الموجود */
   --menu-gradient-from: #ffffff;
   --menu-gradient-to: #f1f5f9;
   --menu-border: rgba(15, 23, 42, 0.08);

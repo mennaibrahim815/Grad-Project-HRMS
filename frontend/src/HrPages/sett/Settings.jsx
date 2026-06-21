@@ -65,7 +65,6 @@ const Settings = () => {
       style={{ backgroundColor: 'var(--bg-deep)', color: 'var(--text-main)' }}
       className="max-w-[1450px] mx-auto p-4 md:p-8 h-[calc(100vh)] flex flex-col overflow-hidden transition-colors duration-300"
     >
-      {/* 1. الهيدر (Back Button + Title) */}
       <div className="flex items-center gap-4 mb-6 md:mb-10 shrink-0">
         <button
           onClick={() => navigate(-1)}
@@ -79,10 +78,8 @@ const Settings = () => {
         </h1>
       </div>
 
-      {/* 2. منطقة العمل الرئيسية */}
       <div className="flex flex-col min-[900px]:flex-row flex-1 gap-6 md:gap-8 overflow-hidden">
         
-        {/* --- القائمة اليسرى (Sidebar) --- */}
         <aside className="w-full min-[900px]:w-[350px] shrink-0 flex flex-row min-[900px]:flex-col gap-3 overflow-x-auto min-[900px]:overflow-y-visible scrollbar-hide pb-2 min-[900px]:pb-0">
           {menuItems.map((item) => (
             <button
@@ -120,7 +117,6 @@ const Settings = () => {
           ))}
         </aside>
 
-        {/* --- منطقة المحتوى اليمنى (Main Content) --- */}
         <main 
           style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }}
           className="flex-1 h-[100%] rounded-3xl md:rounded-[2.5rem] border shadow-2xl overflow-hidden flex flex-col relative"

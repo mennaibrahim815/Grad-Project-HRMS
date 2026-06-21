@@ -52,9 +52,7 @@ export const router = createBrowserRouter(
     { path: "/careers/apply/:id", element: <ApplyJobForm /> },
     {
       element: <ProtectedRoute />,
-      children: [
-        //  (HR and MANAGER)
-        
+      children: [        
         {
           element: (
             <ProtectedRoute allowedRoles={["HR", "MANAGER"]}>
@@ -79,24 +77,11 @@ export const router = createBrowserRouter(
             { path: "/Tasks/ongoingTasks", element: <OngoingTasks /> },
             
 
-            // تابة المانجر محمية داخلياً برول المانجر بس
             { path: "/manage-hrs", element: <ProtectedRoute allowedRoles={["MANAGER"]}><ManageHRs /></ProtectedRoute> },
           ],
         },
 
-        //  EMPLOYEE
-        //     { path: "/Tasks", element: <Tasks /> },
-        //     {
-        //       path: "/manage-hrs",
-        //       element: (
-        //         <ProtectedRoute allowedRoles={["MANAGER"]}>
-        //           <ManageHRs />
-        //         </ProtectedRoute>
-        //       ),
-        //     },
-        //   ],
-        // },
-        // EMPLOYEE
+
         {
           element: (
             <ProtectedRoute allowedRoles={["EMPLOYEE"]}>

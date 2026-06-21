@@ -1,15 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../../services/axios";
 
-// أكشن طلب إرسال الكود - بيكلم /api/auth/forget-Password
 export const requestResetCode = createAsyncThunk(
   "auth/requestResetCode",
   async (email, { rejectWithValue }) => {
     try {
       const response = await axios.post("/auth/forget-Password", { email });
-      return response.data; // { status: "success", message: "OTP code sent..." }
+      return response.data;
     } catch (err) {
-      // سحب رسالة الخطأ من الباك إيند الحقيقي (User not found)
       return rejectWithValue(err.response?.data?.message || "Failed to send code");
     }
   }
@@ -45,7 +43,7 @@ const forgotPasswordSlice = createSlice({
       })
       .addCase(requestResetCode.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload; // هنا ستخزن رسالة "User not found"
+        state.error = action.payload; 
         state.status = "failed";
       });
   },

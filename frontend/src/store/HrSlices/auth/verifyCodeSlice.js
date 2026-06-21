@@ -2,7 +2,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../../services/axios";
 
-// 1. أكشن التحقق من الكود
 export const verifyOtpCode = createAsyncThunk(
   "auth/verifyOtp",
   async ({ email, code }, { rejectWithValue }) => {
@@ -11,7 +10,6 @@ export const verifyOtpCode = createAsyncThunk(
         email, 
         resetCode: code 
       });
-      // نرجع البيانات (التي تحتوي على رسالة النجاح)
       return response.data; 
     } catch (err) {
       return rejectWithValue(err.response?.data?.message || "Verification failed");
@@ -19,7 +17,6 @@ export const verifyOtpCode = createAsyncThunk(
   }
 );
 
-// 2. إعادة إرسال الكود
 export const resendCode = createAsyncThunk(
   "verify/resend",
   async (email, { rejectWithValue }) => {

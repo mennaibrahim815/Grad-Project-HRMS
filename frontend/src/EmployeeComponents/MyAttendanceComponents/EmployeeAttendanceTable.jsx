@@ -1,5 +1,5 @@
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { io } from "socket.io-client";
 
 import {
@@ -32,7 +32,7 @@ const EmployeeAttendanceTable = () => {
   const dispatch = useDispatch();
 
   const { myAttendance, myAttendanceLoading } = useSelector(
-    (state) => state.empAttendance
+    (state) => state.empAttendance,
   );
 
   const { user } = useSelector((state) => state.auth);
@@ -44,6 +44,28 @@ const EmployeeAttendanceTable = () => {
     dispatch(fetchMyAttendance({ page: 1, limit: recordsPerPage }));
   }, [dispatch, recordsPerPage]);
 
+  useEffect(() => {
+    if (!user?.accessToken) return;
+
+    const socket = io("https://grad-project-hrms-production-7.up.railway.app", {
+      transports: ["websocket"],
+      auth: {
+        token: user.accessToken,
+      },
+    });
+
+    socket.on("new_checkin", (newRecord) => {
+      if (newRecord.employeeId === currentEmployeeId) {
+        dispatch(addNewMyAttendanceRecord(newRecord));
+      }
+    });
+
+    return () => {
+      socket.off("new_checkin");
+      socket.disconnect();
+    };
+  }, [dispatch, currentEmployeeId, user?.accessToken]);
+
   const handlePageChange = (newPage) => {
     dispatch(fetchMyAttendance({ page: newPage, limit: recordsPerPage }));
   };
@@ -52,15 +74,25 @@ const EmployeeAttendanceTable = () => {
     {
       header: "Date",
       accessor: "date",
-      render: (row) => <span style={{ color: "var(--text-main)" }}>{row.date}</span>,
+      render: (row) => (
+        <span style={{ color: "var(--text-main)" }}>{row.date}</span>
+      ),
     },
     {
       header: "Check In",
       accessor: "checkIn",
       render: (row) => {
-        if (!row.checkIn) return <span className="text-xs" style={{ color: "var(--text-muted)" }}>—</span>;
+        if (!row.checkIn)
+          return (
+            <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+              —
+            </span>
+          );
         return (
-          <span className="text-sm font-medium" style={{ color: "var(--text-main)" }}>
+          <span
+            className="text-sm font-medium"
+            style={{ color: "var(--text-main)" }}
+          >
             {new Date(row.checkIn).toLocaleTimeString("en-US", {
               hour: "2-digit",
               minute: "2-digit",
@@ -75,14 +107,18 @@ const EmployeeAttendanceTable = () => {
       header: "Department",
       accessor: "department",
       render: (row) => (
-        <span style={{ color: "var(--text-main)" }}>{row.employee?.department || "—"}</span>
+        <span style={{ color: "var(--text-main)" }}>
+          {row.employee?.department || "—"}
+        </span>
       ),
     },
     {
       header: "Job Type",
       accessor: "jobType",
       render: (row) => (
-        <span style={{ color: "var(--text-main)" }}>{row.employee?.jobType || "—"}</span>
+        <span style={{ color: "var(--text-main)" }}>
+          {row.employee?.jobType || "—"}
+        </span>
       ),
     },
     {

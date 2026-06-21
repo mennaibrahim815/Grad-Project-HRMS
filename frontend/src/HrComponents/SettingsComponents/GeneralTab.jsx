@@ -8,7 +8,6 @@ const GeneralTab = () => {
   const dispatch = useDispatch();
   const fileInputRef = useRef(null);
   
-  // جلب بيانات المستخدم لمعرفة الرتبة (لإظهار حقول الشركة للمدير فقط)
   const { data: userProfile } = useSelector((state) => state.hrProfile);
   const userRole = userProfile?.general?.role; 
   
@@ -96,7 +95,6 @@ const GeneralTab = () => {
     dispatch(updateSettings(submitData));
   };
 
-  // تنسيق موحد للـ Inputs ليدعم الثيمين
   const inputStyle = {
     backgroundColor: 'var(--input-bg)',
     borderColor: 'var(--border-main)',
@@ -106,7 +104,6 @@ const GeneralTab = () => {
   return (
     <div className="space-y-6" style={{ color: 'var(--text-main)' }}>
       
-      {/* 1. معلومات الشركة (للمدير فقط) */}
       {userRole === 'MANAGER' && (
         <div style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }} className="border rounded-2xl p-6">
           <h3 className="text-base font-semibold mb-6">Company Identity</h3>
@@ -151,7 +148,6 @@ const GeneralTab = () => {
         </div>
       )}
 
-      {/* 2. الإعدادات الإقليمية والمالية */}
       <div style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }} className="border rounded-2xl p-6">
         <h3 className="text-base font-semibold mb-5">Regional & Financials</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -174,7 +170,6 @@ const GeneralTab = () => {
         </div>
       </div>
 
-      {/* 3. رصيد الإجازات السنوي الافتراضي */}
       <div style={{ backgroundColor: 'var(--bg-card)', borderColor: 'var(--border-main)' }} className="border rounded-2xl p-6">
         <h3 className="text-base font-semibold mb-2">Default Annual Leaves (Days)</h3>
         <p className="text-xs mb-5" style={{ color: 'var(--text-muted)' }}>Set the global baseline configuration for new employees.</p>

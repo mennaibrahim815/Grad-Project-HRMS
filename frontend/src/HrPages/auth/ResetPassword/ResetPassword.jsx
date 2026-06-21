@@ -25,7 +25,6 @@ const ResetPassword = () => {
     return () => dispatch(resetResetState());
   }, [dispatch]);
 
-  // 💡 بمجرد ما المستخدم يبدأ يعدل، بنخفي رسالة الخطأ عشان يحاول تاني
   useEffect(() => {
     if (matchError) setMatchError("");
   }, [newPassword, confirmPassword]);
@@ -33,19 +32,16 @@ const ResetPassword = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // 1. التحقق من التطابق عند الضغط فقط
     if (newPassword !== confirmPassword) {
       setMatchError("Passwords do not match. Please check again.");
-      return; // وقف الإرسال
+      return; 
     }
 
-    // 2. التحقق من الطول
     if (newPassword.length < 8) {
       setMatchError("Password must be at least 8 characters long.");
       return;
     }
 
-    // 3. لو كله تمام، ابعت للسيرفر
     dispatch(resetPassword({ email, newPassword }));
   };
 
@@ -55,10 +51,8 @@ const ResetPassword = () => {
       className="min-h-screen flex font-sans overflow-hidden relative z-0"
     >
       
-      {/* الإضاءة البيضاء المتمركزة في النص */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] md:w-[70%] h-[800px] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.15)_0%,rgba(255,255,255,0.05)_5%,transparent_70%)] blur-[100px] -z-10 pointer-events-none"></div>
 
-      {/* باقي المحتوى */}
       <div className="relative w-full z-10 flex">      
           <motion.div 
             initial={{ opacity: 0, x: -50 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.8 }}
@@ -118,7 +112,6 @@ const ResetPassword = () => {
                     </button>
                   </div>
                   
-                  {/* إظهار خطأ عدم التطابق أو خطأ الطول */}
                   <AnimatePresence>
                     {matchError && (
                       <motion.p initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-red-500 text-[10px] font-bold italic ml-1 uppercase tracking-tighter">
@@ -128,7 +121,6 @@ const ResetPassword = () => {
                   </AnimatePresence>
                 </div>
 
-                {/* خطأ السيرفر الحقيقي */}
                 <AnimatePresence>
                   {error && (
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-red-500/10 border border-red-500/20 text-red-500 text-xs p-3 rounded-xl text-center font-bold">
@@ -137,7 +129,6 @@ const ResetPassword = () => {
                   )}
                 </AnimatePresence>
 
-                {/* زرار الإرسال */}
                 <motion.button 
                   whileHover={newPassword && confirmPassword && !loading ? { scale: 1.01 } : {}}
                   whileTap={newPassword && confirmPassword && !loading ? { scale: 0.99 } : {}}
@@ -157,7 +148,6 @@ const ResetPassword = () => {
             </div>
           </motion.div>
 
-          {/* الجانب الأيمن */}
           <div className="hidden lg:flex w-1/2 p-4">
             <div className="w-full h-full rounded-[2.5rem] bg-cover bg-center flex flex-col justify-end p-12 relative overflow-hidden shadow-2xl" style={{ backgroundImage: `linear-gradient(to bottom, transparent, #000000dd), url(${loginSide})` }}>
                <h2 className="text-4xl font-bold mb-4 z-10 leading-tight text-white">Secure Your Account</h2>

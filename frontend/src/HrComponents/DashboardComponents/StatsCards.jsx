@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 const StatsCards = ({ stats }) => {
   const navigate = useNavigate();
 
-  // 💡 شيلنا الـ return null عشان الكومبوننت يظهر دائماً
 
   const mapping = [
     { key: "employees", title: "Total employees", path: "/employees" },
@@ -12,13 +11,11 @@ const StatsCards = ({ stats }) => {
   ];
 
   const cards = mapping.map((item) => {
-    // استخدام الـ Optional Chaining لضمان عدم حدوث Error لو الـ stats بـ null
     const sectionData = stats?.[item.key];
     const isUp = sectionData?.percentageChange >= 0;
 
     return {
       title: item.title,
-      // لو مفيش داتا، اظهر 0
       value:
         item.key === "payroll"
           ? `$${(sectionData?.total || 0).toLocaleString()}`
@@ -46,7 +43,6 @@ const StatsCards = ({ stats }) => {
           </p>
           <h2 className="text-3xl font-black text-white mb-4" style={{ color: 'var(--text-main)' }}>{card.value}</h2>
 
-          {/* النسبة المئوية هتظهر 0% لو فيه 404 */}
           <div
             className={`text-xs font-bold flex items-center gap-1 ${card.up ? "text-green-500" : "text-pink-500"}`}
           >

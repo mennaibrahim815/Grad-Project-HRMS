@@ -8,7 +8,6 @@ export const executeSearch = createAsyncThunk(
     try {
       let endpoint = "";
 
-      // ---------------- ENDPOINTS ----------------
       if (type === "employees") {
         endpoint = `/users/?firstName=${query}&limit=20`;
       } else if (type === "projects") {
@@ -20,7 +19,6 @@ export const executeSearch = createAsyncThunk(
       } else if (type === "myTasks") {
         endpoint = `/tasks/my-tasks?filter=team-tasks&page=1&limit=10`;
 
-        // 🔥 لو فيه فلتر status من التاب
         if (status) {
           endpoint = `/tasks/my-tasks?filter=team-tasks&status=${status}&page=1&limit=10`;
         }
@@ -28,10 +26,8 @@ export const executeSearch = createAsyncThunk(
 
       const response = await axios.get(endpoint);
 
-      // unified safe response handling
       const data = response.data?.data || response.data;
 
-      // ---------------- EMPLOYEES ----------------
       if (type === "employees") {
         const users = data.users || [];
 
@@ -51,7 +47,6 @@ export const executeSearch = createAsyncThunk(
           }));
       }
 
-      // ---------------- PROJECTS ----------------
       if (type === "projects") {
         const projects = data.projects || [];
 
@@ -69,7 +64,6 @@ export const executeSearch = createAsyncThunk(
           }));
       }
 
-      // ---------------- HIRING ----------------
       if (type === "hiring") {
         const applicants = data.applicants || [];
 
@@ -89,7 +83,6 @@ export const executeSearch = createAsyncThunk(
           }));
       }
 
-      // ---------------- LEAVES ----------------
       if (type === "leave") {
         const leavesList = Array.isArray(data)
           ? data
@@ -111,7 +104,6 @@ export const executeSearch = createAsyncThunk(
           }));
       }
 
-      // ---------------- MY TASKS (STATUS BASED TABS) ----------------
       if (type === "myTasks") {
         const tasks = data.tasks || [];
 
@@ -138,7 +130,6 @@ export const executeSearch = createAsyncThunk(
   }
 );
 
-// ---------------- SLICE ----------------
 const searchSlice = createSlice({
   name: "search",
   initialState: {

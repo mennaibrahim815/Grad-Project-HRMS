@@ -13,7 +13,6 @@ const TaskSummary = ({ data = [], pagination }) => {
   const [activeTab, setActiveTab] = useState("On-going");
   const [page, setPage] = useState(1);
   
-  // Ref لمنع تنفيذ الـ useEffect في أول رندر لأن الداتا بتيجي مع الصفحة الكبيرة
   const isFirstRender = useRef(true);
 
   const tabs = ["On-going", "Pending", "Completed"];
@@ -53,7 +52,7 @@ const TaskSummary = ({ data = [], pagination }) => {
             key={tab}
             onClick={() => {
               setActiveTab(tab);
-              setPage(1); // تصفير الصفحة عند تغيير التاب
+              setPage(1); 
             }}
                                           style={{
                     background: 'var(--input-bg)',

@@ -28,7 +28,6 @@ const SearchModal = ({ isOpen, onClose, searchRef }) => {
     }
   }, [isEmployee]);
 
-  // 1. إغلاق المودال عند الضغط على زر ESC
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === "Escape") {
@@ -43,7 +42,6 @@ const SearchModal = ({ isOpen, onClose, searchRef }) => {
     };
   }, [isOpen, onClose]);
 
-  // 2. البحث مع الـ Debounce
   useEffect(() => {
     if (query.trim().length > 0) {
       const timeoutId = setTimeout(() => {
@@ -69,7 +67,6 @@ const SearchModal = ({ isOpen, onClose, searchRef }) => {
     }
   }, [query, activeTab, dispatch, isEmployee]);
 
-  // 3. تنظيف البحث عند القفل
   useEffect(() => {
     if (!isOpen) {
       setQuery("");

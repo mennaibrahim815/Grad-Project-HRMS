@@ -12,10 +12,8 @@ import { io } from "socket.io-client";
 import DataTable from "../../components/table/DataTable";
 import TableControls from "../../components/table/TableControls";
 import Pagination from "../../components/table/Pagination";
-import EditIcon from "@mui/icons-material/Edit";
 import RowActionMenu from "../../components/UI/RowActionMenu";
 import BaseCard from "../../components/UI/Card";
-import { Eye, Trash2 } from "lucide-react";
 import ReusableCalendar from "../../components/UI/ReusableCalendar";
 
 const getAvatarUrl = (name, background = "0D8ABC", color = "fff") =>
@@ -24,7 +22,7 @@ const getAvatarUrl = (name, background = "0D8ABC", color = "fff") =>
 const AttendanceBadge = ({ status }) => {
   const styles = {
     "On Time": "bg-emerald-500/15 text-emerald-400 border-emerald-400/40",
-    Late: 'bg-[#0293FA]/15 text-[#0293FA] border-[#0293FA]/40',
+    Late: "bg-[#0293FA]/15 text-[#0293FA] border-[#0293FA]/40",
     Absent: "bg-slate-500/20 text-slate-400 border-slate-400/40",
   };
 
@@ -42,11 +40,12 @@ const AttendanceTable = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { user } = useSelector((state) => state.auth);
+
   const { attendanceList, pagination, loading } = useSelector(
     (state) => state.attendance,
   );
 
-  const [openMenuId, setOpenMenuId] = useState(null);
   const [activeFilter, setActiveFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [recordsPerPage, setRecordsPerPage] = useState(5);
@@ -103,8 +102,13 @@ const AttendanceTable = () => {
   }, [dispatch, tableDate, recordsPerPage, activeFilter, searchQuery]);
 
   useEffect(() => {
-    const socket = io("https://grad-project-hrms-production.up.railway.app", {
-      withCredentials: true,
+    if (!user?.accessToken) return;
+
+    const socket = io("https://grad-project-hrms-production-7.up.railway.app", {
+      transports: ["websocket"],
+      auth: {
+        token: user.accessToken, 
+      },
     });
 
     const handleNewCheckin = (newRecord) => {
@@ -129,7 +133,7 @@ const AttendanceTable = () => {
       socket.off("new_checkin", handleNewCheckin);
       socket.disconnect();
     };
-  }, [dispatch, activeFilter, pagination.currentPage]);
+  }, [dispatch, activeFilter, pagination.currentPage, user?.accessToken]);
 
   const columns = [
     {
@@ -146,8 +150,15 @@ const AttendanceTable = () => {
               style={{ imageRendering: "auto" }}
             />
             <div>
-              <p className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>{fullName}</p>
-              <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{row.employeeId}</p>
+              <p
+                className="text-sm font-medium"
+                style={{ color: "var(--text-main)" }}
+              >
+                {fullName}
+              </p>
+              <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+                {row.employeeId}
+              </p>
             </div>
           </div>
         );
@@ -163,15 +174,22 @@ const AttendanceTable = () => {
       accessor: "jobType",
       render: (row) => row.employee?.jobType,
     },
-
     { header: "Date", accessor: "date" },
     {
       header: "Check In",
       accessor: "checkIn",
       render: (row) => {
-        if (!row.checkIn) return <span className="text-xs" style={{ color: 'var(--text-muted)' }}>—</span>;
+        if (!row.checkIn)
+          return (
+            <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+              —
+            </span>
+          );
         return (
-          <span className="text-sm font-medium" style={{ color: 'var(--text-main)' }}>
+          <span
+            className="text-sm font-medium"
+            style={{ color: "var(--text-main)" }}
+          >
             {new Date(row.checkIn).toLocaleTimeString("en-US", {
               hour: "2-digit",
               minute: "2-digit",
@@ -186,7 +204,6 @@ const AttendanceTable = () => {
       accessor: "status",
       render: (row) => <AttendanceBadge status={row.status} />,
     },
-
   ];
 
   const handlePageChange = (newPage) => {
@@ -206,14 +223,13 @@ const AttendanceTable = () => {
 
   return (
     <BaseCard padding="p-0">
-
       <TableControls
         searchTerm={searchQuery}
         setSearchTerm={setSearchQuery}
         filterValue={activeFilter}
         setFilterValue={setActiveFilter}
         filterOptions={["All", "On Time", "Late", "Absent"]}
-        setCurrentPage={() => { }}
+        setCurrentPage={() => {}}
         extraRight={
           <div className="flex items-center gap-2">
             <ReusableCalendar
@@ -224,7 +240,7 @@ const AttendanceTable = () => {
             {tableDate && (
               <button
                 onClick={() => setTableDate("")}
-                style={{ color: 'var(--text-muted)' }}
+                style={{ color: "var(--text-muted)" }}
                 className="text-xs hover:opacity-70 transition-colors"
               >
                 <i className="fas fa-times" />

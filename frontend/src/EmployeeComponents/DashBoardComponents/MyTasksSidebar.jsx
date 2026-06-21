@@ -11,7 +11,6 @@ const MyTasksSidebar = ({ projects, loading }) => {
     </div>
   );
 
-  // ستايل الحاوية الكبيرة (الجرادينت الموحد)
   const mainCardStyle = {
     background: 'linear-gradient(to bottom right, var(--card-from) 20%, var(--card-to) 45%)',
     borderColor: 'var(--card-border)'
