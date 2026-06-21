@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 
 import { toggleSidebar } from "../../store/HrSlices/navbar/sideMenuSlice";
 
-// components
 import NavSearchTrigger from "../NavbarComponents/NavSearchTrigger";
 import NotificationDropdown from "../NavbarComponents/NotificationDropdown";
 import ProfileDropdown from "../NavbarComponents/ProfileDropdown";
@@ -63,7 +62,6 @@ const Navbar = ({ isTinyScreen }) => {
 
   return (
     <>
-      {/* Navbar */}
       <nav
         style={{
           left: isTinyScreen ? "0" : (isCollapsed ? "70px" : "175px"),
@@ -72,7 +70,6 @@ const Navbar = ({ isTinyScreen }) => {
         }}
         className={`top-0 right-0 h-20 backdrop-blur-md flex items-center justify-between z-40 transition-all duration-300 ${isTinyScreen ? 'px-4' : 'px-8'}`}
       >
-        {/* LEFT SIDE */}
         <div className="flex items-center gap-5">
           {!isTinyScreen && (
             <button
@@ -85,16 +82,13 @@ const Navbar = ({ isTinyScreen }) => {
             </button>
           )}
 
-          {/* Search */}
           <NavSearchTrigger
             onClick={() => setIsSearchModalOpen(true)}
           />
         </div>
 
-        {/* RIGHT SIDE */}
         <div className="flex items-center gap-4">
 
-          {/* Theme Toggle */}
           <ThemeToggle />
 
           {(userRole === "HR" || userRole === "MANAGER") && (
@@ -111,14 +105,12 @@ const Navbar = ({ isTinyScreen }) => {
             </button>
           )}
 
-          {/* Notifications */}
           <NotificationDropdown
             isOpen={showNotifMenu}
             setIsOpen={setShowNotifMenu}
             notifRef={notifRef}
           />
 
-          {/* Profile */}
           <ProfileDropdown
             isOpen={showProfileMenu}
             setIsOpen={setShowProfileMenu}
@@ -127,7 +119,6 @@ const Navbar = ({ isTinyScreen }) => {
         </div>
       </nav>
 
-      {/* Search Modal */}
       <SearchModal
         isOpen={isSearchModalOpen}
         onClose={() => setIsSearchModalOpen(false)}

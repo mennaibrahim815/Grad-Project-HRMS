@@ -6,14 +6,11 @@ const ThemeToggle = () => {
   const dispatch = useDispatch();
   const isDark = useSelector((state) => state.theme.mode === "dark");
 
-  // 2. إضافة التأثير الذي يربط Redux بالـ HTML DOM
   useEffect(() => {
-    const root = document.documentElement; // تاج <html>
+    const root = document.documentElement; 
     if (!isDark) {
-      // لو الحالة light، ضيف الـ attribute عشان الـ CSS يشتغل
       root.setAttribute("data-theme", "light");
     } else {
-      // لو الحالة dark، شيل الـ attribute عشان يرجع للألوان الافتراضية (:root)
       root.removeAttribute("data-theme");
     }
   }, [isDark]);

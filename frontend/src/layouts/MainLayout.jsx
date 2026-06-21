@@ -1,6 +1,5 @@
 
 
-import React, { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +13,6 @@ const MainLayout = () => {
   const dispatch = useDispatch();
   const { isSidebarCollapsed } = useSelector((state) => state.ui);
   
-  // حالة لمعرفة إذا كانت الشاشة أصغر من 360 بكسل
   const [isTinyScreen, setIsTinyScreen] = useState(window.innerWidth < 360);
 
   useEffect(() => {
@@ -29,56 +27,11 @@ const MainLayout = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!userRole) return;
-
-    console.log("Attempting to connect to socket... Role:", userRole);
-
-    const socket = io("https://grad-project-hrms-production-7.up.railway.app", {
-      transports: ["websocket", "polling"],
-      withCredentials: true
-    });
-
-    socket.on("connect", () => {
-      console.log("✅ Socket Connected Successfully! ID:", socket.id);
-    });
-
-    socket.on("connect_error", (err) => {
-      console.error("❌ Socket Connection Error:", err.message);
-    });
-
-    socket.on("new_notification", (data) => {
-      console.log("🔔 New Notification Received:", data);
-
-      if (userRole === "HR" || userRole === "MANAGER") {
-        dispatch(addLiveNotification(data));
-
-        setActiveToast({
-          id: data._id || Date.now(),
-          title: data.title || "New Update",
-          message: data.message || "You have a new notification",
-          employeeName: data.sender?.general?.firstName 
-            ? `${data.sender.general.firstName} ${data.sender.general.lastName}`
-            : "System",
-          avatar: data.sender?.general?.avatar,
-          type: data.type?.toLowerCase(),
-          targetId: data.relatedId
-        });
-      }
-    });
-
-    return () => {
-      console.log("Cleaning up socket...");
-      socket.disconnect();
-    };
-  }, [dispatch, userRole]); 
-
   return (
     <div className={`flex ${isTinyScreen ? "flex-col min-h-screen" : "min-h-screen"}`}>
       
       <Sidebar isTinyScreen={isTinyScreen} /> 
 
-      {/* Content wrapper */}
       <div
         className={`flex-1 flex flex-col min-w-0 transition-all duration-300
         ${isTinyScreen ? "ml-0" : isSidebarCollapsed ? "ml-[80px]" : "ml-[175px]"}`}
@@ -91,20 +44,9 @@ const MainLayout = () => {
       </div>
 
       <AIChat />
-
-      <AnimatePresence>
-        {activeToast && (
-          <LiveNotificationToast 
-            key={activeToast.id} 
-            notification={activeToast} 
-            onClose={() => setActiveToast(null)} 
-          />
-        )}
-      </AnimatePresence>
     </div>
   );
 };
 
 export default MainLayout;
-
 
