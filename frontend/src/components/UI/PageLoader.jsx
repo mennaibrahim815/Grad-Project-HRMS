@@ -8,7 +8,7 @@ const PageLoader = ({ message = "Preparing your dashboard..." }) => {
       exit={{ opacity: 0 }}
       className="fixed inset-0 z-[999] bg-[#0b141a] flex flex-col items-center justify-center"
     >
-      {/* شكل لودر دائري متطور */}
+     
       <div className="relative w-24 h-24">
         <motion.div
           animate={{ rotate: 360 }}
