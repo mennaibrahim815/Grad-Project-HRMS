@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux";
 import PerformanceHeader from "../../EmployeeComponents/MyPerformanceComponents/PerformanceHeader";
 import OverallPerformanceCard from "../../EmployeeComponents/MyPerformanceComponents/OverallPerformanceCard";
 import KpiStats from "../../EmployeeComponents/MyPerformanceComponents/KpiStats";
-// import PreviousPeriodsChart from "../../EmployeeComponents/MyPerformanceComponents/PreviousPeriodsChart";
 import PerformanceTrendChart from "../../components/Charts/PerformanceTrendChart";
 import PreviousPeriodsTable from "../../EmployeeComponents/MyPerformanceComponents/PreviousPeriodsTable";
 import { fetchEmployeePerformance } from "../../store/EmployeeSlices/employeePerformance/employeePerformanceSlice";
@@ -40,7 +39,6 @@ export default function MyPerformance() {
                         overallPerformance={data.overallPerformance}
                         performanceStatus={data.performanceStatus}
                     />
-                    {/* KpiStats هنا لما نخلصه */}
                     <KpiStats />
                    
                         <PerformanceTrendChart

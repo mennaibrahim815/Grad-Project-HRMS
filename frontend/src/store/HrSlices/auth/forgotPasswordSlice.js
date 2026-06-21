@@ -43,7 +43,7 @@ const forgotPasswordSlice = createSlice({
       })
       .addCase(requestResetCode.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload; // هنا ستخزن رسالة "User not found"
+        state.error = action.payload; 
         state.status = "failed";
       });
   },

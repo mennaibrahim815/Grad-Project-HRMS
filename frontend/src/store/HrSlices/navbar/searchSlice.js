@@ -8,7 +8,6 @@ export const executeSearch = createAsyncThunk(
     try {
       let endpoint = "";
 
-      // ---------------- ENDPOINTS ----------------
       if (type === "employees") {
         endpoint = `/users/?firstName=${query}&limit=20`;
       } else if (type === "projects") {
@@ -29,7 +28,6 @@ export const executeSearch = createAsyncThunk(
 
       const data = response.data?.data || response.data;
 
-      // ---------------- EMPLOYEES ----------------
       if (type === "employees") {
         const users = data.users || [];
 
@@ -49,7 +47,6 @@ export const executeSearch = createAsyncThunk(
           }));
       }
 
-      // ---------------- PROJECTS ----------------
       if (type === "projects") {
         const projects = data.projects || [];
 
@@ -67,7 +64,6 @@ export const executeSearch = createAsyncThunk(
           }));
       }
 
-      // ---------------- HIRING ----------------
       if (type === "hiring") {
         const applicants = data.applicants || [];
 
@@ -87,7 +83,6 @@ export const executeSearch = createAsyncThunk(
           }));
       }
 
-      // ---------------- LEAVES ----------------
       if (type === "leave") {
         const leavesList = Array.isArray(data)
           ? data
@@ -109,7 +104,6 @@ export const executeSearch = createAsyncThunk(
           }));
       }
 
-      // ---------------- MY TASKS (STATUS BASED TABS) ----------------
       if (type === "myTasks") {
         const tasks = data.tasks || [];
 
@@ -136,7 +130,6 @@ export const executeSearch = createAsyncThunk(
   }
 );
 
-// ---------------- SLICE ----------------
 const searchSlice = createSlice({
   name: "search",
   initialState: {

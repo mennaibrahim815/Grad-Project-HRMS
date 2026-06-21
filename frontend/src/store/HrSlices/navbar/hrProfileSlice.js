@@ -47,7 +47,7 @@ const hrProfileSlice = createSlice({
       .addCase(updateHRProfile.pending, (state) => { state.loading = true; })
       .addCase(updateHRProfile.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload; // تحديث فوري للبيانات
+        state.data = action.payload; 
       })
       .addCase(updateHRProfile.rejected, (state, action) => {
         state.loading = false;

@@ -2,8 +2,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "../../../services/axios";
 
-// ======================================
-// ======================================
 
 export const fetchEmployeeDashboardStats = createAsyncThunk(
   "employeeDashboard/fetchStats",
@@ -65,8 +63,6 @@ export const fetchEmployeeNotifications = createAsyncThunk(
   }
 );
 
-// ======================================
-// ======================================
 
 const employeeDashboardSlice = createSlice({
   name: "employeeDashboard",

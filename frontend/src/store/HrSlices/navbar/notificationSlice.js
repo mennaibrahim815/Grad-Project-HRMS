@@ -36,7 +36,6 @@ const response = await axios.get(
   );}
 });
 
-// Get Unread Count
 export const fetchUnreadCount = createAsyncThunk(
 "notifications/fetchUnreadCount",
 async (_, { rejectWithValue }) => {
@@ -51,7 +50,6 @@ const response = await axios.get(
       "Failed to fetch unread count"
   );}
 });
-// Temporary Until Backend Endpoint Exists
 export const markAsRead = createAsyncThunk(
 "notifications/markRead",
 async (id) => {
@@ -105,7 +103,6 @@ addLiveNotification: (state, action) => {
 },
 extraReducers: (builder) => {
 builder
-  // Fetch Notifications
   .addCase(fetchNotifications.pending, (state) => {
     state.loading = true;
     state.error = null;
@@ -118,11 +115,9 @@ builder
     state.loading = false;
     state.error = action.payload;
   })
-  // Fetch Unread Count
   .addCase(fetchUnreadCount.fulfilled, (state, action) => {
     state.unreadCount = action.payload;
   })
-  // Mark Single Notification
   .addCase(markAsRead.fulfilled, (state, action) => {
     const notif = state.list.find(
       (n) => n.id === action.payload
@@ -135,7 +130,6 @@ builder
       );
     }
   })
-  // Mark All Read
   .addCase(markAllAsRead.fulfilled, (state) => {
     state.list.forEach((n) => {
       n.status = "read";
@@ -143,7 +137,6 @@ builder
 
     state.unreadCount = 0;
   })
-  // Leave Status Sync
   .addCase(updateLeaveStatus.fulfilled, (state, action) => {
     const { id, status } = action.payload;
 

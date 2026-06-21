@@ -197,7 +197,6 @@ const MyProfile = () => {
       {/* Main Grid Content */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-8 space-y-8">
-          {/* Personal Information Section */}
           <section style={cardStyle} className="border rounded-[2.5rem] p-10 shadow-xl">
             <h3 className="text-lg font-black uppercase tracking-widest mb-10 opacity-80">Personal Information</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-12 gap-x-8">

@@ -6,7 +6,6 @@ import { fileURLToPath } from "url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react(),tailwindcss()],
   resolve: {
@@ -17,18 +16,3 @@ export default defineConfig({
 
 });
 
-
-
-
-// export default defineConfig({
-//   plugins: [react(),tailwindcss()],
-//   server: {
-//     proxy: {
-//       '/api': {
-//         target: 'https://grad-project-hrms-production.up.railway.app', // تحط هنا لينك الباك إند بتاعك على ريلواي
-//         changeOrigin: true,
-//         secure: false, // السطر ده بيحل أي عقدة ليها علاقة بالـ HTTPS
-//       }
-//     }
-//   }
-// })

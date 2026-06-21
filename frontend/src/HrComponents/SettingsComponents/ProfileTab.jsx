@@ -100,7 +100,6 @@ const ProfileTab = () => {
       return `${baseUrl}${path}?t=${Date.now()}`;
     }
 
-    // 3. الصورة الافتراضية
     return '/uploads/default-avatar.png';
   };
 
