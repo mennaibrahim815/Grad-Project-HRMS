@@ -6,7 +6,7 @@ const Pagination = () => {
     const { pagination, activeFilters, isSearchMode } = useSelector((state) => state.careers);
     const { currentPage, totalPages, totalRecords } = pagination;
 
-    // مفيش pagination في وضع الـ search
+   
     if (isSearchMode || totalPages <= 1) return null;
 
     const handlePage = (page) => {
@@ -15,7 +15,7 @@ const Pagination = () => {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
-    // بنعمل array للأرقام اللي هتتعرض
+    
     const getPages = () => {
         if (totalPages <= 5) return Array.from({ length: totalPages }, (_, i) => i + 1);
 

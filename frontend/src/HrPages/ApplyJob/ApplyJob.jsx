@@ -106,7 +106,7 @@ function ApplyJob() {
                     <FilterBar />
                 </motion.div>
 
-                {/* JobGrid بتاخد variants عشان الـ cards جواها تعمل stagger */}
+                
                 <motion.div variants={sectionVariants}>
                     <JobGrid />
                 </motion.div>

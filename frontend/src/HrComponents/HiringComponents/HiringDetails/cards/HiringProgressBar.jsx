@@ -63,7 +63,7 @@ const HiringProgressBar = ({ status }) => {
                 </span>
               </div>
 
-              {/* Line بين الـ steps */}
+             
               {index < STEPS.length - 1 && (
                 <div
                   style={{ background: isCompleted ? '#3b82f6' : 'var(--border-main)' }}

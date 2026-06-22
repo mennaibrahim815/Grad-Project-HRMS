@@ -39,7 +39,7 @@ const EmployeeStatus = ({ pieStripes, title }) => {
 
   const raw = analytics?.employeeStatus;
 
-  // لو مفيش داتا
+  
   if (!raw) {
     return (
       <div className="bg-[#142129] p-8 rounded-[2.5rem] border border-gray-800/50 shadow-xl h-full flex items-center justify-center min-h-[420px]">

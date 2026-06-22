@@ -18,13 +18,6 @@ export default function Attendance() {
     );
   }, [dispatch, selectedMonth]);
 
-  // if (loading) {
-  //   return (
-  //     <div className="flex items-center justify-center min-h-[60vh]">
-  //       <i className="fas fa-spinner fa-spin text-4xl text-blue-500"></i>
-  //     </div>
-  //   );
-  // }
   const stats = analytics?.data;
 
   const attendanceCards = [

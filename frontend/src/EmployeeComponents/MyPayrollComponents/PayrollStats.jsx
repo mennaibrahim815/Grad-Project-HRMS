@@ -47,7 +47,7 @@ function PayrollStats() {
       title: "Payment Status",
       value: dashboardStats.paymentStatus,
       icon: CheckCircle2,
-      type: "badge", // 👈 هنا
+      type: "badge",
     },
   ];
 

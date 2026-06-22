@@ -3,7 +3,6 @@ import { motion } from "framer-motion";
 import { formatDistanceToNow } from "date-fns";
 import BaseCard from "../../../components/UI/Card";
 
-// 1. تعريف الـ Motion Component للـ BaseCard عشان نقدر نستخدم whileHover و Animations
 const MotionBaseCard = motion(BaseCard);
 
 const DEPT_COLORS = {
@@ -55,15 +54,14 @@ const JobCard = ({ job }) => {
     ].filter((t) => t.value);
 
     return (
-        // 2. استخدام MotionBaseCard كالحاوية الرئيسية
+        
         <MotionBaseCard
             whileHover={{ y: -4, transition: { duration: 0.2 } }}
-            padding="p-0" // مسحنا الـ padding الافتراضي بتاع BaseCard عشان نتحكم فيه جوه هنا براحتنا
+            padding="p-0"
             className="flex flex-col justify-between h-full group
                        hover:border-[#0293FA] hover:shadow-[0_4px_20px_rgba(2,147,250,0.15)]
                        transition-all duration-300 overflow-hidden"
         >
-            {/* أضفنا div داخلي عشان يمسك الـ padding بشكل صح */}
             <div className="flex flex-col justify-between gap-4 p-5 h-full">
                 
                 {/* Top Section */}
@@ -73,7 +71,7 @@ const JobCard = ({ job }) => {
                         {department}
                     </span>
 
-                    {/* تغيير لون التايتل للدرجة المطلوبة عند الـ hover */}
+                   
                     <h3 className="text-[var(--text-main)] font-bold text-lg leading-snug mb-2 group-hover:text-[#0293FA] transition-colors duration-300">
                         {title}
                     </h3>

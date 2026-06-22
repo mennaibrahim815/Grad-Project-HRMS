@@ -59,7 +59,7 @@ const PayrollStatus = ({ data, pieStripes }) => {
       }}
       className="p-[20px] rounded-[2.5rem] shadow-xl h-full flex flex-col relative min-h-[420px] overflow-hidden"
     >
-      {/* الهيدر */}
+      
       <div className="flex justify-between items-center mb-8">
         <h3 className="text-xl font-bold" style={{ color: 'var(--text-main)' }}>Payroll status</h3>
         <button
@@ -118,7 +118,7 @@ const PayrollStatus = ({ data, pieStripes }) => {
             </PieChart>
           </ResponsiveContainer>
 
-          {/* الرقم في منتصف الدائرة */}
+        
           <div className="absolute inset-0 flex items-center justify-center flex-col pointer-events-none translate-y-[-2px]">
             <span className="text-3xl font-black tracking-tight leading-none" style={{ color: 'var(--text-main)' }}>
               {totalCount}
@@ -129,7 +129,7 @@ const PayrollStatus = ({ data, pieStripes }) => {
           </div>
         </div>
 
-        {/* القائمة الجانبية (Legend) */}
+       
         <div className="space-y-6 flex-1 min-w-0">
           {data.map((item, i) => (
             <div key={`legend-${i}`} className="flex items-center gap-3">

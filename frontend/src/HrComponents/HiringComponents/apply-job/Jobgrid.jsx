@@ -25,7 +25,7 @@ const CardSkeleton = () => (
     </div>
 );
 
-// ← stagger container للـ cards
+
 const gridVariants = {
     hidden: {},
     visible: {
@@ -37,7 +37,7 @@ const gridVariants = {
     }
 };
 
-// ← كل card بتيجي من تحت مع fade
+
 const cardVariants = {
     hidden: { opacity: 0, y: 24 },
     visible: {
@@ -56,7 +56,7 @@ const JobGrid = () => {
     const displayedJobs = isSearchMode ? searchResults : jobs;
 
     return (
-        // استخدام AnimatePresence مع mode="wait" عشان العنصر القديم يختفي قبل ما الجديد يظهر
+        
         <AnimatePresence mode="wait">
             {isLoading ? (
                 <motion.div
@@ -114,7 +114,7 @@ const JobGrid = () => {
                         <motion.div 
                             key={job._id} 
                             variants={cardVariants}
-                            layout // إضافة layout بتخلي الكروت تتحرك بنعومة لو أماكنها اتغيرت في الفلترة
+                            layout 
                         >
                             <JobCard job={job} />
                         </motion.div>

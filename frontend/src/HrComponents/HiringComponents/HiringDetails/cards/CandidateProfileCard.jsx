@@ -12,7 +12,7 @@ const statusOptions = {
   Rejected: [],
 };
 
-// ── المودال المشترك المعتمد على Framer Motion مع الألوان المتناسقة ──
+
 const CustomModal = ({ open, onClose, children, maxWidth = "max-w-[420px]" }) => {
   return (
     <AnimatePresence>
@@ -273,7 +273,7 @@ const CandidateProfileCard = ({ applicant, loading }) => {
         )}
       </BaseCard>
 
-      {/* ── 1. Rejection Modal المطور ── */}
+    
       {createPortal(
         <CustomModal open={rejectModal} onClose={() => { setRejectModal(false); setRejectionReason(""); }}>
           <div className="flex items-center justify-center w-12 h-12 rounded-full mx-auto mb-4" style={{ backgroundColor: "rgba(236, 58, 118, 0.15)" }}>
@@ -297,7 +297,7 @@ const CandidateProfileCard = ({ applicant, loading }) => {
         document.body
       )}
 
-      {/* ── 2. Onboarding Form Modal المطور والمنسق بالألوان الجديدة ── */}
+      
       {createPortal(
         <CustomModal open={onboardModal} onClose={() => setOnboardModal(false)} maxWidth="max-w-3xl">
           <div className="flex items-center justify-center w-12 h-12 rounded-full mx-auto mb-3" style={{ backgroundColor: "rgba(75, 255, 178, 0.15)" }}>
@@ -440,7 +440,7 @@ const CandidateProfileCard = ({ applicant, loading }) => {
               </div>
             </div>
 
-            {/* الأزرار النهائية */}
+          
             <div className="flex gap-4 pt-4">
               <button type="button" onClick={() => setOnboardModal(false)} className="flex-1 py-3 rounded-2xl text-sm font-semibold border border-gray-600 hover:bg-white/5 transition-all text-center">
                 Cancel
